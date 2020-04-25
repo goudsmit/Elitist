@@ -1,0 +1,44 @@
+:root {
+    --elite-blue-light: #00b3f7;
+    --elite-blue-dark: #0a8bd6;
+    --elite-green: #029e4c;
+    --elite-red: #ff0000;
+    --elite-orange: #ff7100;
+    --elite-yellow: #ffb000;
+    /***** ORANGE HUES *****/
+    --orange: #ff7100;
+    --orange-dark: #bf5400;
+    --orange-darker: #7f3800;
+    --orange-darkest: #401c00;
+    /***** BROWN HUES *****/
+    --brown: #441b03;
+    --brown-dark: #331402;
+    --brown-darker: #220d01;
+    --brown-darkest: #110701;
+    /***** RED HUES *****/
+    --faint-red: #ff00006e;
+    /***** GREEN HUES *****/
+    --green: #029e4c;
+    --green-dark: #017639;
+    --green-darker: #014f26;
+    --green-darkest: #012813;
+    /***** POWER PLAY *****/
+    --aisling-duval: #0099ff;
+    --archon-delaine: #7fff00;
+    --arissa-lavigny-duval: #7f00ff;
+    --denton-patreus: #00ffff;
+    --edmund-mahon: #00ff00;
+    --felicia-winters: #ff7f00;
+    --li-yong-rui: #bfff00;
+    --pranav-antal: #ffff00;
+    --zachary-hudson: #ff0000;
+    --zemina-torval: #00f0ff;
+    /***** MISC *****/
+    --background-color: #0d0d0d;
+    /***** Allegiance ****/
+    --empire: #ff0000;
+    --federation: #0a8bd6;
+    --independent: #029e4c;
+    --alliance: #ff7100;
+    /***** Government *****/
+}

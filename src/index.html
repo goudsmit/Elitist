@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Elitist - An E:D Companion App</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link rel="stylesheet" href="./css/elitist.css">
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script>
+      let $ = require('jquery');
+      require('popper.js');
+      require('bootstrap');
+  </script> 
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+  </head>
+  <body>
+    <div class="d-flex align-items-center justify-content-center h-100 app-overlay" id="app-overlay">
+      <div class="d-none text-center loading" id="app-loading"><i class="mb-2 fa-3x fas fa-spinner fa-pulse"></i><br><span class="pt-3" id="load-messages"></span></div>
+      <div class="d-flex align-items-center justify-content-center h-100 w-100 alert-full-screen-flash" id="alert-full-screen-flash">
+        <div class="d-flex align-items-center justify-content-center w-100 h-100" id="shipAlert">
+          <i class="fas fa-fire mr-2"></i> Heat Warning</div>
+      </div>
+    </div>
+
+    
+    <script src="./js/elitist.js"></script>
+    <script>
+      // Document Ready
+      $(function() {
+        console.log("DOM Ready")
+      });
+    </script>
+  </body>
+</html>

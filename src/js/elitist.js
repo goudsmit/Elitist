@@ -140,9 +140,17 @@ const updateGameState = async function updateGameState(data) {
 }
 const updateCmdr = async function updateCmdr() {
   // console.log("updateCmdr()")
+  $("#cmdrName").text(Cmdr.name)
+  $("#cmdrShip").text(Cmdr.ship.name)
+  $("#cmdrCredits").text(formatCredits(Cmdr.credits))
 }
 const updateShip = async function updateShip() {
-  // console.log("updateShip()")
+  $("#shipName").text(Cmdr.ship.name)
+  $("#shipID").text(Cmdr.ship.ident)
+  $("#shipType").text(Cmdr.ship.type)
+  $("#shipHullValue").text(formatCredits(Cmdr.ship.hull.value))
+  $("#shipRebuy").text(formatCredits(Cmdr.ship.rebuy))
+  $("#shipHealth").text(Cmdr.ship.health)
 }
 const updateRank = async function updateRank(data) {
   /**
@@ -150,6 +158,12 @@ const updateRank = async function updateRank(data) {
    * No data: General update
    * Event: Promotion, data: type & level (Toast after?)
    */
+  var ranks = await db.ranks.toArray()
+  ranks.forEach( (rank) => {
+    let rankText = (journal.RANKS[rank.type][rank.level] != "Elite") ? journal.RANKS[rank.type][rank.level] : `<span class="elite">${journal.RANKS[rank.type][rank.level]}</span>`
+    $("#" + rank.type.toLowerCase() + "Rank .val").html(rankText)
+    $("#" + rank.type.toLowerCase() + "Progress").css("width", rank.progress + "%")
+  })
 }
 const updatePassengers = async function updatePassengers(data) {
   /**
@@ -205,7 +219,14 @@ const updateAlertState = async function updateAlertState(data) {
    * event: HullDamage
    * event: HeatWarning
    * event: HeatDamage
+   * event: Interdicted
    */
+  if (data.event == "Scanned") { message = data.type + " scan detected" }
+  else { message = data.event }
+  let template = {
+    alert: `<div class="app-alert flash">${message}</div>`
+  }
+  displayOverlayItem(template.alert)
 }
 const updateToast = async function updateToast(data) {
   /**
@@ -216,6 +237,31 @@ const updateToast = async function updateToast(data) {
    * event: SAAScanComplete, data: ScanData
    * event: ShipyardTransfer, data: TransferDetails
    */
+}
+
+const displayOverlayItem = async function displayOverlayItem(item) {
+  let div = "#overlay-container"
+  $(div).children().remove()
+  $(div).append(item)
+}
+const displayToast = async function displayToast(toast, time) {
+
+  // setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}
+
+
+const LoadUI = async function LoadUI() {
+  // Remove any overlays
+  $("#overlay-container").children().remove()
+
+  let elements = ["main"]
+}
+
+
+const formatCredits = function formatCredits(x) {
+  if (x != undefined) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 }
 
 
@@ -267,12 +313,17 @@ if (elitist.folder.logs == null) {
     // TODO: Set Folder GUI
   }
 } else {
-  $("#load-messages").text("Starting Watcher")
+  let template = `<div class="text-center loading" id="app-load">
+  <i class="fas fa-spinner fa-pulse mr-3"></i><br><span class=""></span>
+  </div>`
+  displayOverlayItem(template)
+  $("#app-load span").text("Starting Watcher")
   ipc.send("start-watcher", elitist.folder.logs);
-  $("#load-messages").text("Checking for log files")
+  $("#app-load span").text("Checking for log files")
   readFolder(elitist.folder.logs).then(() => {
     console.log("Folder Read");
-    $("#load-messages").text("Log files checked")
+    $("#app-load span").text("Log files checked")
+    LoadUI()
   });
 }
 

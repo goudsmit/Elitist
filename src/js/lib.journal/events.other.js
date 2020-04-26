@@ -36,10 +36,11 @@ const CrimeVictim = async function CrimeVictim(line) {
   console.log(line);
 };
 const DatalinkScan = async function DatalinkScan(line) {
-  console.log(line);
+  return;
 };
 const DatalinkVoucher = async function DatalinkVoucher(line) {
-  console.log(line);
+  Cmdr.credits += line.Reward
+  Cmdr.Save()
 };
 const DataScanned = async function DataScanned(line) {
   // Toast: candidate
@@ -49,6 +50,8 @@ const DockFighter = async function DockFighter(line) {
   console.log(line);
 };
 const DockSRV = async function DockSRV(line) {
+  Cmdr.inSrv = false;
+  
   let result = { callback: updateTravelState, data: line.event}
   return Promise.resolve(result)
 };
@@ -87,6 +90,9 @@ const LaunchFighter = async function LaunchFighter(line) {
   console.log(line);
 };
 const LaunchSRV = async function LaunchSRV(line) {
+  Cmdr.inSrv = true;
+  Cmdr.Save()
+
   let result = { callback: updateTravelState, data: line.event}
   return Promise.resolve(result)
 };
@@ -207,6 +213,8 @@ module.exports = {
   CrewMemberJoins,
   CrewMemberQuits,
   CommitCrime,
+  DatalinkScan,
+  DatalinkVoucher,
   DataScanned,
   DockSRV,
   EndCrewSession,

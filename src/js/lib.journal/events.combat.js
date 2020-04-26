@@ -38,8 +38,10 @@ const HeatWarning = async function HeatWarning(line) {
   return Promise.resolve(result);
 };
 const HullDamage = async function HullDamage(line) {
-  Cmdr.ship.hull.health = line.Health;
-  Cmdr.Save();
+  if (!Cmdr.inSrv) {
+    Cmdr.ship.hull.health = line.Health;
+    Cmdr.Save();
+  }
 
   let result = {
     callback: updateAlertState,
@@ -48,7 +50,11 @@ const HullDamage = async function HullDamage(line) {
   return Promise.resolve(result);
 };
 const Interdicted = async function Interdicted(line) {
-  console.log(line);
+  let result = {
+    callback: updateAlertState,
+    data: { event: line.event },
+  };
+  return Promise.resolve(result);
 };
 const Interdiction = async function Interdiction(line) {
   console.log(line);

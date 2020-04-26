@@ -23,17 +23,19 @@ const Commander = async function Commander(line) {
 };
 
 const LoadGame = async function LoadGame(line) {
-  let ship = {
-    type: line.Ship,
-    id: line.ShipID,
-    name: line.ShipName,
-    ident: line.ShipIdent,
-    fuel: {
-      level: line.FuelLevel,
-      capacity: line.FuelCapacity,
-    },
-  };
-  Cmdr.ship = ship;
+  if (line.Ship_Localised != "SRV Scarab") {
+    let ship = {
+      type: (line.Ship_Localised == undefined) ? line.Ship : line.Ship_Localised,
+      id: line.ShipID,
+      name: line.ShipName,
+      ident: line.ShipIdent,
+      fuel: {
+        level: line.FuelLevel,
+        capacity: line.FuelCapacity,
+      },
+    };
+    Cmdr.ship = ship;
+  }
   Cmdr.credits = line.Credits;
   Cmdr.Save();
 

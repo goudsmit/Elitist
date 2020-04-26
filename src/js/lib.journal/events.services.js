@@ -109,20 +109,28 @@ const MassModuleStore = async function MassModuleStore(line) {
   return;
 };
 const MaterialTrade = async function MaterialTrade(line) {
-  console.log(line);
-  // var materialName = (line.Name_Localised == undefined) ? line.Name : line.Name_Localised
-  // let Material = new journal.Material(materialName);
-  // await Material.Check().then( () => {
-  //   if (Material.quantity) {
-  //       Material.quantity += line.Count;
-  //     } else {
-  //       Material.quantity = line.Count;
-  //     }
-  //     Material.type = line.Category;
-  //     Material.cssname = line.Name;
-  //     Material.Save();
-  //   }
-  // );
+  for (const property in line) {
+    if (property == "Paid" || property == "Received") {
+      let materialName =
+        line[property].Material_Localised == undefined
+          ? line[property].Material
+          : line[property].Material_Localised;
+      let Material = new journal.Material(materialName);
+      await Material.Check().then(() => {
+        if (property == "Paid") {
+          Material.quantity -= line[property].Count;
+        } else {
+          Material.quantity += line[property].Count;
+        }
+        Material.type = line[property].Category;
+        Material.cssname = line[property].Name;
+        Material.Save();
+      });
+    }
+  }
+
+  let result = {callback: updateMaterials}
+  return Promise.resolve(result)
 };
 const MissionAbandoned = async function MissionAbandoned(line) {
   return;

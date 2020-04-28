@@ -165,8 +165,9 @@ const Shutdown = async function Shutdown(line) {
   // await db.logs.update(fileName, {shutdown: true})
   lineNumber = 0
   
-  let result = { callback: updateGameState, data: "Shutdown" };
+  let result = { callback: updateGameState, data: {event: line.event}};
   return Promise.resolve(result);
+
 };
 
 const Synthesis = async function Synthesis(line) {

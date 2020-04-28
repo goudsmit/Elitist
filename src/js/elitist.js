@@ -137,6 +137,13 @@ const ResultProcessor = function ResultProcessor(obj) {
  */
 const updateGameState = async function updateGameState(data) {
   // console.log("updateGameState()")
+  if (data) {
+    if (data.event == "LoadGame") {
+      $("#gameStatus").addClass("online").text("online")
+    } else if (data.event == "Shutdown") {
+      $("#gameStatus").removeClass("online").text("offline")
+    }
+  }
 }
 const updateCmdr = async function updateCmdr() {
   // console.log("updateCmdr()")
@@ -144,13 +151,17 @@ const updateCmdr = async function updateCmdr() {
   $("#cmdrShip").text(Cmdr.ship.name)
   $("#cmdrCredits").text(formatCredits(Cmdr.credits))
 }
-const updateShip = async function updateShip() {
+const updateShip = function updateShip() {
+  Cmdr.Save()
   $("#shipName").text(Cmdr.ship.name)
   $("#shipID").text(Cmdr.ship.ident)
   $("#shipType").text(Cmdr.ship.type)
-  $("#shipHullValue").text(formatCredits(Cmdr.ship.hull.value))
+  if (Cmdr.ship.hull != undefined) {
+    $("#shipHullValue").text(formatCredits(Cmdr.ship.hull.value))
+    $("#shipHealth").text(Math.round(Cmdr.ship.hull.health * 100))
+  }
   $("#shipRebuy").text(formatCredits(Cmdr.ship.rebuy))
-  $("#shipHealth").text(Cmdr.ship.health)
+ 
 }
 const updateRank = async function updateRank(data) {
   /**
@@ -173,6 +184,18 @@ const updatePassengers = async function updatePassengers(data) {
 }
 const updateMaterials = async function updateMaterials() {
   // console.log("updateMaterials()")
+  let div = "#materialTable"
+  var materials = await db.materials.toArray()
+  $(div).html("").hide()
+  materials.forEach(material => {
+    template = `<tr class="filter-${material.type}">
+        <td class="text-center materialIcon">${material.type[0]}</td>
+        <td>${material.name}</td>
+        <td class="text-center" id="${material.cssname}-count">${material.quantity}</td>
+    </tr>`;
+    $(div).append(template);      
+  });
+  $(div).fadeIn()
 }
 const updateLocation = async function updateLocation(data) {
   // console.log("updateLocation()", data)
@@ -254,7 +277,10 @@ const LoadUI = async function LoadUI() {
   // Remove any overlays
   $("#overlay-container").children().remove()
 
-  let elements = ["main"]
+  updateCmdr()
+  updateShip()
+  updateRank()
+  updateMaterials()
 }
 
 
@@ -284,6 +310,9 @@ ipc.on('start-watcher-reply', (event, args) => {
       readFile(folder, file)
       // console.log("File not found in Database, processing!")
     }
+  }
+  else if (file == "Status.json") {
+    readFile(folder, file)
   }
   // else if (file.endsWith('.json')) {
   //   let json = file.split(".")[0]
@@ -334,4 +363,5 @@ if (elitist.folder.logs == null) {
  */
 if (elitist.cmdr != null) {
   Cmdr = new journal.Cmdr(elitist.cmdr)
+  Cmdr.Get()
 }

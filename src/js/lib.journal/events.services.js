@@ -281,7 +281,19 @@ const StoredModules = async function StoredModules(line) {
 const StoredShips = async function StoredShips(line) {
   // When written: when visiting shipyard
   // TODO: Future Feature - Ships Section
-  return; 
+  if (line.ShipsHere.length > 0) {
+    line.ShipsHere.forEach( (ship) => {
+      // Check for new ships
+      db.ships.add({id: ship.ShipID}).then( (result) => {
+        if (result) {
+          // New Ship found, so save details.
+          db.ships.update({id: result}, {name: ship.Name, type: ship.ShipType, hull: { value: ship.Value}})
+        }
+      })
+      .catch( () => {})
+    })
+  };
+  // return; 
 };
 const TechnologyBroker = async function TechnologyBroker(line) {
   console.log(line);

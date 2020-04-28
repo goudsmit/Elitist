@@ -39,7 +39,7 @@ const LoadGame = async function LoadGame(line) {
   Cmdr.credits = line.Credits;
   Cmdr.Save();
 
-  let result = { callback: updateCmdr };
+  let result = { callback: updateGameState, data: {event: line.event} };
   return Promise.resolve(result);
 };
 
@@ -51,6 +51,7 @@ const Loadout = async function Loadout(line) {
     name: line.ShipName,
     ident: line.ShipIdent,
     id: line.ShipID,
+    type: line.Ship,
     rebuy: line.Rebuy,
     hull: {
       value: line.HullValue,
@@ -61,6 +62,8 @@ const Loadout = async function Loadout(line) {
       installed: line.Modules
     }
   }
+  
+
   Cmdr.ship = {...Cmdr.ship, ...ship}
   Cmdr.Save()
 

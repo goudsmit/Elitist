@@ -1,0 +1,20 @@
+Todos:
+--
+Systems and Bodies
+Logentries
+Toast MEssages
+
+
+Features:
+--
+Browse Screenshots
+    Maybe Share them as well?
+Show/ Search Keybindings
+Streamdeck integration
+
+Systems
+Download from EDDB/ Inara
+    - Temp show or save
+    (I dont know anything on files sizes for localstorage and such, so might be too much)
+
+Attach an Companion IPAD app for who only has 1 screen?

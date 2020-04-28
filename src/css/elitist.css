@@ -105,6 +105,8 @@ body::after {
   overflow: auto;
   background-color: #00000050;
 }
+.leftPanel { width: 35%; }
+.rightPanel { width: 65%; }
 
 .leftPanel { border-top: 1px solid var(--orange-darker); border-bottom: 1px solid var(--orange-darker); text-shadow: 0 0 3px #000000; }
 .leftPanel .card { background-color: transparent; }
@@ -133,9 +135,11 @@ body::after {
 .materialsCard .tab-pane table { border-spacing: 1px; border-collapse: separate; font-size: 1em; margin-bottom: 0; }
 .materialsCard .tab-pane table th,
 .materialsCard .tab-pane table td { font-weight: 200; border: 0; padding: 0 3px; }
-.materialsCard .tab-pane table th { color: var(--orange-dark); background-color: var(--brown-darker); }
-.materialsCard .tab-pane table td { color: #ffffff; background-color: var(--brown-darkest); }
+.materialsCard .tab-pane table th { color: var(--orange-dark); background-color: var(--brown-darkest); }
+.materialsCard .tab-pane table td { color: var(--elite-orange); background-color: var(--brown); }
+.materialsCard .tab-pane table td:hover { color: var(--brown-dark); background-color: var(--elite-orange); }
 .materialsCard .tab-pane table td.materialIcon { color: var(--orange); background-color: var(--brown-dark) !important; width: 20px !important; }
+
 .materialsCard .tab-content .material-list .filter input[type="radio"] { display: none; }
 .materialsCard .tab-content .material-list .filter label { color: var(--orange-dark); font-size: 14px; background-color: var(--brown-dark); border: none; padding: 2px 0; }
 .materialsCard .tab-content .material-list .filter label.active { color: var(--orange); background-color: var(--brown); }

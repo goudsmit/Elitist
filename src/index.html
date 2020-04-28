@@ -40,9 +40,9 @@
 
       <div class="w-100 d-flex flex-row contentPanel">
         <!-- Left Panel-->
-        <div class="w-25 d-flex flex-column align-items-end mx-1 leftPanel">
+        <div class="d-flex flex-column align-items-end mx-1 leftPanel">
           <!-- cmdrCard -->
-          <div class="card w-100 px-1 pt-1 cmdrCard Panel">
+          <div class="card w-100 px-1 pt-1 cmdrCard Panel" onload="elitist.updateCmdr()">
             <div class="card-body d-flex flex-column p-0 px-1 my-1">
               <div class="name">CMDR <span id="cmdrName">Placeholder</span></div>
               <div class="ship" id="cmdrShip">Shippy McShipFace</div>
@@ -184,7 +184,7 @@
           </div>       
         </div>
         <!-- Right Panel -->
-        <div class="w-75 d-flex flex-column mx-1 rightPanel">
+        <div class="d-flex flex-column mx-1 rightPanel">
           <!-- Overlay whilst being in Witchspace -->
           <div class="card h-100 justify-content-center align-items-center px-2 panelOverlay d-none" id="jumpOverlay">
             <div class="text-center"><i class="fa fa-sun fa-spin"></i></div>

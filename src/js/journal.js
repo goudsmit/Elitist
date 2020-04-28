@@ -12,12 +12,23 @@ class Cmdr {
   Init() {
     db.cmdr.add({name: this.name}).catch( () => {})
   }
+  async Get() {
+    await db.cmdr.get({name: this.name}).then( cmdr => {
+      Object.assign(this, cmdr)
+      updateCmdr()
+    })
+    .catch( ()=> {})
+  }
   Save() {
     this.Init()
-    db.cmdr.update({name: this.name}, this).then(
+    db.cmdr.update({name: this.name}, this)
+    .then( () => {
       db.ships.update({ id: this.ship.id}, this.ship)
-    )
-    updateCmdr()
+    })
+    .then( ()=> {
+      updateCmdr()
+
+    })
   }
   async ShipDestroy(id) {
     await db.ships.get({id: id}).then( ship => {

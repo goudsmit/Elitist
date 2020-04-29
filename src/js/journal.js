@@ -24,6 +24,7 @@ class Cmdr {
     db.cmdr.update({name: this.name}, this)
     .then( () => {
       db.ships.update({ id: this.ship.id}, this.ship)
+      console.log("Cmdr Save>After: ", this.ship)
     })
     .then( ()=> {
       updateCmdr()
@@ -44,6 +45,33 @@ class Cmdr {
   }
 }
 exports.Cmdr = Cmdr;
+
+class StarShip {
+  constructor(id) {
+    this.id = id
+    this.Init()
+  }
+  Init() {
+    db.ships.add({ id: this.id}).then( (id) => {
+      if (id) {
+        console.log("StarShip.Init() New Ship: ", )
+      }
+    }).catch(() => {})
+  }
+  Get() {
+    db.ships.get({id: this.id}).then( (ship) => {
+      Object.assign(this, ship)
+    })
+  }
+  wasDestroyed() {
+    if (this.destroyed != undefined) {
+      this.destroyed += 1
+    } else {
+      this.destroyed = 1
+    }
+  }
+}
+exports.StarShip = StarShip
 
 /**
  * ----------------------------------
@@ -280,6 +308,43 @@ exports.RAW = RAW;
 
 /**
  * ----------------------------------
+ * Elite Dangerous: Localised Vehicle names
+ * The Journal is a bit sketchy with adding a Localised name.
+ * Therefore a map, so we always have a pretty shiptype
+ * ----------------------------------
+ */
+const VEHICLEMAP = {
+  asp: "Asp Explorer",
+  asp_scout: "Asp Scout",
+  cobramkiii: "Cobra Mk III",
+  cobramkiv: "Cobra Mk IV",
+  cutter: "Imperial Cutter",
+  diamondback: "Diamondback Scout",
+  diamondbackxl: "Diamondback Explorer",
+  empire_courier: "Imperial Courier",
+  empire_eagle: "Imperial Eagle",
+  empire_fighter: "Gu-97",
+  empire_trader: "Imperial Clipper",  
+  federation_dropship: "Federal Dropship",
+  federation_dropship_mkii: "Federal Assault Ship",
+  federation_fighter: "F63 Condor",
+  federation_gunship: "Federal Gunship",
+  independent_fighter: "Taipan",
+  independant_trader: "Keelback",
+  krait_light: "Krait Phantom",
+  TestBuggy: "SRV Scarab",
+  type6: "Type-6 Transporter",
+  type7: "Type-7 Transporter",
+  type9: "Type-9 Heavy",
+  typex: "Alliance Chieftain",
+  typex_2: "Alliance Crusader",
+  viper: "Viper Mk III",
+  viper_mkiv: "Viper Mk IV",
+};
+exports.VEHICLEMAP = VEHICLEMAP
+
+/**
+ * ----------------------------------
  * Journal Event: New File
  * ----------------------------------
  */
@@ -317,7 +382,7 @@ const live = require("./lib.journal/live.json");
 //    other
 // );
 module.exports = Object.assign(
-  { Cmdr, RANKS, FACTIONS, RAW, Fileheader },
+  { Cmdr, StarShip, RANKS, FACTIONS, RAW, VEHICLEMAP, Fileheader },
   onload,
   travel,
   combat,

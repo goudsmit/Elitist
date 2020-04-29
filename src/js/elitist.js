@@ -46,6 +46,9 @@ var EventProcessor = async (line) => {
     line = JSON.parse(line)
     event = line.event
     if (typeof(journal[event]) == 'function') {
+      if (line.Ship) { 
+        shipType = (journal.VEHICLEMAP[line.Ship] == undefined) ? line.Ship : journal.VEHICLEMAP[line.Ship]
+        console.log(line.timestamp, line.event, shipType, line.ShipName)}
       journal[event](line).then( (result) => {
         resolve(result)
       })

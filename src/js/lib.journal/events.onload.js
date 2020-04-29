@@ -1,16 +1,16 @@
 // ./js/lib/events.onload.js
 const journal = require("../journal");
 
-const Cargo = async function Cargo(line) {
+const Cargo = function  Cargo(line) {
   // if (line.Count > 0) {
   //   console.log("Need to get more of these to determine how to handle", line);
   // }
   return;
 };
-const ClearSavedGame = async function ClearSavedGame(line) {
+const ClearSavedGame = function  ClearSavedGame(line) {
   console.log(line);
 };
-const Commander = async function Commander(line) {
+const Commander = function  Commander(line) {
   /**
    * Should only be used once, to setup a Commander
    */
@@ -22,7 +22,7 @@ const Commander = async function Commander(line) {
   }
 };
 
-const LoadGame = async function LoadGame(line) {
+const LoadGame = function  LoadGame(line) {
   if (line.Ship_Localised != "SRV Scarab") {
     let ship = {
       type: (line.Ship_Localised == undefined) ? line.Ship : line.Ship_Localised,
@@ -43,7 +43,7 @@ const LoadGame = async function LoadGame(line) {
   return Promise.resolve(result);
 };
 
-const Loadout = async function Loadout(line) {
+const Loadout = function  Loadout(line) {
   // Add ship
   db.ships.add({ id: line.ShipID}).catch( () => {} )
 
@@ -65,15 +65,16 @@ const Loadout = async function Loadout(line) {
   
 
   Cmdr.ship = {...Cmdr.ship, ...ship}
+  console.log("Loadout>Presave :", Cmdr.ship)
   Cmdr.Save()
 
   let result = { callback: updateShip}
   return Promise.resolve(result);
 };
 
-const Materials = async function Materials(line) {
+const Materials = function  Materials(line) {
   let categories = ["Raw", "Encoded", "Manufactured"]
-  await categories.forEach(category => {
+  categories.forEach(category => {
     for (i in line[category]) {
       let material = line[category][i]
       let materialName = (category === "Raw") ? material.Name : material.Name_Localised;
@@ -85,22 +86,22 @@ const Materials = async function Materials(line) {
   return Promise.resolve(result)
 };
 
-const Missions = async function Missions(line) {
+const Missions = function  Missions(line) {
   return;
 };
-const NewCommander = async function NewCommander(line) {
+const NewCommander = function  NewCommander(line) {
   console.log(line);
 };
 
-const Passengers = async function Passengers(line) {
+const Passengers = function  Passengers(line) {
   let result = { callback: updatePassengers, data: line.Mainfest}
   return Promise.resolve(result);
 };
-const PowerPlay = async function PowerPlay(line) {
+const PowerPlay = function  PowerPlay(line) {
   console.log(line);
 };
 
-const Progress = async function Progress(line) {
+const Progress = function  Progress(line) {
   let RANKS = journal.RANKS;
   for (rank in RANKS) {
     db.ranks.update({ type: rank }, { progress: line[rank] });
@@ -110,7 +111,7 @@ const Progress = async function Progress(line) {
   return Promise.resolve(result);
 };
 
-const Rank = async function Rank(line) {
+const Rank = function  Rank(line) {
   let RANKS = journal.RANKS;
   for (rank in RANKS) {
     db.ranks.update({ type: rank }, { level: line[rank] });
@@ -120,10 +121,10 @@ const Rank = async function Rank(line) {
   return Promise.resolve(result);
 };
 
-const Reputation = async function Reputation(line) {
+const Reputation = function  Reputation(line) {
   return;
 };
-const Statistics = async function Statistics(line) {
+const Statistics = function  Statistics(line) {
   return;
 };
 

@@ -46,14 +46,11 @@ var EventProcessor = async (line) => {
     line = JSON.parse(line)
     event = line.event
     if (typeof(journal[event]) == 'function') {
-      if (line.Ship) { 
-        shipType = (journal.VEHICLEMAP[line.Ship] == undefined) ? line.Ship : journal.VEHICLEMAP[line.Ship]
-        console.log(line.timestamp, line.event, shipType, line.ShipName)}
       journal[event](line).then( (result) => {
         resolve(result)
       })
     } else {
-      console.log(`${event} function not supported (yet)`);
+      // console.log(`${event} function not supported (yet)`);
     }
   })
 }
@@ -84,7 +81,7 @@ var EventProcessor = async (line) => {
  * ----------------------------------
  */
 var lineNumber = 0
-var readFile = async (folder, file) => {
+var readFile = (folder, file) => {
   const readline = require('readline');
   // var counter = 0
   const readInterface = readline.createInterface({
@@ -96,7 +93,7 @@ var readFile = async (folder, file) => {
     fileName = file
     lineNumber++
     // console.log(lineNumber, line)
-    await EventProcessor(line).then(
+    EventProcessor(line).then(
       (result) => { 
         if (result) {
           ResultProcessor(result)
@@ -151,12 +148,13 @@ const updateGameState = async function updateGameState(data) {
 const updateCmdr = async function updateCmdr() {
   // console.log("updateCmdr()")
   $("#cmdrName").text(Cmdr.name)
-  $("#cmdrShip").text(Cmdr.ship.name)
+  // $("#cmdrShip").text(Cmdr.ship.name)
   $("#cmdrCredits").text(formatCredits(Cmdr.credits))
 }
 const updateShip = function updateShip() {
   Cmdr.Save()
   $("#shipName").text(Cmdr.ship.name)
+  $("#cmdrShip").text(Cmdr.ship.name)
   $("#shipID").text(Cmdr.ship.ident)
   $("#shipType").text(Cmdr.ship.type)
   if (Cmdr.ship.hull != undefined) {
@@ -185,25 +183,41 @@ const updatePassengers = async function updatePassengers(data) {
    * Event: Passengers, data: Manifest(s)
    */
 }
-const updateMaterials = async function updateMaterials() {
-  // console.log("updateMaterials()")
-  let div = "#materialTable"
-  var materials = await db.materials.toArray()
-  $(div).html("").hide()
-  materials.forEach(material => {
-    template = `<tr class="filter-${material.type}">
+const updateMaterials = async function updateMaterials(material) {
+  let div = "#materialTable";
+  if (material) {
+    console.log("Add/update to table");
+  } else {
+    var materials = await db.materials.toCollection();
+    materials.each((material) => {
+      let template = `<tr class="filter-${material.type}" id="${material.cssname}-row">
         <td class="text-center materialIcon">${material.type[0]}</td>
-        <td>${material.name}</td>
+        <td>${material.name}<div class="materialMutation"><span></span></div></td>
         <td class="text-center" id="${material.cssname}-count">${material.quantity}</td>
-    </tr>`;
-    $(div).append(template);      
-  });
-  $(div).fadeIn()
+      </tr>`;
+      if (!$(`#${material.cssname}-row`).length) {
+        $(div).append(template); 
+      } else {
+        // TODO: Mutations. Probably a separate function (Math.sign())
+        $(`#${material.cssname}-count`).text(material.quantity)
+      }
+    });
+  }
 }
 const updateLocation = async function updateLocation(data) {
   // console.log("updateLocation()", data)
+  if (data != undefined) {
+    $("#systemName").text(data.name)
+    var allegiance = (data.allegiance == undefined) ? "None": data.allegiance
+    $("#systemAllegiance").text(allegiance)
+    $("#systemGovernment").text(data.government)
+    $("#systemEconomies").html(data.displayEconomy())
+    $("#systemSecurity").html(data.security)
+    $("#systemPopulation").html(data.population)
+  }
 }
 const updateBodies = async function updateBodies(data) {
+  // console.log(data)
   /**
    * Callbacks:
    * No data: General update
@@ -213,8 +227,26 @@ const updateBodies = async function updateBodies(data) {
   // console.log("updateBodies()", data)
 }
 const updateDock = async function updateDock(data) {
-  // If no data : Undock
-  // console.log("updateDock()", data)
+  // console.log(data)
+  // // If no data : Undock
+  // // console.log("updateDock()", data)
+  // if (data) {
+  //   $("#dockingStatus").removeClass("undocked").addClass("docked")
+  //  db.bodies.get({name: data.name, address: Cmdr.location.address}).then( station => {
+  //     if (station) {
+
+  //       // let Station = new journal.Body(Cmdr.location.address, station.id)
+  //       // Object.assign(Station, data)
+  //       console.log("Station: ", station)
+  //     }
+  //   })
+  //   $("#bodyName").text(data.name)
+  //   $("#bodyType").text(data.type)
+  //   $("#dockCard").show()
+  // } else {
+  //   $("#dockingStatus").removeClass("docked").addClass("undocked")
+  //   $("#dockCard").hide()
+  // }
 }
 const updateSignals = async function updateSignals(data) {
   // Havent decided what to do with these (Think USS)
@@ -284,6 +316,7 @@ const LoadUI = async function LoadUI() {
   updateShip()
   updateRank()
   updateMaterials()
+  updateLocation()
 }
 
 
@@ -323,6 +356,40 @@ ipc.on('start-watcher-reply', (event, args) => {
   // }
 })
 
+/**
+ * ----------------------------------
+ * Date & Time Function
+ * ----------------------------------
+ */
+var display = setInterval(function () { Time() }, 0);
+function Time() {
+  var date = new Date();
+  var time = date.toLocaleTimeString();
+  if (document.getElementById("time")) {
+    document.getElementById("time").innerHTML = time;
+  }
+  // Date
+  var options = {
+    day: { day: 'numeric' },
+    month: {
+      long: { month: 'long' },
+      short: { month: 'short' }
+    }
+  }
+  var d = new Intl.DateTimeFormat('en-GB', options.day).format(date)
+  var m = new Intl.DateTimeFormat('en-GB', options.month.long).format(date)
+  var sm = new Intl.DateTimeFormat('en-GB', options.month.short).format(date)
+  var y = date.getFullYear() + 1286
+  var fulldate = `${d} ${m} ${y}`;
+  var shortdate = `${d} ${sm} ${y}`;
+
+  if (document.getElementById("date")) {
+    document.getElementById("date").innerHTML = fulldate;
+  }
+  if (document.getElementById("shortdate")) {
+    document.getElementById("shortdate").innerHTML = shortdate;
+  }
+}
 
  /**
  * ----------------------------------

@@ -2,7 +2,7 @@
 const journal = require("../journal");
 
 // Api manual chapter 6: Exploration
-const CodexEntry = async function CodexEntry(line) {
+const CodexEntry = function CodexEntry(line) {
   let entry = {
     event: line.event,
     name: line.Name_Localised,
@@ -15,10 +15,11 @@ const CodexEntry = async function CodexEntry(line) {
   let result = { callback: updateToast, data: entry}
   return Promise.resolve(result)
 };
-const DiscoveryScan = async function DiscoveryScan(line) {
+const DiscoveryScan = function DiscoveryScan(line) {
   console.log(line);
 };
-const Scan = async function Scan(line) {
+const Scan = function Scan(line) {
+  console.log("Scan: ", line.timestamp, Cmdr.location.address, line.BodyName)
   // console.log(line);
   let Body
   if (line.StarType) {
@@ -80,10 +81,10 @@ const Scan = async function Scan(line) {
   }
   Body.Save()
 };
-const FSSAllBodiesFound = async function FSSAllBodiesFound(line) {
+const FSSAllBodiesFound = function FSSAllBodiesFound(line) {
   return;
 };
-const FSSDiscoveryScan = async function FSSDiscoveryScan(line) {
+const FSSDiscoveryScan = function FSSDiscoveryScan(line) {
   let discovery = {
     event: line.event,
     progress: line.Progress,
@@ -93,7 +94,7 @@ const FSSDiscoveryScan = async function FSSDiscoveryScan(line) {
   let result = { callback: updateBodies, data: discovery}
   return Promise.resolve(result)
 };
-const FSSSignalDiscovered = async function FSSSignalDiscovered(line) {
+const FSSSignalDiscovered = function FSSSignalDiscovered(line) {
   let signal = {
     name: line.SignalName,
     state: line.SpawningState,
@@ -127,28 +128,27 @@ const MaterialCollected = async function MaterialCollected(line) {
   return Promise.resolve(result);
 };
 
-const MaterialDiscarded = async function MaterialDiscarded(line) {
+const MaterialDiscarded = function MaterialDiscarded(line) {
   console.log(line);
 };
-const MaterialDiscovered = async function MaterialDiscovered(line) {
+const MaterialDiscovered = function MaterialDiscovered(line) {
   // Could be a log event, Popup or something.. later though
   return;
 };
-const MultiSellExplorationData = async function MultiSellExplorationData(line) {
+const MultiSellExplorationData = function MultiSellExplorationData(line) {
   Cmdr.credits += line.TotalEarnings
-  Cmdr.Save()
 
   let result = { callback: updateToast, data: line.Discovered}
   return Promise.resolve(result)
 };
-const NavBeaconScan = async function NavBeaconScan(line) {
+const NavBeaconScan = function NavBeaconScan(line) {
   // Could do something with number of bodies, ... maybe
   return;
 };
-const BuyExplorationData = async function BuyExplorationData(line) {
+const BuyExplorationData = function BuyExplorationData(line) {
   console.log(line);
 };
-const SAAScanComplete = async function SAAScanComplete(line) {
+const SAAScanComplete = function SAAScanComplete(line) {
   let scan = {
     event: line.event,
     name: line.BodyName,
@@ -157,9 +157,8 @@ const SAAScanComplete = async function SAAScanComplete(line) {
     efficiency: line.EfficiencyTarget
   }
 };
-const SellExplorationData = async function SellExplorationData(line) {
+const SellExplorationData = function SellExplorationData(line) {
   Cmdr.credit += line.TotalEarnings;
-  Cmdr.Save();
 
   let result = {
     callback: updateToast,
@@ -167,7 +166,7 @@ const SellExplorationData = async function SellExplorationData(line) {
   };
   return Promise.resolve(result);
 };
-const Screenshot = async function Screenshot(line) {
+const Screenshot = function Screenshot(line) {
   return;
 };
 

@@ -1,53 +1,52 @@
 // lib/events.services.js
 const journal = require("../journal");
+const getShipType = journal.getShipType
 
 // Api manual chapter 8: Station Services
-const BuyAmmo = function  BuyAmmo(line) {
+const BuyAmmo = function BuyAmmo(line) {
   Cmdr.credits -= line.Cost
-  Cmdr.Save()
 };
-const BuyDrones = function  BuyDrones(line) {
+const BuyDrones = function BuyDrones(line) {
   Cmdr.credits -= line.TotalCost
-  Cmdr.Save()
 };
-const CargoDepot = function  CargoDepot(line) {
+const CargoDepot = function CargoDepot(line) {
   return;
 };
-const CommunityGoal = function  CommunityGoal(line) {
+const CommunityGoal = function CommunityGoal(line) {
   return;
 };
-const CommunityGoalDiscard = function  CommunityGoalDiscard(line) {
+const CommunityGoalDiscard = function CommunityGoalDiscard(line) {
   return;
 };
-const CommunityGoalJoin = function  CommunityGoalJoin(line) {
+const CommunityGoalJoin = function CommunityGoalJoin(line) {
   return;
 };
-const CommunityGoalReward = function  CommunityGoalReward(line) {
+const CommunityGoalReward = function CommunityGoalReward(line) {
   return;
 };
-const CrewAssign = function  CrewAssign(line) {
+const CrewAssign = function CrewAssign(line) {
   console.log(line);
 };
-const CrewFire = function  CrewFire(line) {
+const CrewFire = function CrewFire(line) {
   console.log(line);
 };
-const CrewHire = function  CrewHire(line) {
+const CrewHire = function CrewHire(line) {
   console.log(line);
 };
-const EngineerApply = function  EngineerApply(line) {
+const EngineerApply = function EngineerApply(line) {
   console.log(line);
 };
-const EngineerContribution = function  EngineerContribution(line) {
+const EngineerContribution = function EngineerContribution(line) {
   return;
 };
-const EngineerCraft = function  EngineerCraft(line) {
+const EngineerCraft = function EngineerCraft(line) {
   return;
 };
-const EngineerLegacyConvert = function  EngineerLegacyConvert(line) {
+const EngineerLegacyConvert = function EngineerLegacyConvert(line) {
   console.log(line);
 };
 
-const EngineerProgress = function  EngineerProgress(line) {
+const EngineerProgress = function EngineerProgress(line) {
   // Sometimes the update only involves 1 engineer, making 'Engineers' not exist.
   if (line.Engineers) {
     line.Engineers.forEach(async (engineer) => {
@@ -96,19 +95,18 @@ const EngineerProgress = function  EngineerProgress(line) {
   }
 };
 
-const FetchRemoteModule = function  FetchRemoteModule(line) {
+const FetchRemoteModule = function FetchRemoteModule(line) {
   Cmdr.credits -= line.TransferCost
-  Cmdr.Save()
 };
-const Market = function  Market(line) {
+const Market = function Market(line) {
   // Maybe a future plan?
   return;
 };
-const MassModuleStore = function  MassModuleStore(line) {
+const MassModuleStore = function MassModuleStore(line) {
   // When I do more with ships and Loadout
   return;
 };
-const MaterialTrade = function  MaterialTrade(line) {
+const MaterialTrade = function MaterialTrade(line) {
   for (const property in line) {
     if (property == "Paid" || property == "Received") {
       let materialName =
@@ -133,119 +131,117 @@ const MaterialTrade = function  MaterialTrade(line) {
   let result = {callback: updateMaterials}
   return Promise.resolve(result)
 };
-const MissionAbandoned = function  MissionAbandoned(line) {
+const MissionAbandoned = function MissionAbandoned(line) {
   return;
 };
-const MissionAccepted = function  MissionAccepted(line) {
+const MissionAccepted = function MissionAccepted(line) {
   return;
 };
-const MissionCompleted = function  MissionCompleted(line) {
+const MissionCompleted = function MissionCompleted(line) {
   return;
 };
-const MissionFailed = function  MissionFailed(line) {
+const MissionFailed = function MissionFailed(line) {
   return;
 };
-const MissionRedirected = function  MissionRedirected(line) {
+const MissionRedirected = function MissionRedirected(line) {
   return;
 };
-const ModuleBuy = function  ModuleBuy(line) {
+const ModuleBuy = function ModuleBuy(line) {
   Cmdr.credits -= line.BuyPrice
-  Cmdr.Save()
 };
-const ModuleRetrieve = function  ModuleRetrieve(line) {
+const ModuleRetrieve = function ModuleRetrieve(line) {
   return;
 };
-const ModuleSell = function  ModuleSell(line) {
+const ModuleSell = function ModuleSell(line) {
   Cmdr.credits += line.SellPrice
-  Cmdr.Save()
 };
-const ModuleSellRemote = function  ModuleSellRemote(line) {
+const ModuleSellRemote = function ModuleSellRemote(line) {
   Cmdr.credits += line.SellPrice
-  Cmdr.Save()
 };
-const ModuleStore = function  ModuleStore(line) {
+const ModuleStore = function ModuleStore(line) {
   return;
 };
-const ModuleSwap = function  ModuleSwap(line) {
+const ModuleSwap = function ModuleSwap(line) {
   return;
 };
-const Outfitting = function  Outfitting(line) {
+const Outfitting = function Outfitting(line) {
   return;
 };
-const PayBounties = function  PayBounties(line) {
+const PayBounties = function PayBounties(line) {
   Cmdr.credits -= line.Amount
-  Cmdr.Save()
 };
-const PayFines = function  PayFines(line) {
+const PayFines = function PayFines(line) {
   Cmdr.credits -= line.Amount
-  Cmdr.Save()
 };
-const PayLegacyFines = function  PayLegacyFines(line) {
+const PayLegacyFines = function PayLegacyFines(line) {
   console.log(line);
 };
-const RedeemVoucher = function  RedeemVoucher(line) {
+const RedeemVoucher = function RedeemVoucher(line) {
   Cmdr.credits += line.Amount
-  Cmdr.Save()
-  // Could add a log Message here
 };
-const RefuelAll = function  RefuelAll(line) {
+const RefuelAll = function RefuelAll(line) {
   Cmdr.credits -= line.Cost
-  Cmdr.Save()
 };
-const RefuelPartial = function  RefuelPartial(line) {
+const RefuelPartial = function RefuelPartial(line) {
   console.log(line);
 };
-const Repair = function  Repair(line) {
+const Repair = function Repair(line) {
   Cmdr.credits -= line.Cost
-  Cmdr.Save()
 };
-const RepairAll = function  RepairAll(line) {
+const RepairAll = function RepairAll(line) {
   Cmdr.credits -= line.Cost
-  Cmdr.Save()
 };
-const RestockVehicle = function  RestockVehicle(line) {
+const RestockVehicle = function RestockVehicle(line) {
   console.log(line);
 };
-const ScientificResearch = function  ScientificResearch(line) {
+const ScientificResearch = function ScientificResearch(line) {
   console.log(line);
 };
-const SearchAndRescue = function  SearchAndRescue(line) {
+const SearchAndRescue = function SearchAndRescue(line) {
   console.log(line);
 };
-const SellDrones = function  SellDrones(line) {
+const SellDrones = function SellDrones(line) {
   Cmdr.credits -= line.TotalSale
-  Cmdr.Save()
 };
-const SellShipOnRebuy = function  SellShipOnRebuy(line) {
+const SellShipOnRebuy = function SellShipOnRebuy(line) {
   console.log(line);
 };
-const SetUserShipName = function  SetUserShipName(line) {
+const SetUserShipName = function SetUserShipName(line) {
   Cmdr.ship.name = line.UserShipName
   Cmdr.ship.ident = line.UserShipId
-  Cmdr.Save()
+  Cmdr.ship.Save()
 };
-const Shipyard = function  Shipyard(line) {
+const Shipyard = function Shipyard(line) {
   return;
 };
-const ShipyardBuy = function  ShipyardBuy(line) {
+const ShipyardBuy = function ShipyardBuy(line) {
   Cmdr.credits -= line.ShipPrice
-  Cmdr.Save()
 };
-const ShipyardNew = function  ShipyardNew(line) {
-  let newShip = {
-    name: "New",
-    ident: "-",
-    id: line.NewShipID,
-    type: (line.ShipType_Localised == undefined) ? line.ShipType : line.ShipType_Localised,
+const ShipyardNew = function ShipyardNew(line) {
+  let shipData = {
+    name: "unknown",
+    ident: "no",
+    type: getShipType(line.ShipType),
     fuel: {
       level: 0,
-      capacity: 0
-    }    
+      capacity: 0,
+    },
+    hull: {
+      value: 0,
+      modules: [],
+    },
+    rebuy: 0
   }
-  Cmdr.ship = newShip
-  Cmdr.Save()
+  let Ship = new journal.StarShip(line.NewShipID)
+  Object.assign(Ship, shipData)
+  Ship.Save()
+  Cmdr.ship = Ship
+
+  let result = { callback: updateShip}
+  return Promise.resolve(result)
 };
-const ShipyardSell = function  ShipyardSell(line) {
+const ShipyardSell = function ShipyardSell(line) {
+  // TODO: Perhaps port to use StarShip Class, but his works fine
   db.ships.get({id: line.SellShipID}).then( ship => {
     if (ship) {
       ship.id += 1000
@@ -255,17 +251,16 @@ const ShipyardSell = function  ShipyardSell(line) {
     }
   })
 };
-const ShipyardSwap = function  ShipyardSwap(line) {
-  db.ships.get({id: line.ShipID}).then( ship => {
-    if (ship) {
-      Cmdr.ship = ship
-      Cmdr.Save()
-    }
-  })
+const ShipyardSwap = function ShipyardSwap(line) {
+  let Ship = new journal.StarShip(line.ShipID)
+  Ship.Get()
+  Cmdr.ship = Ship
+
+  let result = { callback: updateShip}
+  return Promise.resolve(result)
 };
-const ShipyardTransfer = function  ShipyardTransfer(line) {
+const ShipyardTransfer = function ShipyardTransfer(line) {
   Cmdr.credits -= line.TransferPrice
-  Cmdr.Save()
 
   let transfer = {
     shipid: line.ShipID,
@@ -276,27 +271,30 @@ const ShipyardTransfer = function  ShipyardTransfer(line) {
   let result = { callback: updateToast, data: transfer}
   return Promise.resolve(result)
 };
-const StoredModules = function  StoredModules(line) {
+const StoredModules = function StoredModules(line) {
   return;
 };
-const StoredShips = function  StoredShips(line) {
+const StoredShips = function StoredShips(line) {
   // When written: when visiting shipyard
   // TODO: Future Feature - Ships Section
   if (line.ShipsHere.length > 0) {
-    line.ShipsHere.forEach( (ship) => {
-      // Check for new ships
-      db.ships.add({id: ship.ShipID}).then( (result) => {
-        if (result) {
-          // New Ship found, so save details.
-          db.ships.update({id: result}, {name: ship.Name, type: ship.ShipType, hull: { value: ship.Value}})
+    line.ShipsHere.forEach( ship => {
+      let Ship = new journal.StarShip(ship.ShipID)
+      Ship.Get()
+      let shipData = {
+        name: ship.Name,
+        type: getShipType(ship.ShipType), 
+        hull: { 
+          value: ship.Value
         }
-      })
-      .catch( () => {})
+      }
+      Object.assign(Ship, shipData)
+      Ship.Save()
     })
   };
   // return; 
 };
-const TechnologyBroker = function  TechnologyBroker(line) {
+const TechnologyBroker = function TechnologyBroker(line) {
   console.log(line);
 };
 

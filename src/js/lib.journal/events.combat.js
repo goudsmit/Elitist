@@ -9,8 +9,8 @@ const CapShipBond = function  CapShipBond(line) {
   console.log(line);
 };
 const Died = function  Died(line) {
-  Cmdr.ShipDestroy(Cmdr.ship.id)
-  Cmdr.Save()
+  Cmdr.ship.wasDestroyed()
+  Cmdr.ship.Save()
 };
 
 const EscapeInterdiction = function  EscapeInterdiction(line) {
@@ -40,7 +40,6 @@ const HeatWarning = function  HeatWarning(line) {
 const HullDamage = function  HullDamage(line) {
   if (!Cmdr.inSrv) {
     Cmdr.ship.hull.health = line.Health;
-    Cmdr.Save();
   }
 
   let result = {
@@ -92,7 +91,7 @@ module.exports = {
   HeatWarning,
   HullDamage,
   Interdicted,
-  // ShipTargeted,
-  // ShipTargetted,
+  ShipTargeted,
+  ShipTargetted,
   UnderAttack
 };

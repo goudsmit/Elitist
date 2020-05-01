@@ -2,117 +2,119 @@
 const journal = require("../journal");
 
 // Api manual chapter 11: Other Events
-const AfmuRepairs = async function AfmuRepairs(line) {
+const AfmuRepairs = function AfmuRepairs(line) {
   console.log(line);
 };
-const ApproachSettlement = async function ApproachSettlement(line) {
+const ApproachSettlement = function ApproachSettlement(line) {
   return;
 };
-const ChangeCrewRole = async function ChangeCrewRole(line) {
+const ChangeCrewRole = function ChangeCrewRole(line) {
   return;
 };
-const CockpitBreached = async function CockpitBreached(line) {
+const CockpitBreached = function CockpitBreached(line) {
   console.log(line);
 };
-const CommitCrime = async function CommitCrime(line) {
+const CommitCrime = function CommitCrime(line) {
   return;
 };
-const Continued = async function Continued(line) {
+const Continued = function Continued(line) {
   console.log(line);
 };
-const CrewLaunchFighter = async function CrewLaunchFighter(line) {
+const CrewLaunchFighter = function CrewLaunchFighter(line) {
   console.log(line);
 };
-const CrewMemberJoins = async function CrewMemberJoins(line) {
+const CrewMemberJoins = function CrewMemberJoins(line) {
   return;
 };
-const CrewMemberQuits = async function CrewMemberQuits(line) {
+const CrewMemberQuits = function CrewMemberQuits(line) {
   return;
 };
-const CrewMemberRoleChange = async function CrewMemberRoleChange(line) {
+const CrewMemberRoleChange = function CrewMemberRoleChange(line) {
   console.log(line);
 };
-const CrimeVictim = async function CrimeVictim(line) {
+const CrimeVictim = function CrimeVictim(line) {
   console.log(line);
 };
-const DatalinkScan = async function DatalinkScan(line) {
+const DatalinkScan = function DatalinkScan(line) {
   return;
 };
-const DatalinkVoucher = async function DatalinkVoucher(line) {
+const DatalinkVoucher = function DatalinkVoucher(line) {
   Cmdr.credits += line.Reward
-  Cmdr.Save()
+  // Cmdr.Save()
 };
-const DataScanned = async function DataScanned(line) {
+const DataScanned = function DataScanned(line) {
   // Toast: candidate
   return;
 };
-const DockFighter = async function DockFighter(line) {
+const DockFighter = function DockFighter(line) {
   console.log(line);
 };
-const DockSRV = async function DockSRV(line) {
+const DockSRV = function DockSRV(line) {
   Cmdr.inSrv = false;
   
   let result = { callback: updateTravelState, data: line.event}
   return Promise.resolve(result)
 };
-const EndCrewSession = async function EndCrewSession(line) {
+const EndCrewSession = function EndCrewSession(line) {
   return;
 };
-const FighterRebuilt = async function FighterRebuilt(line) {
+const FighterRebuilt = function FighterRebuilt(line) {
   console.log(line);
 };
 
-const FuelScoop = async function FuelScoop(line) {
-  Cmdr.ship.fuel.level = line.Total
-  Cmdr.Save()
+const FuelScoop = function FuelScoop(line) {
+  // TODO: There is an order issue in Cmdr.ship.fuel 
+  // that makes it appear like it is not in the object
+  if (Cmdr.ship.fuel != undefined) {
+    Cmdr.ship.fuel.level = line.Total
+  }
 };
 
-const Friends = async function Friends(line) {
+const Friends = function Friends(line) {
   // TODO: Log Entries
   return;
 };
-const JetConeBoost = async function JetConeBoost(line) {
+const JetConeBoost = function JetConeBoost(line) {
   console.log(line);
 };
-const JetConeDamage = async function JetConeDamage(line) {
+const JetConeDamage = function JetConeDamage(line) {
   console.log(line);
 };
-const JoinACrew = async function JoinACrew(line) {
+const JoinACrew = function JoinACrew(line) {
   return;
 };
-const KickCrewMember = async function KickCrewMember(line) {
+const KickCrewMember = function KickCrewMember(line) {
   return;
 };
-const LaunchDrone = async function LaunchDrone(line) {
+const LaunchDrone = function LaunchDrone(line) {
   return;
 };
-const LaunchFighter = async function LaunchFighter(line) {
+const LaunchFighter = function LaunchFighter(line) {
   console.log(line);
 };
-const LaunchSRV = async function LaunchSRV(line) {
+const LaunchSRV = function LaunchSRV(line) {
   Cmdr.inSrv = true;
-  Cmdr.Save()
 
   let result = { callback: updateTravelState, data: line.event}
   return Promise.resolve(result)
 };
-const ModuleInfo = async function ModuleInfo(line) {
+const ModuleInfo = function ModuleInfo(line) {
   /**
    * This also writes a ModulesInfo.json file alongside the journal,
    * listing the modules in the same order as displayed
    */
   return;
 };
-const Music = async function Music(line) {
+const Music = function Music(line) {
   return;
 };
-const NpcCrewPaidWage = async function NpcCrewPaidWage(line) {
+const NpcCrewPaidWage = function NpcCrewPaidWage(line) {
   console.log(line);
 };
-const NpcCrewRank = async function NpcCrewRank(line) {
+const NpcCrewRank = function NpcCrewRank(line) {
   console.log(line);
 };
-const Promotion = async function Promotion(line) {
+const Promotion = function Promotion(line) {
   for (rank in journal.RANKS) {
     if (line.hasOwnProperty(rank)) {
       db.ranks.update({ type: rank }, { level: line[rank], progress: 0 })
@@ -124,45 +126,44 @@ const Promotion = async function Promotion(line) {
   };
   return Promise.resolve(result)
 };
-const ProspectedAsteroid = async function ProspectedAsteroid(line) {
+const ProspectedAsteroid = function ProspectedAsteroid(line) {
   return;
 };
-const QuitACrew = async function QuitACrew(line) {
+const QuitACrew = function QuitACrew(line) {
   return;
 };
-const RebootRepair = async function RebootRepair(line) {
+const RebootRepair = function RebootRepair(line) {
   console.log(line);
 };
-const ReceiveText = async function ReceiveText(line) {
+const ReceiveText = function ReceiveText(line) {
   return;
 };
-const RepairDrone = async function RepairDrone(line) {
+const RepairDrone = function RepairDrone(line) {
   console.log(line);
 };
-const ReservoirReplenished = async function ReservoirReplenished(line) {
+const ReservoirReplenished = function ReservoirReplenished(line) {
   return;
 };
-const Resurrect = async function Resurrect(line) {
+const Resurrect = function Resurrect(line) {
   Cmdr.credits -= line.Cost
-  Cmdr.Save()
 };
-const Scanned = async function Scanned(line) {
+const Scanned = function Scanned(line) {
   let result = {
     callback: updateAlertState,
     data: { event: line.event, type: line.ScanType },
   };
   return Promise.resolve(result)
 };
-const SelfDestruct = async function SelfDestruct(line) {
+const SelfDestruct = function SelfDestruct(line) {
   console.log(line);
 };
-const SendText = async function SendText(line) {
+const SendText = function SendText(line) {
   return;
 };
 
-const Shutdown = async function Shutdown(line) {
+const Shutdown = function Shutdown(line) {
   Cmdr.Save()
-  // await db.logs.update(fileName, {shutdown: true})
+  // db.logs.update(fileName, {shutdown: true})
   lineNumber = 0
   
   let result = { callback: updateGameState, data: {event: line.event}};
@@ -170,14 +171,14 @@ const Shutdown = async function Shutdown(line) {
 
 };
 
-const Synthesis = async function Synthesis(line) {
+const Synthesis = function Synthesis(line) {
   // TODO: decrease material count
   return;
 };
-const SystemsShutdown = async function SystemsShutdown(line) {
+const SystemsShutdown = function SystemsShutdown(line) {
   return;
 };
-const USSDrop = async function USSDrop(line) {
+const USSDrop = function USSDrop(line) {
   let result = {
     callback: updateToast,
     data: {
@@ -188,22 +189,22 @@ const USSDrop = async function USSDrop(line) {
   };
   return Promise.resolve(result)
 };
-const VehicleSwitch = async function VehicleSwitch(line) {
+const VehicleSwitch = function VehicleSwitch(line) {
   console.log(line);
 };
-const WingAdd = async function WingAdd(line) {
+const WingAdd = function WingAdd(line) {
   // log Messages, but nothing else interesting
   return;
 };
-const WingInvite = async function WingInvite(line) {
+const WingInvite = function WingInvite(line) {
   // log Messages, but nothing else interesting
   return;
 };
-const WingJoin = async function WingJoin(line) {
+const WingJoin = function WingJoin(line) {
   // log Messages, but nothing else interesting
   return;
 };
-const WingLeave = async function WingLeave(line) {
+const WingLeave = function WingLeave(line) {
   // log Messages, but nothing else interesting
   return;
 };

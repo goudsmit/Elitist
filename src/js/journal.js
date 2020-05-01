@@ -7,41 +7,32 @@ class Cmdr {
   constructor(name) {
     this.name = name;
     this.location = {};
-    this.ship = {};
+    this.Init()
   }
   Init() {
-    db.cmdr.add({name: this.name}).catch( () => {})
+    db.cmdr.add({name: this.name}).then( id => {
+      if (id) {
+        console.log("Cmdr.Init() New Commander: ", )
+      }
+    }).catch(() => {})
   }
-  async Get() {
-    await db.cmdr.get({name: this.name}).then( cmdr => {
+  Get() {
+    db.cmdr.get({name: this.name}).then( cmdr => {
       Object.assign(this, cmdr)
-      updateCmdr()
-    })
-    .catch( ()=> {})
-  }
-  Save() {
-    this.Init()
-    db.cmdr.update({name: this.name}, this)
-    .then( () => {
-      db.ships.update({ id: this.ship.id}, this.ship)
-      console.log("Cmdr Save>After: ", this.ship)
     })
     .then( ()=> {
-      updateCmdr()
-
-    })
-  }
-  async ShipDestroy(id) {
-    await db.ships.get({id: id}).then( ship => {
-      if (ship != undefined) {
-        if (ship.destroyed != undefined) {
-          ship.destroyed = ship.destroyed + 1
-        } else {
-          ship.destroyed = 1
-        }
-        db.ships.update({ id: ship.id}, {destroyed: ship.destroyed})
+      if (this.ship) {
+        let Ship = new StarShip(this.ship.id)
+        Ship.Get()
+        this.ship = Ship
       }
     })
+  }
+  Save() {
+    db.cmdr.update({name: this.name}, this).then( updated => {
+      // console.log("Cmdr.Save(): ", this)
+    })
+    .catch( () => {})
   }
 }
 exports.Cmdr = Cmdr;
@@ -52,16 +43,24 @@ class StarShip {
     this.Init()
   }
   Init() {
-    db.ships.add({ id: this.id}).then( (id) => {
+    db.ships.add({ id: this.id}).then( id => {
       if (id) {
-        console.log("StarShip.Init() New Ship: ", )
+        // console.log("StarShip.Init(): ", id)
       }
     }).catch(() => {})
   }
   Get() {
-    db.ships.get({id: this.id}).then( (ship) => {
+    db.ships.get(this.id).then( ship => {
       Object.assign(this, ship)
     })
+  }
+  Save() {
+    db.ships.update(this.id, this).then( updated => {
+      if (updated) {
+        // console.log("StarShip.Save(): ", this)
+      }
+    })
+    .catch((err) => { console.log(err)})
   }
   wasDestroyed() {
     if (this.destroyed != undefined) {
@@ -88,6 +87,21 @@ class System {
   Save() {
     this.Init()
     db.systems.update({address: this.address}, this)
+  }
+  displayEconomy() {
+    if (this.economy) {
+      var result = []
+      if (this.economy.first != "None") {
+        result.push(this.economy.first)
+      }
+      if (this.economy.second != "None") {
+        result.unshift(this.economy.second)
+      }
+      // TODO: Find a better place for the spacer
+      return result.join(`<span class="px-2 spacer">|</span>`)
+    } else {
+      return "None"
+    }
   }
 }
 exports.System = System;
@@ -332,6 +346,7 @@ const VEHICLEMAP = {
   independent_fighter: "Taipan",
   independant_trader: "Keelback",
   krait_light: "Krait Phantom",
+  krait_mkii: "Krait Mk II",
   TestBuggy: "SRV Scarab",
   type6: "Type-6 Transporter",
   type7: "Type-7 Transporter",
@@ -341,7 +356,12 @@ const VEHICLEMAP = {
   viper: "Viper Mk III",
   viper_mkiv: "Viper Mk IV",
 };
-exports.VEHICLEMAP = VEHICLEMAP
+// exports.VEHICLEMAP = VEHICLEMAP
+const getShipType = function getShipType(type) {
+  let shipType = (VEHICLEMAP[type.toLowerCase()] == undefined) ? type : VEHICLEMAP[type.toLowerCase()]
+  return shipType
+}
+exports.getShipType = getShipType
 
 /**
  * ----------------------------------
@@ -371,16 +391,6 @@ const services = require("./lib.journal/events.services");
 const other = require("./lib.journal/events.other");
 const live = require("./lib.journal/live.json");
 // Export public functions (Imported and Local)
-// module.exports = Object.assign(
-//   { Cmdr, System, RAW, addCommas, RANKS, FACTIONS, Fileheader },
-//    onload,
-//    travel,
-//    combat,
-//    exploration,
-//    trade,
-//    services,
-//    other
-// );
 module.exports = Object.assign(
   { Cmdr, StarShip, RANKS, FACTIONS, RAW, VEHICLEMAP, Fileheader },
   onload,

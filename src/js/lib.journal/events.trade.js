@@ -17,7 +17,6 @@ const EjectCargo = async function EjectCargo(line) {
 };
 const MarketBuy = async function MarketBuy(line) {
   Cmdr.credits -= line.TotalCost
-  Cmdr.Save()
 
   let purchase = {
     event: line.event,
@@ -30,7 +29,6 @@ const MarketBuy = async function MarketBuy(line) {
 };
 const MarketSell = async function MarketSell(line) {
   Cmdr.credits += line.TotalSale
-  Cmdr.Save()
 
   let sale = {
     event: line.event,

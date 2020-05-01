@@ -2,7 +2,7 @@
 const journal = require("../journal");
 
 // Api manual chapter 4: Travel
-const ApproachBody = async function ApproachBody(line) {
+const ApproachBody = function ApproachBody(line) {
   let Body = new journal.Body(line.SystemAddress, line.BodyID);
   var bodyUpdate = {
     name: line.Body,
@@ -13,9 +13,8 @@ const ApproachBody = async function ApproachBody(line) {
   let result = { callback: updateBodies };
   return Promise.resolve(result);
 };
-const Docked = async function Docked(line) {
+const Docked = function Docked(line) {
   Cmdr.location.docked = true;
-  Cmdr.Save();
 
   let station = {
     name: line.StationName,
@@ -31,10 +30,10 @@ const Docked = async function Docked(line) {
   let result = { callback: updateDock, data: station };
   return Promise.resolve(result);
 };
-const DockingCancelled = async function DockingCancelled(line) {
+const DockingCancelled = function DockingCancelled(line) {
   console.log(line);
 };
-const DockingDenied = async function DockingDenied(line) {
+const DockingDenied = function DockingDenied(line) {
   let dock = {
     event: line.event,
     reason: line.Reason
@@ -42,7 +41,7 @@ const DockingDenied = async function DockingDenied(line) {
   let result = {callback: updateTravelState, data: dock}
   return Promise.resolve(result);
 };
-const DockingGranted = async function DockingGranted(line) {
+const DockingGranted = function DockingGranted(line) {
   let dock = {
     event: line.event,
     pad: line.landingPad
@@ -50,7 +49,7 @@ const DockingGranted = async function DockingGranted(line) {
   let result = {callback: updateTravelState, data: dock}
   return Promise.resolve(result);
 };
-const DockingRequested = async function DockingRequested(line) {
+const DockingRequested = function DockingRequested(line) {
   let request = {
     event: line.event,
     station: line.StationName,
@@ -59,14 +58,17 @@ const DockingRequested = async function DockingRequested(line) {
   let result = { callback: updateTravelState, data: request };
   return Promise.resolve(result);
 };
-const DockingTimeout = async function DockingTimeout(line) {
+const DockingTimeout = function DockingTimeout(line) {
   return;
 };
 
-const FSDJump = async function FSDJump(line) {
+const FSDJump = function FSDJump(line) {
   Cmdr.location.address = line.SystemAddress;
-  Cmdr.ship.fuel.level = line.FuelLevel;
-  Cmdr.Save();
+  console.log("FSDJump: ", line.timestamp, Cmdr.location.address, line.StarSystem)
+  // TODO: Drop in favour of Status.json updates.
+  if (Cmdr.ship.fuel != undefined) {
+    Cmdr.ship.fuel.level = line.FuelLevel
+  }
 
   let System = new journal.System(line.SystemAddress);
   var systemUpdate = {
@@ -87,11 +89,11 @@ const FSDJump = async function FSDJump(line) {
   Object.assign(System, systemUpdate);
   System.Save();
 
-  let result = { callback: updateLocation, data: { ...System } };
+  let result = { callback: updateLocation, data: System };
   return Promise.resolve(result);
 };
 
-const FSDTarget = async function FSDTarget(line) {
+const FSDTarget = function FSDTarget(line) {
   let target = {
     event: line.event,
     address: line.SystemAddress,
@@ -102,11 +104,11 @@ const FSDTarget = async function FSDTarget(line) {
   return Promise.resolve(result);
 };
 
-const LeaveBody = async function LeaveBody(line) {
+const LeaveBody = function LeaveBody(line) {
   // Maybe Logging later
   return;
 };
-const Liftoff = async function Liftoff(line) {
+const Liftoff = function Liftoff(line) {
   let result = {
     callback: updateTravelState,
     data: { event: line.event, playercontrolled: line.PlayerControlled },
@@ -114,14 +116,15 @@ const Liftoff = async function Liftoff(line) {
   return Promise.resolve(result);
 };
 
-const Location = async function Location(line) {
+const Location = function Location(line) {
   // Update Cmdr Location
   let location = {
     address: line.SystemAddress,
     docked: line.Docked,
   };
-  Cmdr.location = { ...Cmdr.location, ...location };
-  Cmdr.Save();
+  Object.assign(Cmdr.location, location)
+  console.log("Location: ", Cmdr.location.address)
+
 
   // System Information
   let System = new journal.System(line.SystemAddress);
@@ -150,13 +153,16 @@ const Location = async function Location(line) {
     type: line.BodyType,
   };
   Object.assign(Body, bodyUpdate);
+  if (Body.name == "Hickam Survey") {
+    console.log("Hickam Survey: ", line, line.SystemAddress)
+  }
   Body.Save();
 
-  let result = { callback: updateLocation, data: { ...System } };
+  let result = { callback: updateLocation, data: System };
   return Promise.resolve(result);
 };
 
-const StartJump = async function StartJump(line) {
+const StartJump = function StartJump(line) {
   // Start of Countdown
   var destination;
   if (line.JumpType == "Hyperspace") {
@@ -171,12 +177,12 @@ const StartJump = async function StartJump(line) {
   return Promise.resolve(result);
 };
 
-const SupercruiseEntry = async function SupercruiseEntry(line) {
+const SupercruiseEntry = function SupercruiseEntry(line) {
   let result = { callback: updateTravelState, data: line.event };
   return Promise.resolve(result);
 };
 
-const SupercruiseExit = async function SupercruiseExit(line) {
+const SupercruiseExit = function SupercruiseExit(line) {
   let Body = new journal.Body(line.SystemAddress, line.BodyID);
   var bodyUpdate = {
     name: line.Body,
@@ -189,16 +195,15 @@ const SupercruiseExit = async function SupercruiseExit(line) {
   return Promise.resolve(result);
 };
 
-const Touchdown = async function Touchdown(line) {
+const Touchdown = function Touchdown(line) {
   let result = {
     callback: updateTravelState,
     data: { event: line.event, playercontrolled: line.PlayerControlled },
   };
   return Promise.resolve(result);
 };
-const Undocked = async function Undocked(line) {
+const Undocked = function Undocked(line) {
   Cmdr.location.docked = false;
-  Cmdr.Save();
 
   let result = { callback: updateDock };
   return Promise.resolve(result);

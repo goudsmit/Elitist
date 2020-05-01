@@ -1,5 +1,6 @@
 // ./js/lib/events.onload.js
 const journal = require("../journal");
+const getShipType = journal.getShipType
 
 const Cargo = function  Cargo(line) {
   // if (line.Count > 0) {
@@ -22,51 +23,61 @@ const Commander = function  Commander(line) {
   }
 };
 
-const LoadGame = function  LoadGame(line) {
-  if (line.Ship_Localised != "SRV Scarab") {
-    let ship = {
-      type: (line.Ship_Localised == undefined) ? line.Ship : line.Ship_Localised,
+const LoadGame = function LoadGame(line) {
+  if (line.Ship_Localised != "SRV Scarab") {    
+    let shipData = {
+      type: getShipType(line.Ship),
       id: line.ShipID,
       name: line.ShipName,
       ident: line.ShipIdent,
       fuel: {
         level: line.FuelLevel,
         capacity: line.FuelCapacity,
-      },
-    };
-    Cmdr.ship = ship;
+      }
+    }
+    let Ship = new journal.StarShip(line.ShipID)
+    Ship.Get()
+    Object.assign(Ship, shipData)
+    Ship.Save()
+    Cmdr.ship = Ship
+  } else {
+    // TODO: Capture this illustrious event
+    // console.log("Not in a ship event!!!: ", line)
   }
   Cmdr.credits = line.Credits;
-  Cmdr.Save();
 
   let result = { callback: updateGameState, data: {event: line.event} };
   return Promise.resolve(result);
 };
 
-const Loadout = function  Loadout(line) {
-  // Add ship
-  db.ships.add({ id: line.ShipID}).catch( () => {} )
-
-  let ship = {
+const Loadout = function Loadout(line) {
+  let shipData = {
     name: line.ShipName,
     ident: line.ShipIdent,
-    id: line.ShipID,
-    type: line.Ship,
+    type: getShipType(line.Ship),
     rebuy: line.Rebuy,
     hull: {
-      value: line.HullValue,
       health: line.HullHealth
     },
     modules: {
-      value: line.ModulesValue,
       installed: line.Modules
     }
   }
-  
-
-  Cmdr.ship = {...Cmdr.ship, ...ship}
-  console.log("Loadout>Presave :", Cmdr.ship)
-  Cmdr.Save()
+  if (line.HullValue) {
+    shipData.hull.value = line.HullValue
+  }
+  if (line.ModulesValue) {
+    shipData.modules.value = line.ModulesValue
+  }
+  let Ship = new journal.StarShip(line.ShipID)
+  Ship.Get()
+  Object.assign(Ship, shipData)
+  if (Cmdr.ship.id != Ship.id) {    
+    Cmdr.ship = Ship
+  } else {
+    Object.assign(Cmdr.ship, Ship)
+  }
+  Cmdr.ship.Save()
 
   let result = { callback: updateShip}
   return Promise.resolve(result);

@@ -132,14 +132,16 @@ body::after {
 .materialsCard .nav-item.active { color: var(--brown-dark); background-color: var(--orange-dark); }
 .materialsCard .tab-content { font-size: 14px; }
 .materialsCard .tab-pane { position: relative; }
-.materialsCard .tab-pane table { border-spacing: 1px; border-collapse: separate; font-size: 1em; margin-bottom: 0; }
+.materialsCard .tab-pane table { border-spacing: 1px; border-collapse: separate; font-size: 1em; margin-bottom: 0; display: block; }
 .materialsCard .tab-pane table th,
 .materialsCard .tab-pane table td { font-weight: 200; border: 0; padding: 0 3px; }
 .materialsCard .tab-pane table th { color: var(--orange-dark); background-color: var(--brown-darkest); }
-.materialsCard .tab-pane table td { color: var(--elite-orange); background-color: var(--brown); }
+.materialsCard .tab-pane table td { color: var(--elite-orange); background-color: var(--brown); position: relative; }
 .materialsCard .tab-pane table td:hover { color: var(--brown-dark); background-color: var(--elite-orange); }
 .materialsCard .tab-pane table td.materialIcon { color: var(--orange); background-color: var(--brown-dark) !important; width: 20px !important; }
-
+.materialsCard .tab-pane table td div.materialMutation { position: absolute; right: 4px; top: 0px; color: white; }
+.materialsCard .tab-pane table td div.materialMutation span.increase { color: var(--elite-green); }
+.materialsCard .tab-pane table td div.materialMutation span.decrease { color: var(--elite-red); }
 .materialsCard .tab-content .material-list .filter input[type="radio"] { display: none; }
 .materialsCard .tab-content .material-list .filter label { color: var(--orange-dark); font-size: 14px; background-color: var(--brown-dark); border: none; padding: 2px 0; }
 .materialsCard .tab-content .material-list .filter label.active { color: var(--orange); background-color: var(--brown); }

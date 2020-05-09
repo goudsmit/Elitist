@@ -1,6 +1,6 @@
 {
   "name": "elitist",
-  "version": "0.1.0",
+  "version": "0.5.1",
   "description": "Elitist - An E:D Companion",
   "main": "main.js",
   "scripts": {
@@ -17,14 +17,10 @@
   "license": "ISC",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "@popperjs/core": "^2.3.3",
-    "bootstrap": "^4.4.1",
     "chokidar": "^3.3.1",
-    "dexie": "^2.0.4",
+    "dexie": "^3.0.1",
     "electron-rebuild": "^1.10.1",
-    "elgato-stream-deck": "^3.3.0",
-    "jquery": "^3.5.0",
-    "popper.js": "^1.16.1"
+    "line-by-line": "^0.1.6"
   },
   "devDependencies": {
     "electron": "^8.2.3",

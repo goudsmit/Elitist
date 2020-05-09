@@ -10,7 +10,7 @@ db.version(1).stores({
   engineers: '&id, name, progress, rankprogress, rank',
   systems: '&address, name, position, allegiance, government, economy.first, economy.second, security, population, visited',
   bodies: '[address+id], address, name, type, class, parents, landable, gravity, rings, materials, discovered, mapped',    
-  materials: '&name, type, quantity'
+  materials: '&name, type, quantity, source'
 })
 
 db.open().then(function() {

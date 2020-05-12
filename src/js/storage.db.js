@@ -14,7 +14,7 @@ db.version(1).stores({
 })
 
 db.open().then(function() {
-  let journal = require('./journal')
+  let journal = require('./lib/journal')
   // First time use: RANKS
   db.ranks.count().then(function(count) {
       let RANKS = journal.RANKS

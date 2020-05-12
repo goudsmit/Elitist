@@ -1,43 +1,680 @@
-@import url("./_variables.css");
-@import url("https://fonts.googleapis.com/css?family=Sintony");
+/* =======================
+    CSS DIRECTORY
+        1. IMPORTS
+        2. NON-STANDARD FONTS
+        3. GENERAL STYLES
+            1. PANELS
+                1. TABLE
+            2. TEXT-ALIGN
+        4. ANIMATIONS
+        5. PROGRESS BAR
+        6. APP OVERLAY
+        7. MAIN
+        8. HEADER
+        9. SECTIONS
+            1. INFO
+                1. CMDR
+                2. SHIP
+                3. RANKS
+                4. CARGO
+                5. MATERIALS
+                6. LOG
+            2. TRAVEL
+                1. OVERLAY
+                2. LOCATION
+                3. DOCK
+                    1. STATION
+                    2. FUTURE: BODY
+                4. BODIES
+            3. FUTURE: SHIPS
+            4. FUTURE: ENGINEERS
+            5. FUTURE: EXTENSIVE LOG
+            6. FUTURE: KEYBINDS
+            7. FUTURE: SCREENSHOTS
+        10. FONTS
+            1. SIZES
+            2. COLORS
+   ======================= */ 
 
-::-webkit-scrollbar {
-  display: none;
-}
 
-/** Fonts **/
-@font-face {
-  font-family: EuroCaps;
-  font-weight: 200;
-  src: url(../fonts/EUROCAPS.TTF);
-  text-transform: lowercase;
-}
-@font-face {
-  font-family: Telegrama;
-  src: url(../fonts/telegrama_render.otf) format("opentype");
-}
+/* =======================
+    1. IMPORT
+   ======================= */
+   @import url("./_variables.css");
 
+   /* =======================
+       2. NON-STANDARD FONTS
+      ======================= */
+   @import url("https://fonts.googleapis.com/css?family=Sintony");
+   @font-face {
+       font-family: EuroCaps;
+       src: url(../fonts/EUROCAPS.TTF);
+       font-weight: 200;
+   }
+   @font-face {
+       font-family: Telegrama;
+       src: url(../fonts/telegrama_render.otf) format("opentype");
+   }
+   
+   /* =======================
+       3. GENERAL STYLES
+      ======================= */
+   
+   html, body {
+       height: 100%;
+   }
+   
+   body {
+       background-color: var(--background-color);
+       color: #e6e6e6;
+       font-family: "Sintony", EuroCaps, sans-serif;
+       font-weight: 300;
+   }
+   
+   body::after {
+       content: "";
+       background: url(../images/elitist-background.jpg);
+       opacity: 0.05;
+       top: 0;
+       left: 0;
+       bottom: 0;
+       right: 0;
+       position: absolute;
+       z-index: -1;
+       margin: 0;
+   }
+   
+   ::-webkit-scrollbar {
+       display: none;
+   }
+   
+   /* =======================
+       3.1 GENERAL STYLES: PANELS
+      ======================= */
+   .panel {
+       display: flex;
+       flex-direction: column;
+   }
+   .panel-header {
+       display: flex;
+   }
+   .panel-body {
+       display: flex;
+       flex-direction: column;
+   }
+   .panel-row {
+       display: flex;
+       flex-direction: row;
+   }
+   
+   /* =======================
+       3.1.1 GENERAL STYLES: PANELS > TABLE
+      ======================= */
+   .panel .table {
+       text-shadow: none;
+       position: relative;
+       border-collapse: separate;
+       border-spacing: 0 1px;
+   }
+   .panel .table thead th {
+       position: sticky;
+       top: 0px;
+       background: var(--background-color);
+   }
+   .panel .table tbody td {
+       background: var(--orange-darkest);
+       color: var(--orange);
+       padding: 1px;
+   }
+   .panel .table .border-left {
+       border-left: 1px solid var(--orange-dark);
+   }
+   
+   /* =======================
+       3.2 GENERAL STYLES: TEXT-ALIGN
+      ======================= */
+   .left { text-align: left; }
+   .center { text-align: center; }
+   .right { text-align: right; }
+   
+   /* =======================
+       4.ANIMATIONS
+      ======================= */
+   .loader {
+       position: relative;
+       width: 64px;
+       height: 64px;
+       border-radius: 50%;
+       perspective: 800px;
+   }
+   .inner {
+       position: absolute;
+       box-sizing: border-box;
+       width: 100%;
+       height: 100%;
+       border-radius: 50%;
+   }
+   .inner.one {
+       left: 0%;
+       top: 0%;
+       animation: rotate-one 1s linear infinite;
+       border-bottom: 3px solid var(--orange);
+   }
+   .inner.two {
+       right: 0%;
+       top: 0%;
+       animation: rotate-two 1s linear infinite;
+       border-right: 3px solid var(--orange-dark);
+   }
+   .inner.three {
+       right: 0%;
+       bottom: 0%;
+       animation: rotate-three 1s linear infinite;
+       border-top: 3px solid var(--orange-darker);
+   }
+   @keyframes rotate-one {
+       0% { transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg); }
+       100% { transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg); }
+   }
+   @keyframes rotate-two {
+       0% { transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg); }
+       100% { transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg); }
+   }
+   @keyframes rotate-three {
+       0% { transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg); }
+       100% { transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg); }
+   }
 
-html,
-body {
-  height: 100%;
-}
-
-body {
-  background-color: var(--background-color);
-  color: #e6e6e6;
-  font-family: "Sintony", EuroCaps, sans-serif;
-  font-weight: 300;
-}
-
-body::after {
-  content: "";
-  background: url(../images/elitist-background.jpg);
-  opacity: 0.05;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  position: absolute;
-  z-index: -1;
-}
+   .fade-in {
+     animation: fadeIn 1s linear;
+   }
+   @keyframes fadeIn {
+      0% { opacity: 0;  }
+     100% { opacity: 1; }
+    }
+     
+   .fade-out {
+     animation: fadeOut 1s linear;
+   }
+   @keyframes fadeOut {
+     0% { opacity: 1;  }
+     100% { opacity: 0; }
+   }
+   
+   /* =======================
+       5. PROGRESS BAR
+      ======================= */
+   .progress {
+       background: rgba(0, 0, 0, 0.25);
+   }
+   .progress-bar {
+       height: 1px;
+       background: var(--orange-dark);
+       transition: 0.4s linear;
+       transition-property: width, background-color;
+   }
+   
+   /* =======================
+       6. OVERLAY
+      ======================= */
+   .overlay-container {
+       display: flex;
+       /* display: none; */
+       align-items: center;
+       justify-content: start;
+       height: 100%;
+       width: 100%;
+       margin-top: 45%;
+       z-index: 1000;
+       position: absolute;
+       font-family: Eurocaps;
+       text-transform: lowercase;
+       line-height: 1.2;
+       flex-flow: column;
+   }
+   .overlay-container .msg {
+       margin-top: 20px;
+       padding: 5px 0;
+       text-align: center;
+   }
+   
+   /* =======================
+       7. MAIN
+      ======================= */
+   main {
+       /* display: none; */
+       /* display: flex; */
+       flex-direction: column;
+       height: 100%;
+       font-family: Eurocaps;
+   }
+   
+   /* =======================
+       8. HEADER
+      ======================= */
+   header {
+       display: flex;
+       flex-direction: row;
+       justify-content: space-between;
+       align-items: flex-end;
+       width: 100%;
+       height: 90px;
+       text-transform: lowercase;
+   }
+   header div {
+       padding: 0 10px;
+       flex-direction: column;
+   }
+   header div.title-panel {
+       margin-bottom: 10px;
+   }
+   header div.title-panel .title {
+       font-size: 1.8em;
+       line-height: 1;
+   }
+   header div.title-panel .sub-title {
+       font-size: 1.2em;
+       line-height: 0.8;
+       padding-left: 14px;
+   }
+   header div.title-panel .sub-title span {
+       display: inline-block;
+   }
+   header div.time-panel {
+       text-align: right;
+       align-items: flex-end;
+       margin-bottom: 10px;
+   }
+   header div.time-panel .date {
+       font-size: 16px;
+       line-height: 0.8;
+   }
+   header div.time-panel .time {
+       font-family: Telegrama;
+       font-size: 16px;
+       font-weight: 400;
+       line-height: 1.1;
+   }
+   /* =======================
+       9 SECTIONS
+      ======================= */
+   section {
+       display: flex;
+       flex-direction: row;
+   }
+   section section {
+       height: calc(100vh - 125px);
+       display: flex;
+       flex-direction: column;
+       padding: 5px;
+       background-color: #00000050;
+   }
+   
+   /* =======================
+       9.1 SECTIONS: INFO
+      ======================= */
+   .info {
+       width: 25%;
+       margin: 0 10px;
+       display: flex;
+       flex-direction: column;
+       border-top: 1px solid var(--orange-darker);
+       border-bottom: 1px solid var(--orange-darker);
+       text-shadow: 0 0 3px #000000;
+   }
+   .info .panel-title {
+       padding-top: 15px;
+       text-align: right;
+       line-height: 0.85;
+       color: var(--orange-dark);
+       border-bottom: 1px solid var(--orange-darker);
+       margin-bottom: 4px;
+   }
+   .info .panel-row {
+       position: relative;
+       justify-content: space-between;
+   }
+   .info .desc {
+       padding-left: 3px;
+   }
+   .info .val {
+       padding-right: 3px;
+   }
+   .info .progress {
+       position: absolute;
+       bottom: 2px;
+       margin: 0 auto;
+       width: 100%;
+   }
+   .info .table .item-name {
+       padding-left: 5px;
+   }
+   
+   /* =======================
+       9.1.1 SECTIONS: INFO > CMDR
+      ======================= */
+   .cmdr .name { font-size: 20px; }
+   .cmdr .vessel { color: var(--elite-orange); text-indent: 3px; }
+   .cmdr .credits {
+       padding-top: 6px;
+   }
+   
+   /* =======================
+       9.1.2 SECTIONS: INFO > SHIP
+      ======================= */
+   .ship .fuel { margin: 3px 0; }
+   
+   /* =======================
+       9.1.3 SECTIONS: INFO > RANKS
+      ======================= */
+   .rank { line-height: 1.2; }
+   .rank .elite { color: var(--elite-yellow); }
+   .rank .federation { margin-top: 6px; }
+   .rank .federation .progress-bar { background: var(--federation); }
+   .rank .empire .progress-bar { background: var(--empire); }
+   
+   /* =======================
+       9.1.4 SECTIONS: INFO > CARGO
+      ======================= */
+   .cargo .cargo-empty {
+       text-align: center;
+       background: var(--brown);
+       color: var(--orange-dark);
+       text-shadow: none;
+       line-height: 1.4;
+   }
+   .cargo .panel-body {
+       max-height: 140px;
+       overflow: scroll;
+   }
+   
+   /* =======================
+       9.1.5 SECTIONS: INFO > MATERIALS
+      ======================= */
+   .materials {
+       /* height: 100px; */
+       flex-grow: 1;
+   }
+   .materials .panel-body {
+       overflow: auto;
+       flex: 1 1 auto;
+       height: 0px;
+   }
+   
+   /* =======================
+       9.1.6 SECTIONS: INFO > LOG
+      ======================= */
+   .log {
+       max-height: 120px;
+   }
+   .log .panel-body {
+       overflow: auto;
+   }
+   .log .panel-body div {
+       width: 100%;
+       margin-bottom: 1px;
+       font-size: 14px;
+   }
+   
+   /* =======================
+       9.2 SECTIONS: TRAVEL
+      ======================= */
+   .travel {
+       width: 75%;
+       margin-right: 10px;
+       border-top: 1px solid var(--elite-orange);
+       border-bottom: 1px solid var(--elite-orange);
+       box-shadow: inset 0 5px 6px -5px var(--elite-orange), 
+           inset 0 -5px 6px -5px var(--elite-orange), 
+           inset 0 150px 150px -150px var(--faint-red);
+   }
+   
+   /* =======================
+       9.2.1 SECTIONS: TRAVEL > OVERLAY
+      ======================= */
+   .travel-overlay {
+       display: flex;
+       display: none;
+       flex-direction: column;
+       align-self: center;
+       justify-content: center;
+       height: 100%;
+       width: 100%;
+   }
+   .travel-overlay .loader {
+       margin: 0 auto;
+   }
+   .travel-overlay .msg {
+       text-align: center;
+       width: 100%;
+       margin-top: 20px;
+       font-size: 18px;
+   }
+   .travel-overlay .msg .destination {
+       color: var(--elite-orange);
+       font-size: 24px;
+   }
+   
+   /* =======================
+       9.2.2 SECTIONS: TRAVEL > LOCATION
+      ======================= */
+   .location {
+       margin: 0 15px;
+   }
+   .location .panel-header {
+       flex-direction: row;
+       align-items: center;
+       width: 100%;
+   }
+   .location .titles {
+       display: flex;
+       flex-direction: column;
+       flex-grow: 1;
+   }
+   .location .title {
+       font-size: 28px;
+       border-bottom: 1px solid var(--orange);
+       line-height: 1.2;
+   }
+   .location .sub-title {
+       display: flex;
+       flex-direction: row;
+       font-size: 18px;
+       line-height: 1.2;
+       color: var(--orange-dark);
+       justify-content: space-between;
+   }
+   .location .icon {
+       font-size: 32px;
+       padding: 3px;
+       border: 1px solid var(--orange-dark);
+       text-align: center;
+       margin-right: 10px;
+   }
+   .location .icon i {
+       padding: 2px;
+   }
+   .location .panel-body {
+       padding: 20px;
+       font-size: 18px;
+       flex-direction: row;
+       flex-wrap: wrap;
+   }
+   .location .panel-row {
+       width: 50%;
+       display: flex;
+       flex-direction: column;
+       padding: 4px 0;
+   }
+   .location .desc {
+       font-size: 18px;
+       color: var(--orange);
+   }
+   .location .val {
+       font-size: 20px;
+   }
+   
+   /* =======================
+       9.2.3 SECTIONS: TRAVEL > DOCK
+      ======================= */
+   .dock {
+       margin: 0 20px;
+       background: var(--brown-dark);
+       position: relative;
+       padding: 10px;
+   }
+   .dock:before { 
+       content: "";
+       background-color: var(--orange);
+       display: block;
+       width: 8px;
+       height: 100%;
+       position: absolute;
+       left: 0;
+       top: 0; 
+   }
+   .dock .panel-header {
+       flex-direction: column;
+   }
+   .dock .title {
+       font-size: 20px;
+       padding-top: 10px;
+       line-height: 1.2;
+   }
+   .dock .sub-title {
+       line-height: 1.1;
+       display: flex;
+       flex-direction: row;
+       justify-content: space-between;
+       border-top: 1px solid var(--orange);
+   }
+   .dock .sub-title .type {
+       color: var(--orange-dark);
+   }
+   .dock .sub-title .docking-request {
+       color: var(--orange-darker);
+       padding-left: 14px;
+   }
+   .dock .panel-body {
+       padding: 20px;
+   }
+   .dock .panel-row {
+       justify-content: space-between;
+   }
+   .dock .desc {
+       color: var(--orange-dark);
+       font-size: 16px;
+   }
+   
+   
+   /* =======================
+       9.2.3.1 SECTIONS: TRAVEL > DOCK > STATION
+      ======================= */
+   .dock .services {
+       margin-top: 10px;
+       justify-content: flex-end;
+       flex-wrap: wrap;
+   }
+   .dock .service {
+       background: var(--orange-dark);
+       color: var(--brown-dark);
+       padding: 0 5px;
+       margin: 2px;
+   
+   }
+   .dock .service.blackmarket {
+       background: var(--elite-yellow);
+   }
+   /* =======================
+       9.2.4 SECTIONS: TRAVEL > BODIES
+      ======================= */
+   .bodies {
+       margin: 15px;
+       flex-grow: 1;
+   }
+   .bodies .panel-title {
+       padding-top: 10px;
+       color: var(--orange-dark);
+       border-bottom: 1px solid var(--orange-darker);
+       margin-bottom: 4px;
+   }
+   .bodies .panel-body {
+       height: 0px;
+       flex-grow: 1;
+       overflow: scroll;
+   }
+   .bodies .body {
+       display: flex;
+       flex-direction: row;
+       align-items: stretch;
+       justify-content: space-between;
+       margin-bottom: 1px;
+   }
+   .bodies .body .id {
+       padding: 2px;
+       width: 40px;
+       background: var(--orange-dark);
+   }
+   .bodies .body .details {
+       flex-grow: 1;
+       display: flex;
+       flex-direction: column;
+       background: var(--orange-darker);
+   }
+   .bodies .body .details .name {
+       font-size: 20px;
+       padding: 4px;
+       padding-bottom: 1px;
+   }
+   .bodies .body .details .type {
+       font-size: 16px;
+       padding: 4px;
+       padding-top: 0;
+       color: var(--orange);
+   }
+   .bodies .properties,
+   .bodies .materials {
+       background: var(--orange-darkest);
+       display: flex;
+       flex-direction: row;
+       justify-content: flex-end;
+       font-size: 14px;
+   }
+   .bodies .properties {
+       padding: 2px 4px;
+   }
+   .bodies .materials {
+       padding: 2px 4px;
+   }
+   
+   /* =======================
+       10.1 FONTS > COLORS
+      ======================= */
+   header div.title-panel .sub-title,
+   header div.time-panel,
+   .info .desc {
+       color: var(--elite-orange);
+   }
+   header div.title-panel .sub-title .offline {
+       color: var(--elite-red);
+   }
+   
+   header div.title-panel .sub-title .online {
+       color: var(--elite-green);
+   }
+   .info .panel-title {
+       color: var(--orange-dark);
+   }
+   
+   /* =======================
+       10.2 FONTS > SIZES
+      ======================= */
+   .panel .table thead th,
+   .info .panel-title {
+       font-size: 13px;
+   }
+   .panel .table tbody td,
+   .info .desc {
+       font-size: 14px;
+   }
+   

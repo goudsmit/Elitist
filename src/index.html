@@ -4,8 +4,9 @@
     <meta charset="UTF-8" />
     <title>Elitist - An E:D Companion App</title>
     <!-- CSS -->
-    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.css">
+    <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/elitist.css">
+    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.css">
 
     <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
     <meta
@@ -14,9 +15,280 @@
     />
   </head>
   <body>
-
-    
-
+<!-- Overlay: Used for loading and start-up progress -->
+<div class="overlay-container" id="overlay">
+  <div class="loader">
+    <div class="inner one"></div>
+    <div class="inner two"></div>
+    <div class="inner three"></div>
+  </div>
+  <div class="msg" id="overlay-msg">checking for new files</div>
+</div>
+<!-- MAIN -->
+<main class="app-container" id="appContainer" style="display: none;">
+  <!-- HEADER -->
+  <header>
+    <div class="title-panel">
+      <div class="title">Journal</div>
+      <div class="sub-title">Detailed log <span class="offline" id="gameStatus">offline</span></div>
+    </div>
+    <div class="time-panel">
+      <div class="time" id="time">20:13:55</div>
+      <div class="date" id="shortdate">4 may 3306</div>
+    </div>
+  </header>
+  <section>
+    <!-- SECTION: INFO-->
+    <section class="info">
+      <!-- CMDR PANEL-->
+      <div class="panel cmdr">
+        <div class="name">Cmdr <span id="cmdrName">name</span></div>
+        <div class="vessel" id="cmdrShip">shipname.</div>
+        <div class="credits"><span id="cmdrCredits">132,678,459</span> cr</div>
+      </div>
+      <!-- SHIP PANEL -->
+      <div class="panel ship">
+        <div class="panel-title">ship</div>
+        <div class="panel-body">
+          <div class="panel-row">
+            <div class="desc">name</div>
+            <div class="val">shipname.</div>
+          </div>
+          <div class="panel-row">
+            <div class="desc">id</div>
+            <div class="val">id-01</div>
+          </div>
+          <div class="panel-row">
+            <div class="desc">type</div>
+            <div class="val">starship</div>
+          </div>
+          <div class="panel-row">
+            <div class="desc">value</div>
+            <div class="val">4,567,329 cr</div>
+          </div>
+          <div class="panel-row">
+            <div class="desc">rebuy</div>
+            <div class="val">937,102 cr</div>
+          </div>
+          <div class="panel-row">
+            <div class="desc">health</div>
+            <div class="val">95%</div>
+          </div>
+          <div class="panel-row fuel">
+            <div class="desc">fuel</div>
+            <div class="val" id="fuelPercentage">50%</div>
+            <div class="progress">
+              <div class="progress-bar" id="fuelLevelBar" style="width: 20%;"></div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <!-- RANK PANEL-->
+      <div class="panel rank">
+        <div class="panel-title">ranks</div>
+        <div class="panel-body">
+          <div class="panel-row">
+            <div class="desc">explore</div>
+            <div class="val elite" id="exploreRank">rank</div>
+            <div class="progress">
+              <div class="progress-bar" id="exploreProgress" style="width: 20%;"></div>
+            </div>
+          </div>
+          <div class="panel-row">
+            <div class="desc">trade</div>
+            <div class="val" id="tradeRank">rank</div>
+            <div class="progress">
+              <div class="progress-bar" id="tradeProgress" style="width: 20%;"></div>
+            </div>
+          </div>
+          <div class="panel-row">
+            <div class="desc">combat</div>
+            <div class="val" id="combatRank">rank</div>
+            <div class="progress">
+              <div class="progress-bar" id="combatProgress" style="width: 20%;"></div>
+            </div>
+          </div>
+          <div class="panel-row federation">
+            <div class="desc">federation</div>
+            <div class="val" id="federationRank">rank</div>
+            <div class="progress">
+              <div class="progress-bar" id="federationProgress" style="width: 20%;"></div>
+            </div>
+          </div>
+          <div class="panel-row empire">
+            <div class="desc">empire</div>
+            <div class="val" id="combatRank">rank</div>
+            <div class="progress">
+              <div class="progress-bar" id="empireProgress" style="width: 20%;"></div>
+            </div>
+          </div>
+        </div>
+      </div> 
+      <!-- CARGO PANEL -->
+      <div class="panel cargo">
+        <div class="panel-title">cargo</div>
+        <div class="panel-body">
+          <div class="cargo-empty" id="cargoEmpty">No Cargo</div>
+          <table class="table" id="cargoPresent">
+            <thead>
+              <tr>
+                <th class="left item-name"> item</th>
+                <th class="center border-left">qty</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="left item-name">reactive armor</td>
+                <td class="center border-left">12</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- MATERIALS PANEL -->
+      <div class="panel materials">
+        <div class="panel-title">materials</div>
+        <div class="panel-body">
+          <table class="table table-sm">
+            <thead>
+            <tr>
+                <th class="center">&nbsp;</th>
+                <th class="left border-left item-name">Item</th>
+                <th class="center border-left">QTY</th>
+            </tr>
+            </thead>
+            <tbody id="materialTable">
+              <!-- Row Template -->
+              <template id="materialRow">
+              <tr>
+                <td class="center" id="materialIdentifier"></td>
+                <td class="left border-left item-name">reactive armor</td>
+                <td class="center border-left">12</td>
+              </tr>
+              </template>
+                              
+            </tbody>
+        </table>
+        </div>
+      </div>
+      <!-- LOG PANEL -->
+      <div class="panel log">
+        <div class="panel-title">log</div>
+        <div class="panel-body">
+          <div>line #1</div>
+          <div>line #2</div>
+        </div>
+      </div>
+    </section>
+    <!-- SECTION: TRAVEL-->
+    <section class="travel" id="travelPanels">
+      <!-- TRAVEL OVERLAY: Shows when in witchspace-->
+      <div class="travel-overlay" id="travelOverlay">
+        <div class="loader">
+          <div class="inner one"></div>
+          <div class="inner two"></div>
+          <div class="inner three"></div>
+        </div>
+        <div class="msg">
+          destination
+          <div class="destination" id="fsdDestination">systemname</div>
+        </div>
+      </div>
+      <!-- LOCATION PANEL -->
+      <div class="panel location">
+        <div class="panel-header">
+          <div class="icon"><i class="fa fa-sun"></i></div>
+          <div class="titles">
+            <div class="title">location</div>
+            <div class="sub-title">
+              <div>star system</div>
+              <div class="" id="dockingStatus">docked</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="panel-row allegiance">
+            <div class="desc">allegiance</div>
+            <div class="val" id="systemAllegiance">None</div>
+          </div>
+          <div class="panel-row right economies">
+            <div class="desc">economy</div>
+            <div class="val" id="systemEconomies">None</div>
+          </div>
+          <div class="panel-row government">
+            <div class="desc">government</div>
+            <div class="val" id="systemEconomies">None</div>
+          </div>
+          <div class="panel-row right security">
+            <div class="desc">security</div>
+            <div class="val" id="systemSecurity">None</div>
+          </div>
+          <div class="panel-row population">
+            <div class="desc">population</div>
+            <div class="val" id="systemPopulation">0</div>
+          </div>
+        </div>
+      </div>
+      <!-- DOCK -->
+      <div class="panel dock">
+        <div class="panel-header">
+          <div class="title right" id="bodyName">Dock Name</div>
+          <div class="sub-title">
+            <div class="docking-request">docking request</div>
+            <div class="type" id="bodyType">dock type</div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="panel-row allegiance">
+            <div class="desc">allegiance</div>
+            <div class="val" id="bodyAllegiance">None</div>
+          </div>
+          <div class="panel-row government">
+            <div class="desc">government</div>
+            <div class="val" id="bodyGovernment">None</div>
+          </div>
+          <div class="panel-row economies">
+            <div class="desc">economy</div>
+            <div class="val" id="bodyEconomy">None</div>
+          </div>
+          <div class="panel-row faction">
+            <div class="desc">faction</div>
+            <div class="val" id="bodyFaction">None</div>
+          </div>
+          <div class="panel-row services" id="bodyServices">
+            <div class="service">service</div>
+            <div class="service blackmarket">service</div>
+          </div>
+        </div>
+      </div>
+      <!-- BODIES -->
+      <div class="panel bodies">
+        <div class="panel-title right">known bodies</div>
+        <div class="panel-body">
+          <div class="body">
+            <div class="id center">id</div>
+            <div class="details right">
+              <div class="name">name</div>
+              <div class="type">type</div>
+              <div class="properties">properties</div>
+              <div class="materials">materials</div>
+            </div>
+          </div>
+          <div class="body">
+            <div class="id center">id</div>
+            <div class="details right">
+              <div class="name">name</div>
+              <div class="type">type</div>
+              <div class="properties">properties</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </section>
+</main>
     <script src="./js/elitist.js"></script>
     <script>
 

@@ -15,6 +15,15 @@
     />
   </head>
   <body>
+<!-- APPLICATION MENU BAR-->
+    <nav class="app-menu">
+      <div class="app-title">elitist <span>version 0.5.1</span></div>
+      <div class="app-controls">
+          <button class="app-minimize" id="minimizeButton"><i class="far fa-window-minimize"></i></button>
+          <button class="app-min-max" id="minMaxButton"><i class="far fa-window-maximize"></i></button>
+          <button class="app-close" id="closeButton"><i class="fa fa-times"></i></button>            
+      </div>
+  </nav>
 <!-- Overlay: Used for loading and start-up progress -->
 <div class="overlay-container" id="overlay">
   <div class="loader">
@@ -22,7 +31,7 @@
     <div class="inner two"></div>
     <div class="inner three"></div>
   </div>
-  <div class="msg" id="overlay-msg">checking for new files</div>
+  <div class="msg" id="overlayMsg">checking for new files</div>
 </div>
 <!-- MAIN -->
 <main class="app-container" id="appContainer" style="display: none;">
@@ -52,34 +61,33 @@
         <div class="panel-body">
           <div class="panel-row">
             <div class="desc">name</div>
-            <div class="val">shipname.</div>
+            <div class="val" id="shipName">shipname.</div>
           </div>
           <div class="panel-row">
             <div class="desc">id</div>
-            <div class="val">id-01</div>
+            <div class="val" id="shipId">id-01</div>
           </div>
           <div class="panel-row">
             <div class="desc">type</div>
-            <div class="val">starship</div>
+            <div class="val" id="shipType">starship</div>
           </div>
           <div class="panel-row">
             <div class="desc">value</div>
-            <div class="val">4,567,329 cr</div>
+            <div class="val"><span id="shipValue">4,567,329</span> cr</div>
           </div>
           <div class="panel-row">
             <div class="desc">rebuy</div>
-            <div class="val">937,102 cr</div>
+            <div class="val"><span id="shipRebuy"></span> cr</div>
           </div>
           <div class="panel-row">
             <div class="desc">health</div>
-            <div class="val">95%</div>
+            <div class="val"><span id="shipHealth"></span>%</div>
           </div>
-          <div class="panel-row fuel">
+          <div class="panel-row fuel" id="shipFuel">
             <div class="desc">fuel</div>
-            <div class="val" id="fuelPercentage">50%</div>
-            <div class="progress">
-              <div class="progress-bar" id="fuelLevelBar" style="width: 20%;"></div>
-            </div>
+            <div class="val" id="shipFuelNumbers">50%</div>
+            <progress class="progress-bar" id="shipFuelLevelBar" max="32" value="20"></progress>
+            
           </div>
           
         </div>
@@ -90,38 +98,28 @@
         <div class="panel-body">
           <div class="panel-row">
             <div class="desc">explore</div>
-            <div class="val elite" id="exploreRank">rank</div>
-            <div class="progress">
-              <div class="progress-bar" id="exploreProgress" style="width: 20%;"></div>
-            </div>
+            <div class="val" id="exploreRank">rank</div>
+            <progress class="progress-bar" id="exploreProgress" max="100" value="12"></progress>
           </div>
           <div class="panel-row">
             <div class="desc">trade</div>
             <div class="val" id="tradeRank">rank</div>
-            <div class="progress">
-              <div class="progress-bar" id="tradeProgress" style="width: 20%;"></div>
-            </div>
+            <progress class="progress-bar" id="tradeProgress" max="100" value="17"></progress>
           </div>
           <div class="panel-row">
             <div class="desc">combat</div>
             <div class="val" id="combatRank">rank</div>
-            <div class="progress">
-              <div class="progress-bar" id="combatProgress" style="width: 20%;"></div>
-            </div>
+            <progress class="progress-bar" id="combatProgress" max="100" value="70"></progress>
           </div>
           <div class="panel-row federation">
             <div class="desc">federation</div>
             <div class="val" id="federationRank">rank</div>
-            <div class="progress">
-              <div class="progress-bar" id="federationProgress" style="width: 20%;"></div>
-            </div>
+            <progress class="progress-bar" id="federationProgress" max="100" value="32"></progress>
           </div>
           <div class="panel-row empire">
             <div class="desc">empire</div>
-            <div class="val" id="combatRank">rank</div>
-            <div class="progress">
-              <div class="progress-bar" id="empireProgress" style="width: 20%;"></div>
-            </div>
+            <div class="val" id="empireRank">rank</div>
+            <progress class="progress-bar" id="empireProgress" max="100" value="31"></progress>
           </div>
         </div>
       </div> 
@@ -163,9 +161,9 @@
               <!-- Row Template -->
               <template id="materialRow">
               <tr>
-                <td class="center" id="materialIdentifier"></td>
+                <td class="material-type center" id="materialIdentifier"></td>
                 <td class="left border-left item-name">reactive armor</td>
-                <td class="center border-left">12</td>
+                <td class="material-count center border-left">12</td>
               </tr>
               </template>
                               
@@ -251,15 +249,16 @@
           </div>
           <div class="panel-row economies">
             <div class="desc">economy</div>
-            <div class="val" id="bodyEconomy">None</div>
+            <div class="val" id="bodyEconomies">None</div>
           </div>
           <div class="panel-row faction">
             <div class="desc">faction</div>
             <div class="val" id="bodyFaction">None</div>
           </div>
           <div class="panel-row services" id="bodyServices">
-            <div class="service">service</div>
-            <div class="service blackmarket">service</div>
+            <template id="bodyService">
+              <div class="service">service</div>
+            </template>
           </div>
         </div>
       </div>

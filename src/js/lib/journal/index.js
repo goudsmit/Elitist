@@ -395,6 +395,7 @@ const Fileheader = (line) => {
 };
 
 const onload = require('./events.onload');
+const travel = require('./events.travel');
 const other = require('./events.other');
 
 module.exports = Object.assign(
@@ -411,5 +412,6 @@ module.exports = Object.assign(
     Fileheader,
   },
   onload,
+  travel,
   other
 );

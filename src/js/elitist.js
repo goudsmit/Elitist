@@ -11,6 +11,26 @@ const path = require("path");
 
 /**
  * ----------------------------------
+ * Elitist: Application Menu Bar
+ * ----------------------------------
+ */
+const { remote } = require('electron')
+document.getElementById('minimizeButton').addEventListener('click', () => {
+  remote.getCurrentWindow().minimize()
+})
+document.getElementById('minMaxButton').addEventListener('click', () => {
+  const currentWindow = remote.getCurrentWindow()
+  if(currentWindow.isMaximized()) {
+    currentWindow.unmaximize()
+  } else {
+    currentWindow.maximize()
+  }
+})
+document.getElementById('closeButton').addEventListener('click', () => {
+  remote.app.quit()
+})
+/**
+ * ----------------------------------
  * Elitist: localStorage functions
  * ----------------------------------
  */
@@ -31,21 +51,6 @@ const initLocalStorage = function initLocalStorage() {
       localStorage.removeItem("elitist");
     }
   };
-
-
-/**
- * ----------------------------------
- * Elitist: Format Number
- * 
- * Large numbers will have added commas.
- * Used for credits and population
- * ----------------------------------
- */
-const formatNumber = (x) => {
-  if (x != undefined) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-};
 
 /**
  * ----------------------------------
@@ -183,7 +188,8 @@ const readFolder = (folder) => {
         let stats = await stat(folder + path.sep + file);
         if (stats.isFile()) {
           let index = parseInt(i)+1
-          console.log(`${index}: Read File ${file} here`);
+          ui.elements.overlayMsg.innerText = `Processing ${file} (${index}/${files.length})`
+          console.log(`${index}/${files.length}: Read File ${file} here`);
           await readFile(file, index).then(() => {
               console.log(`FINISH`)
           })  
@@ -191,12 +197,13 @@ const readFolder = (folder) => {
       }
     })
     .then( async () => {
+      ui.elements.overlayMsg.innerText = `Welcome back, Cmdr`
         console.log(`Folder contents checked and read`);
         function timeout(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
-        await timeout(3000);
-        console.log("3 seconds later")
+        await timeout(1000);
+        console.log("1 second later")
         // Set up APP constants: CMDR etc
     })
     .then( () => {

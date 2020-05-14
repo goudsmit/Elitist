@@ -34,6 +34,7 @@
         10. FONTS
             1. SIZES
             2. COLORS
+        11. APPLICATION TITLE BAR
    ======================= */ 
 
 
@@ -204,14 +205,39 @@
    /* =======================
        5. PROGRESS BAR
       ======================= */
-   .progress {
+   /* .progress {
        background: rgba(0, 0, 0, 0.25);
    }
    .progress-bar {
        height: 1px;
-       background: var(--orange-dark);
+
        transition: 0.4s linear;
        transition-property: width, background-color;
+   } */
+   progress {
+       position: absolute;
+       height: 1px;
+       width: 100%;
+       bottom: 3px;
+   }
+   progress {
+       /* Reset the default appearance */
+       -webkit-appearance: none;
+       appearance: none;
+       height: 1px;
+       width: 100%;
+   }
+   progress::-webkit-progress-bar {
+       background-color: #00000028;
+   }
+   progress::-webkit-progress-value {
+       background-color: var(--orange);
+       transition: 0.4s linear;
+       transition-property: width, background-color;
+   }
+   progress.elite::-webkit-progress-value {
+    background-color: var(--elite-yellow);
+    opacity: .1;
    }
    
    /* =======================
@@ -219,7 +245,6 @@
       ======================= */
    .overlay-container {
        display: flex;
-       /* display: none; */
        align-items: center;
        justify-content: start;
        height: 100%;
@@ -301,6 +326,7 @@
    section {
        display: flex;
        flex-direction: row;
+       text-transform: lowercase;
    }
    section section {
        height: calc(100vh - 125px);
@@ -353,7 +379,7 @@
    /* =======================
        9.1.1 SECTIONS: INFO > CMDR
       ======================= */
-   .cmdr .name { font-size: 20px; }
+   .cmdr .name { font-size: 22px; }
    .cmdr .vessel { color: var(--elite-orange); text-indent: 3px; }
    .cmdr .credits {
        padding-top: 6px;
@@ -370,8 +396,8 @@
    .rank { line-height: 1.2; }
    .rank .elite { color: var(--elite-yellow); }
    .rank .federation { margin-top: 6px; }
-   .rank .federation .progress-bar { background: var(--federation); }
-   .rank .empire .progress-bar { background: var(--empire); }
+   .rank .federation progress[value]::-webkit-progress-value { background: var(--federation); }
+   .rank .empire progress[value]::-webkit-progress-value { background: var(--empire); }
    
    /* =======================
        9.1.4 SECTIONS: INFO > CARGO
@@ -399,6 +425,14 @@
        overflow: auto;
        flex: 1 1 auto;
        height: 0px;
+   }
+   .materials .table tbody td.material-type {
+       background: var(--brown-dark);
+       font-size: 14px;
+       width: 20px;
+   }
+   .materials .table tbody td.material-count {
+       width: 20px; 
    }
    
    /* =======================
@@ -479,7 +513,7 @@
    .location .sub-title {
        display: flex;
        flex-direction: row;
-       font-size: 18px;
+       font-size: 16px;
        line-height: 1.2;
        color: var(--orange-dark);
        justify-content: space-between;
@@ -537,7 +571,7 @@
        flex-direction: column;
    }
    .dock .title {
-       font-size: 20px;
+       font-size: 21px;
        padding-top: 10px;
        line-height: 1.2;
    }
@@ -578,9 +612,9 @@
    .dock .service {
        background: var(--orange-dark);
        color: var(--brown-dark);
-       padding: 0 5px;
+       padding: 2px 5px;
        margin: 2px;
-   
+       font-size: 14px; 
    }
    .dock .service.blackmarket {
        background: var(--elite-yellow);
@@ -671,10 +705,60 @@
       ======================= */
    .panel .table thead th,
    .info .panel-title {
-       font-size: 13px;
+       font-size: 14px;
    }
    .panel .table tbody td,
    .info .desc {
        font-size: 14px;
    }
    
+   /* =======================
+       11. APPLICATION TITLE BAR
+      ======================= */
+   nav.app-menu {
+    /* background: #444444; */
+    background: #00000025;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 24px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+  }
+  nav .app-title {
+    font-family: EuroCaps;
+    line-height: 1.6;
+    padding: 0 20px;
+    color: #ff7000;
+    text-shadow: 0px 0px 3px #00000050;
+  }
+  nav .app-title span {
+    /* padding: 0 5px; */
+    color: #555555;
+  }
+  nav .app-controls {  
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+  }
+  nav .app-controls button {
+    -webkit-app-region: no-drag;
+    width: 40px;
+    font-size: 14px;
+    border: 0;
+    color: #AAAAAA;
+    background: #00000000;
+  }
+  nav .app-controls button:hover {
+    background: #00000050;
+  }
+  nav .app-controls button.app-close:hover {
+    color: #ffffff;
+    background: #ab1313;
+  }
+  nav .app-controls button:focus {
+    outline: none;
+  }

@@ -14,6 +14,7 @@ function createWindow() {
       nodeIntegration: true,
     },
     darkTheme: true,
+    frame: false
   });
 
   // and load the index.html of the app.

@@ -389,6 +389,9 @@ exports.getShipType = getShipType;
  */
 const Fileheader = (line) => {
   return new Promise((resolve) => {
+    db.logs.add({file: { name: fileName}, part: line.part, gameversion: line.gameversion, build: line.build}).catch(
+      (error) => {}
+    )
     result = { callback: ui.updateGameState, data: { event: line.event } };
     resolve(result);
   });
@@ -396,6 +399,7 @@ const Fileheader = (line) => {
 
 const onload = require('./events.onload');
 const travel = require('./events.travel');
+const services = require('./events.services');
 const other = require('./events.other');
 
 module.exports = Object.assign(
@@ -413,5 +417,6 @@ module.exports = Object.assign(
   },
   onload,
   travel,
+  services,
   other
 );

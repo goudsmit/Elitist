@@ -1,4 +1,5 @@
 // ./js/lib/events.onload.js
+
 /**
  * -------------------------
  * Api Chapter 3. Startup
@@ -56,10 +57,10 @@ const LoadGame = (line) => {
       Cmdr.ship = Ship;
     } else {
       // TODO: Capture this illustrious event
-      // console.log("Not in a ship event!!!: ", line)
+      console.log("Not in a ship event!!!: ", line)
     }
     Cmdr.credits = line.Credits;
-    let result = { callback: ui.updateGameState, data: { event: line.event } };
+    let result = { callback: ui.updateGameState, data: Object.assign({}, line) };
     resolve(result);
   });
 };
@@ -86,7 +87,7 @@ const Loadout = (line) => {
     }
     let Ship = new journal.StarShip(line.ShipID);
     Ship.Get();
-    console.log(shipData)
+    // console.log(shipData)
     Object.assign(Ship, shipData);
     if (Cmdr.ship.id != Ship.id) {
       Cmdr.ship = Ship;

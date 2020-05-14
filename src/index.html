@@ -26,7 +26,7 @@
   </nav>
 <!-- Overlay: Used for loading and start-up progress -->
 <div class="overlay-container" id="overlay">
-  <div class="loader">
+  <div class="loader" id="loader">
     <div class="inner one"></div>
     <div class="inner two"></div>
     <div class="inner three"></div>
@@ -86,10 +86,8 @@
           <div class="panel-row fuel" id="shipFuel">
             <div class="desc">fuel</div>
             <div class="val" id="shipFuelNumbers">50%</div>
-            <progress class="progress-bar" id="shipFuelLevelBar" max="32" value="20"></progress>
-            
-          </div>
-          
+            <progress class="progress-bar" id="shipFuelLevelBar" max="32" value="20"></progress>            
+          </div>          
         </div>
       </div>
       <!-- RANK PANEL-->
@@ -199,10 +197,10 @@
         <div class="panel-header">
           <div class="icon"><i class="fa fa-sun"></i></div>
           <div class="titles">
-            <div class="title">location</div>
+            <div class="title" id="systemName">location</div>
             <div class="sub-title">
-              <div>star system</div>
-              <div class="" id="dockingStatus">docked</div>
+              <div class="name">star system</div>
+              <div class="docking-status" id="dockingStatus">docked</div>
             </div>
           </div>
         </div>
@@ -217,7 +215,7 @@
           </div>
           <div class="panel-row government">
             <div class="desc">government</div>
-            <div class="val" id="systemEconomies">None</div>
+            <div class="val" id="systemGovernment">None</div>
           </div>
           <div class="panel-row right security">
             <div class="desc">security</div>
@@ -230,7 +228,7 @@
         </div>
       </div>
       <!-- DOCK -->
-      <div class="panel dock">
+      <div class="panel dock" id="dockPanel">
         <div class="panel-header">
           <div class="title right" id="bodyName">Dock Name</div>
           <div class="sub-title">

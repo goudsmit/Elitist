@@ -246,10 +246,10 @@
    .overlay-container {
        display: flex;
        align-items: center;
-       justify-content: start;
+       justify-content: center;
        height: 100%;
        width: 100%;
-       margin-top: 45%;
+       /* margin-top: 45%; */
        z-index: 1000;
        position: absolute;
        font-family: Eurocaps;
@@ -261,6 +261,9 @@
        margin-top: 20px;
        padding: 5px 0;
        text-align: center;
+   }
+   .overlay-container .msg.no-cmdr {
+       color: var(--elite-red);
    }
    
    /* =======================
@@ -389,6 +392,7 @@
        9.1.2 SECTIONS: INFO > SHIP
       ======================= */
    .ship .fuel { margin: 3px 0; }
+   .ship .fuel progress { bottom: 0px; }
    
    /* =======================
        9.1.3 SECTIONS: INFO > RANKS
@@ -462,6 +466,10 @@
            inset 0 -5px 6px -5px var(--elite-orange), 
            inset 0 150px 150px -150px var(--faint-red);
    }
+   .spacer {
+       padding: 0 4px;
+       color: var(--orange);
+   }
    
    /* =======================
        9.2.1 SECTIONS: TRAVEL > OVERLAY
@@ -518,6 +526,15 @@
        color: var(--orange-dark);
        justify-content: space-between;
    }
+   .location .sub-title .name {
+       color: var(--orange-dark);
+   }
+   .location .sub-title .docking-status {
+       color: var(--orange-darkest);
+   }
+   .location .sub-title .docking-status.docked {
+       color: var(--elite-green);
+   } 
    .location .icon {
        font-size: 32px;
        padding: 3px;
@@ -610,8 +627,10 @@
        flex-wrap: wrap;
    }
    .dock .service {
-       background: var(--orange-dark);
-       color: var(--brown-dark);
+       background: var(--orange-darker);
+       color: var(--orange);
+       border-left: 1px solid var(--orange);
+       text-shadow: 0 0 2px var(--brown-darker);
        padding: 2px 5px;
        margin: 2px;
        font-size: 14px; 

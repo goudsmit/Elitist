@@ -61,6 +61,20 @@ const ipc = require("electron").ipcRenderer;
 ipc.on("start-watcher-reply", (event, args) => {
   console.log(args);
 });
+ipc.on('file-update', async (event, args) => {
+  var parts = args.split(path.sep)
+  var file = parts.pop()
+  var folder = parts.join(path.sep)
+  if (file.endsWith('.log')) {
+    let log = await db.logs.get(file)
+    if (log == undefined || !(log.shutdown)) {
+      await readFile(file).then( () => {
+        console.log("Processed all lines", lineSeq)
+      })
+      // console.log("File not found in Database, processing!")
+    }
+  }
+});
 
 /**
  * ----------------------------------
@@ -122,6 +136,7 @@ const checkFolder = (type) => {
                 ).replace(/\\/g, "/");
                 // OVERRIDE
                 dir = "C:/Users/vkuip/Desktop/Elite Log Files";
+                dir = "/Users/vkuipers/Downloads/Elite"
                 break;
             // SCREENSHOTS
             // KEYBINDS
@@ -174,11 +189,24 @@ const readFolder = (folder) => {
        *          that are NOT processed in db.logs (shutdown-event)
        */
       let cleanfiles = [];
-      files.forEach((file) => {
+      // files.forEach( async (file) => {
+      //   if (file.endsWith(".log")) {
+      //     let log = await db.logs.get(file)
+      //     if (log == undefined || !(log.shutdown)) {
+      //       console.log(file)
+      //       cleanfiles.push(file);
+      //     }
+      //   }
+      // });
+      for (let i in files) {
+        let file = files[i]
         if (file.endsWith(".log")) {
-          cleanfiles.push(file);
+          let log = await db.logs.get(file)
+          if (log == undefined || !(log.shutdown)) {
+            cleanfiles.push(file);
+          }
         }
-      });
+      }
   
       /**
        * Process the files
@@ -188,28 +216,32 @@ const readFolder = (folder) => {
         let stats = await stat(folder + path.sep + file);
         if (stats.isFile()) {
           let index = parseInt(i)+1
-          ui.elements.overlayMsg.innerText = `Processing ${file} (${index}/${files.length})`
-          console.log(`${index}/${files.length}: Read File ${file} here`);
+          ui.elements.overlayMsg.innerText = `Processing ${file} (${index}/${cleanfiles.length})`
+          console.log(`(${index}/${cleanfiles.length}) Reading File ${file} from line ${lineSeq+1}`);
           await readFile(file, index).then(() => {
-              console.log(`FINISH`)
+              // console.log(`FINISH`)
           })  
         }
       }
     })
     .then( async () => {
       ui.elements.overlayMsg.innerText = `Welcome back, Cmdr`
-        console.log(`Folder contents checked and read`);
-        function timeout(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-        await timeout(1000);
-        console.log("1 second later")
+      console.log(`Folder contents checked and read`);
+        // function timeout(ms) {
+        //     return new Promise(resolve => setTimeout(resolve, ms));
+        // }
+        // await timeout(1000);
+        // console.log("1 second later")
         // Set up APP constants: CMDR etc
     })
     .then( () => {
-        ui.updateOverlay("LoadUI")
-        console.log("Load UI")
-
+        if (elitist.cmdr) {
+          ui.updateOverlay("LoadUI");
+          console.log("Load UI");
+        } else {
+          ui.updateOverlay("NoCmdr");
+          // console.log("no Cmdr")
+        }
     });
 };
 
@@ -224,39 +256,45 @@ const readFolder = (folder) => {
  * ----------------------------------
  */
 var fileName
-var lineSeq
+let lineSeq = 0;
 const readFile = (file, index) => {
   return new Promise((resolve, reject) => {
     fileName = file;
     const LineByLineReader = require("line-by-line");
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     lr = new LineByLineReader(elitist.folder.logs + path.sep + file);
-    lineSeq = 0;
     lr.on("error", function (err) {
-      reject(error);
+      reject(err);
     });
+    let read = 0;
     lr.on("line", async (line) => {
+      read++;
       lr.pause();
-      line = JSON.parse(line);
-      //   console.log(`   ${lineSeq+1}: `, line);
-
-      await EventProcessor(line).then(async (result) => {
-        
-        //   PostProcess Stuff
-        await ResultProcessor(result)
-          .then(() => {
-            lineSeq += 1;
-            lr.resume();
-          })
-          .catch((error) => {
-            console.log(error);
-            lineSeq += 1;
-            lr.resume();
-          });
-        // console.log(result);
-        // lineSeq += 1
-        // lr.resume()
-      })
+      if (read > lineSeq) {
+        try {
+          line = JSON.parse(line);
+        } catch {
+          console.log(line)
+        }
+        //   console.log(`   ${lineSeq+1}: `, line);
+        await EventProcessor(line).then(async (result) => {
+          
+          //   PostProcess Stuff
+          await ResultProcessor(result)
+            .then(() => {
+              lineSeq++;
+              lr.resume();
+            })
+            .catch((error) => {
+              console.log(`${error}`);
+              lineSeq++;
+              lr.resume();
+            });
+        })
+      } else {
+        // console.log("Skip: ", lineSeq, read)
+        lr.resume();
+      }
     });
     lr.on("end", () => {
       resolve();

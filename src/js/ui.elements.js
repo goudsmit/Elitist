@@ -24,6 +24,16 @@ exports.federationRank = document.getElementById("federationRank");
 exports.federationProgress = document.getElementById("federationProgress");
 exports.empireRank = document.getElementById("empireRank");
 exports.empireProgress = document.getElementById("empireProgress");
+// SYSTEM
+exports.dockPanel = document.getElementById("dockPanel");
+exports.dockingStatus = document.getElementById("dockingStatus")
+exports.systemName = document.getElementById("systemName");
+exports.systemAllegiance = document.getElementById("systemAllegiance");
+exports.systemGovernment = document.getElementById("systemGovernment");
+exports.systemEconomies = document.getElementById("systemEconomies");
+exports.systemSecurity = document.getElementById("systemSecurity");
+exports.systemPopulation = document.getElementById("systemPopulation");
+
 // DOCK
 exports.bodyName = document.getElementById("bodyName");
 exports.bodyType = document.getElementById("bodyType");

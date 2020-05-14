@@ -17,8 +17,12 @@ exports.updateOverlay = async (state) => {
         elements.appContainer.style.display = "flex"
       })
       break;
-  
+    case "NoCmdr":
+      elements.overlayMsg.innerText = "No Commander Data Found. Start Game"
+      elements.overlayMsg.classList.add("no-cmdr");
+      break;
     default:
+      elements.overlayMsg.classList.remove("no-cmdr");
       elements.overlay.style.display = "flex"
       break;
   }
@@ -31,39 +35,41 @@ const updateGameState = async (data) => {
   // }
   // await timeout(3000);
   // console.log("update Game State after 3 seconds")
-  let status;
-  switch (data.event) {
-    case "LoadGame":
-      status = "online"
-      elements.gameStatus.classList.toggle("online")
-      break;
-    case "Fileheader":
-      status = "initialising"
-    default:
-      status = "offline"
-      css = "offline"
-      break;
+  if (data.event == "LoadGame") {
+    elements.gameStatus.innerText = "online"
+    elements.gameStatus.classList.remove("offline");
+    elements.gameStatus.classList.add("online");
+    updateShip()
+  } else if (data.event == "Fileheader") {
+    elements.gameStatus.innerText = "initializing"
+  } else if (data.event == "Shutdown") {
+    elements.gameStatus.innerText = "offline"
+    elements.gameStatus.classList.remove("online");
+    elements.gameStatus.classList.add("offline");    
   }
-  elements.gameStatus.classList.remove()
-  elements.gameStatus.innerText = status
-  console.log("update Game State", data);
+  // console.log("update Game State", data);
 };
 exports.updateGameState = updateGameState;
 
-const updateShip = async (data) => {
-  elements.shipName.innerText = data.name
-  elements.shipId.innerText = data.ident
-  elements.shipType.innerText = data.type
-  elements.shipValue.innerText = data.hull.value ? formatNumber(data.hull.value) : "-"
-  elements.shipRebuy.innerText = formatNumber(data.rebuy);
-  elements.shipHealth.innerText = Math.round(data.hull.health * 100)
-  if (!data.fuel) {
+const updateShip = async (ship) => {
+  if (!ship) {
+    ship = Cmdr.ship
+  }
+  elements.shipName.innerText = ship.name
+  elements.shipId.innerText = ship.ident
+  elements.shipType.innerText = ship.type
+  elements.shipRebuy.innerText = ship.rebuy ? formatNumber(ship.rebuy) : "-"
+  if (ship.hull) {
+    elements.shipValue.innerText = ship.hull.value ? formatNumber(ship.hull.value) : "-"  
+    elements.shipHealth.innerText = ship.hull.health ? Math.round(ship.hull.health * 100) : "-"
+  }
+  if (!ship.fuel) {
     elements.shipFuel.style.display = "none"
   } else {
     elements.shipFuel.style.display = "flex"
-    elements.shipFuelNumbers.innerText = `${data.fuel.level} /${data.fuel.capacity}`
-    elements.shipFuelLevelBar.value = data.fuel.level
-    elements.shipFuelLevelBar.max = data.fuel.capacity
+    elements.shipFuelNumbers.innerText = `${ship.fuel.level} /${ship.fuel.capacity}`
+    elements.shipFuelLevelBar.value = ship.fuel.level
+    elements.shipFuelLevelBar.max = ship.fuel.capacity
   }
   // console.log("update Ship", data);
 };
@@ -102,14 +108,14 @@ const updateRank = async (rank) => {
       rankId = rank.type.toLowerCase() + "Rank"
       if (elements[rankId]) {
         elements[rankId].innerText = RANKS[rank.type][rank.level];
-        if (rank.level === 8) {
+        if (RANKS[rank.type][rank.level] === "Elite") {
           elements[rankId].classList.add("elite");
         }
       }
       rankProgress = rank.type.toLowerCase() + "Progress"
       if (elements[rankProgress]) {
         elements[rankProgress].value = rank.progress
-        if (rank.level === 8) {
+        if (RANKS[rank.type][rank.level] === "Elite") {
           elements[rankProgress].classList.add("elite")
         }
       }
@@ -119,47 +125,76 @@ const updateRank = async (rank) => {
 };
 exports.updateRank = updateRank;
 
-
 const updateDock = async (dock) => {
-  elements.bodyName.innerText = dock.name
-  elements.bodyType.innerText = dock.type
-  elements.bodyAllegiance.innerText = dock.allegiance ? dock.allegiance : "none"
-  elements.bodyGovernment.innerText = dock.government ? dock.government : "none"
-  if (dock.economies.length >= 1) {
-    let economies = []
-    for (let economy of dock.economies) {
-      economies.push(economy.Name_Localised)
-    }
-    elements.bodyEconomies.innerText = economies.join("|");
-  }
-  elements.bodyFaction.innerText = dock.faction.Name ? dock.faction.Name : "none"
-  if (dock.services) {
-    elements.bodyServices.innerText = ""
-    let serviceDiv = document.createElement("div");
-    serviceDiv.classList.add("service");
-    dock.services.forEach( service => {
-      let clone = serviceDiv.cloneNode(true);
-      clone.textContent = service
-      if (service == "BlackMarket") {
-        clone.classList.add(service.toLowerCase())
+  if (dock) {
+    elements.dockPanel.style.display = "flex"
+    elements.dockingStatus.classList.add("docked");
+    elements.bodyName.innerText = dock.name
+    elements.bodyType.innerText = dock.type
+    elements.bodyAllegiance.innerText = dock.allegiance ? dock.allegiance : "none"
+    elements.bodyGovernment.innerText = dock.government ? dock.government : "none"
+    if (dock.economies.length >= 1) {
+      let economies = []
+      for (let economy of dock.economies) {
+        economies.push(economy.Name_Localised)
       }
-      elements.bodyServices.append(clone)
-    })
-    // elements.bodyServices.innerText = ""
-    // let template = document.getElementById("bodyService");
-    // console.log(template)
-    // for (let service of dock.services) {
-    //   const clone = template.content.cloneNode(true);
-    //   // var div = clone.querySelectorAll("div");
-    //   // div.textContent = service
-    //   // bodyServices.append(clone)
-    // }
-    
+      elements.bodyEconomies.innerHTML = economies.join(`<span class="spacer">|</span>`);
+    }
+    elements.bodyFaction.innerText = dock.faction.Name ? dock.faction.Name : "none"
+    if (dock.services) {
+      elements.bodyServices.innerText = ""
+      let serviceDiv = document.createElement("div");
+      serviceDiv.classList.add("service");
+      dock.services.forEach( service => {
+        let clone = serviceDiv.cloneNode(true);
+        clone.textContent = service
+        if (service == "BlackMarket") {
+          clone.classList.add(service.toLowerCase())
+        }
+        elements.bodyServices.append(clone)
+      })
+    }
+  } else {
+    elements.dockPanel.style.display = "none"
   }
-
-  console.log("update Dock", dock)
+  // console.log("update Dock", dock)
 }
 exports.updateDock = updateDock;
+
+exports.updateLocation = async (system) => {
+  elements.systemName.innerText = system.name
+  elements.systemAllegiance.innerText = system.allegiance ? system.allegiance : "none"
+  elements.systemGovernment.innerText = system.government ? system.government : "none"
+  let economies = [];
+  if (system.economy.first) {
+    economies.push(system.economy.first);
+  }
+  if (system.economy.second) {
+    economies.push(system.economy.second);
+  }
+  elements.systemEconomies.innerHTML = economies.join(`<span class="spacer">|</span>`);
+  elements.systemSecurity.innerText = system.security ? system.security : "none"
+  elements.systemPopulation.innerText = formatNumber(system.population)
+  
+  // console.log("update Location", data, economies);
+}
+
+exports.updateTravelState = async (data) => {
+    /**
+   * Callbacks from:
+   * event: StartJump, data: destination if Hyperspace else Supercruise
+   * event: SupercruiseEntry
+   * event: FSDTarget, data: systemname & address
+   * event: DockingRequested, data: stationname & type
+   * event: DockingGranted, data: landingpad
+   * event: DockingDenied, data: Reason
+   * event: LaunchSRV
+   * event: DockSRV
+   * event: Touchdown, data: PlayerControlled
+   * event: Liftoff, data: PlayerControlled
+   */
+  console.log("update Travel State", data)
+}
 
 /**
  * ----------------------------------

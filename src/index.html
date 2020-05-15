@@ -126,7 +126,7 @@
         <div class="panel-title">cargo</div>
         <div class="panel-body">
           <div class="cargo-empty" id="cargoEmpty">No Cargo</div>
-          <table class="table" id="cargoPresent">
+          <table class="table" id="cargoPresent" style="display: none">
             <thead>
               <tr>
                 <th class="left item-name"> item</th>
@@ -134,10 +134,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <!-- <tr>
                 <td class="left item-name">reactive armor</td>
                 <td class="center border-left">12</td>
-              </tr>
+              </tr> -->
               
             </tbody>
           </table>
@@ -190,6 +190,7 @@
         <div class="msg">
           destination
           <div class="destination" id="fsdDestination">systemname</div>
+          <div class="destination-details" id="fsdDestinationDetails">details</div>
         </div>
       </div>
       <!-- LOCATION PANEL -->
@@ -200,6 +201,7 @@
             <div class="title" id="systemName">location</div>
             <div class="sub-title">
               <div class="name">star system</div>
+              <div class="target" id="fsdTarget"></div>
               <div class="docking-status" id="dockingStatus">docked</div>
             </div>
           </div>
@@ -236,7 +238,7 @@
             <div class="type" id="bodyType">dock type</div>
           </div>
         </div>
-        <div class="panel-body">
+        <div class="panel-body" id="dockPanelBody" style="display: none;">
           <div class="panel-row allegiance">
             <div class="desc">allegiance</div>
             <div class="val" id="bodyAllegiance">None</div>
@@ -254,33 +256,13 @@
             <div class="val" id="bodyFaction">None</div>
           </div>
           <div class="panel-row services" id="bodyServices">
-            <template id="bodyService">
-              <div class="service">service</div>
-            </template>
           </div>
         </div>
       </div>
       <!-- BODIES -->
       <div class="panel bodies">
         <div class="panel-title right">known bodies</div>
-        <div class="panel-body">
-          <div class="body">
-            <div class="id center">id</div>
-            <div class="details right">
-              <div class="name">name</div>
-              <div class="type">type</div>
-              <div class="properties">properties</div>
-              <div class="materials">materials</div>
-            </div>
-          </div>
-          <div class="body">
-            <div class="id center">id</div>
-            <div class="details right">
-              <div class="name">name</div>
-              <div class="type">type</div>
-              <div class="properties">properties</div>
-            </div>
-          </div>
+        <div class="panel-body" id="systemBodies">          
         </div>
       </div>
     </section>

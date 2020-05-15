@@ -39,7 +39,7 @@ const updateGameState = async (data) => {
     elements.gameStatus.innerText = "online"
     elements.gameStatus.classList.remove("offline");
     elements.gameStatus.classList.add("online");
-    updateShip()
+    this.updateShip()
   } else if (data.event == "Fileheader") {
     elements.gameStatus.innerText = "initializing"
   } else if (data.event == "Shutdown") {
@@ -51,10 +51,7 @@ const updateGameState = async (data) => {
 };
 exports.updateGameState = updateGameState;
 
-const updateShip = async (ship) => {
-  if (!ship) {
-    ship = Cmdr.ship
-  }
+exports.updateShip = async (ship=Cmdr.ship) => {
   elements.shipName.innerText = ship.name
   elements.shipId.innerText = ship.ident
   elements.shipType.innerText = ship.type
@@ -67,15 +64,27 @@ const updateShip = async (ship) => {
     elements.shipFuel.style.display = "none"
   } else {
     elements.shipFuel.style.display = "flex"
-    elements.shipFuelNumbers.innerText = `${ship.fuel.level} /${ship.fuel.capacity}`
+    let fuelCurrent = Math.round(ship.fuel.level * 10) / 10
+    elements.shipFuelNumbers.innerText = `${fuelCurrent}/${ship.fuel.capacity}t`
     elements.shipFuelLevelBar.value = ship.fuel.level
     elements.shipFuelLevelBar.max = ship.fuel.capacity
   }
   // console.log("update Ship", data);
 };
-exports.updateShip = updateShip;
 
-const updateMaterials = async () => {
+exports.updateFuel = async (data) => {
+  switch (data.event) {
+    case "FuelScoop":
+      let fuelCurrent = Math.round(data.Total * 10) / 10
+      elements.shipFuelNumbers.innerText = `${fuelCurrent}/${Cmdr.ship.fuel.capacity}t`
+      elements.shipFuelLevelBar.value = data.Total
+      break;
+    default:
+      console.log(data)
+  }
+}
+
+exports.updateMaterials = async () => {
   let table = document.getElementById("materialTable")
   let template = document.getElementById("materialRow")
   var materials = await db.materials.toCollection();
@@ -99,9 +108,8 @@ const updateMaterials = async () => {
   });
   // console.log("update Materials");
 };
-exports.updateMaterials = updateMaterials;
 
-const updateRank = async (rank) => {
+exports.updateRank = async (rank) => {
   if (!rank) {
     const RANKS = require('./lib/journal/index').RANKS
     await db.ranks.each( rank => {
@@ -123,11 +131,15 @@ const updateRank = async (rank) => {
   }
   // console.log("update Rank/ All Ranks Level or Progress");
 };
-exports.updateRank = updateRank;
+
+exports.updateCargo = async (cargo) => {
+  console.log(`updateCargo: `, cargo)
+}
 
 const updateDock = async (dock) => {
   if (dock) {
     elements.dockPanel.style.display = "flex"
+    elements.dockPanelBody.style.display = "flex"
     elements.dockingStatus.classList.add("docked");
     elements.bodyName.innerText = dock.name
     elements.bodyType.innerText = dock.type
@@ -155,13 +167,15 @@ const updateDock = async (dock) => {
       })
     }
   } else {
-    elements.dockPanel.style.display = "none"
+    elements.dockPanel.style.display = "none";
+    elements.dockPanelBody.style.display = "none"
   }
   // console.log("update Dock", dock)
 }
 exports.updateDock = updateDock;
 
 exports.updateLocation = async (system) => {
+  
   elements.systemName.innerText = system.name
   elements.systemAllegiance.innerText = system.allegiance ? system.allegiance : "none"
   elements.systemGovernment.innerText = system.government ? system.government : "none"
@@ -175,7 +189,8 @@ exports.updateLocation = async (system) => {
   elements.systemEconomies.innerHTML = economies.join(`<span class="spacer">|</span>`);
   elements.systemSecurity.innerText = system.security ? system.security : "none"
   elements.systemPopulation.innerText = formatNumber(system.population)
-  
+  elements.systemBodies.innerHTML = ""
+  await this.updateBodies()
   // console.log("update Location", data, economies);
 }
 
@@ -192,8 +207,93 @@ exports.updateTravelState = async (data) => {
    * event: DockSRV
    * event: Touchdown, data: PlayerControlled
    * event: Liftoff, data: PlayerControlled
+   * event: FSDJump, NOT a callback, but a early call
    */
-  console.log("update Travel State", data)
+  let panels;
+  switch (data.event) {
+    case "FSDTarget":
+      elements.fsdTarget.innerText = `target > ${data.name}`;
+      break;
+    case "StartJump":
+      panels = elements.travelPanels.querySelectorAll(".panel");
+      panels.forEach(panel => panel.style.display = "none");
+      elements.travelOverlay.style.display = "flex";
+      elements.fsdDestination.innerText = data.name
+      // let fuelable = ["O","B","A","F","G","K","M"];
+      // if (fuelable.includes(data.starclass)) {
+      //   fuel = `<span><i class="fa fa-gas-pump></i></span>`
+      // }
+      elements.fsdDestinationDetails.innerHTML = `starclass: ${data.starclass}`
+      break;
+    case "FSDJump":
+      if (elements.fsdTarget.innerText == `target > ${data.name}`) {
+        elements.fsdTarget.innerText = ""
+      }
+      elements.travelOverlay.style.display = "none";  
+      panels = elements.travelPanels.querySelectorAll(".panel");
+      panels.forEach(panel => panel.style.display = "flex");
+      this.updateDock()
+      break;
+    default:
+      console.log("update Travel State", data);
+  }  
+}
+
+exports.updateSignals = async (data) => {
+  /**
+   * Callbacks from:
+   * event: FSSSignalDiscovered, data: signals
+   */
+  // console.log(data)
+}
+
+exports.updateBodies = async (body) => {
+  if (!body) {
+    // update all bodies
+    await db.bodies.where({ address: Cmdr.location.address }).each((body) => {
+      // TODO: Separate function, perhaps roll into getBodyTemplate()
+      let template = elements.getBodyTemplate();
+      template.id = `BodyID${body.id}`;
+      let divBodyId = template.querySelector(".id");
+      divBodyId.innerText = body.id;
+      let divBodyName = template.querySelector(".name");
+      divBodyName.innerText = body.name;
+      let divBodyType = template.querySelector(".type");
+      divBodyType.innerText = body.type;
+      // TODO: Do something with properties. will be easier when we have bigger systems and scans
+      let divBodyProperties = template.querySelector(".properties");
+      // TODO: Do something with materials. will be easier when we have bigger systems and scans
+      let divBodyMaterials = template.querySelector(".materials");
+      elements.systemBodies.appendChild(template);
+    });
+  } else {
+    console.log(body);
+  }
+};
+
+exports.loadUI = async () => {
+  if (Cmdr) {
+    elements.cmdrName.innerText = Cmdr.name
+    // TODO: CmdrVessel
+    elements.cmdrCredits.innerText = formatNumber(Cmdr.credits);
+    await this.updateShip()
+    await this.updateRank()
+    await this.updateMaterials()
+    await db.systems.get(Cmdr.location.address, async (system) => {
+      await this.updateLocation(system)
+    })
+    await this.updateDock(Cmdr.location.dock)    
+  }
+}
+
+
+exports.addDockingRequest = async (data) =>{
+  console.log(data)
+  let dockingRequest = elements.getDockingRequest()
+  dockingRequest.innerText = data.event
+  let parentNode = document.getElementById("dockPanel").parentNode
+  let dockNode = document.getElementById("dockPanel")
+  parentNode.insertBefore(dockingRequest, dockNode)
 }
 
 /**

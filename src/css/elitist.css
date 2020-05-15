@@ -496,6 +496,10 @@
        color: var(--elite-orange);
        font-size: 24px;
    }
+   .travel-overlay .msg .destination-details {
+       color: var(--orange-dark);
+       font-size: 16px;
+   }
    
    /* =======================
        9.2.2 SECTIONS: TRAVEL > LOCATION
@@ -529,6 +533,9 @@
    .location .sub-title .name {
        color: var(--orange-dark);
    }
+   .location .sub-title .target {
+        color: var(--elite-red);
+    }
    .location .sub-title .docking-status {
        color: var(--orange-darkest);
    }
@@ -636,7 +643,8 @@
        font-size: 14px; 
    }
    .dock .service.blackmarket {
-       background: var(--elite-yellow);
+       color: var(--elite-yellow);
+       border-left: 1px solid var(--elite-yellow);
    }
    /* =======================
        9.2.4 SECTIONS: TRAVEL > BODIES

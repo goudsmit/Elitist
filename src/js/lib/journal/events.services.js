@@ -54,6 +54,22 @@ const EngineerProgress = (line) => {
     resolve(true)
   })
 }
+
+const Market = (line) => {
+  return Promise.resolve(true)
+}
+
+const Outfitting = (line) => {
+  return Promise.resolve(true)
+}
+
+const StoredModules = (line) => {
+  return Promise.resolve(true)
+}
+
 module.exports = {
-  EngineerProgress
+  EngineerProgress,
+  Market,
+  Outfitting,
+  StoredModules
 }

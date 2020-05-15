@@ -27,12 +27,12 @@ class Cmdr {
       .then((cmdr) => {
         Object.assign(this, cmdr);
       })
-      .then(() => {
-        if (this.ship) {
-          let Ship = new StarShip(this.ship.id);
-          Ship.Get();
-          this.ship = Ship;
-        }
+      .then( async () => {
+        // if (this.ship) {
+        //   let Ship = new StarShip(this.ship.id);
+        //   await Ship.Get();
+        //   this.ship = Ship;
+        // }
       });
   }
   Save() {
@@ -399,6 +399,7 @@ const Fileheader = (line) => {
 
 const onload = require('./events.onload');
 const travel = require('./events.travel');
+const exploration = require('./events.exploration');
 const services = require('./events.services');
 const other = require('./events.other');
 
@@ -417,6 +418,7 @@ module.exports = Object.assign(
   },
   onload,
   travel,
+  exploration,
   services,
   other
 );

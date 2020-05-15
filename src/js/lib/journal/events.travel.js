@@ -26,7 +26,7 @@ const Docked = (line) => {
       economy: line.StationEconomy_Localised,
       economies: line.StationEconomies,
     };
-  
+    Cmdr.location.dock = station
     let result = { callback: ui.updateDock, data: station };
     resolve(result);
   });
@@ -52,7 +52,8 @@ const DockingGranted = (line) => {
 
 const DockingRequested = (line) => {
   return new Promise((resolve) => {
-    
+    result = {callback: ui.addDockingRequest, data: Object.assign({}, line)}
+    resolve(result)
   })
 }
 
@@ -64,7 +65,35 @@ const DockingTimeout = (line) => {
 
 const FSDJump = (line) => {
   return new Promise((resolve) => {
-    
+    Cmdr.location.address = line.SystemAddress;
+    // console.log("FSDJump: ", line.timestamp, Cmdr.location.address, line.StarSystem);
+    ui.updateTravelState({event: line.event, name: line.StarSystem})
+    // TODO: Drop in favour of Status.json updates.
+    if (Cmdr.ship.fuel != undefined) {
+      Cmdr.ship.fuel.level = line.FuelLevel
+    }
+
+    let System = new journal.System(line.SystemAddress);
+    var systemUpdate = {
+      name: line.StarSystem,
+      position: line.StarPos,
+      allegiance: line.SystemAllegiance,
+      economy: {
+        first: line.SystemEconomy_Localised,
+        second: line.SystemSecondEconomy_Localised,
+      },
+      government: line.SystemGovernment_Localised,
+      security:
+        line.SystemSecurity_Localised == undefined
+          ? line.SystemSecurity
+          : line.SystemSecurity_Localised,
+      population: line.Population,
+    };
+    Object.assign(System, systemUpdate);
+    System.Save();
+  
+    let result = { callback: ui.updateLocation, data: System };
+    resolve(result)   
   })
 }
 
@@ -143,9 +172,25 @@ const StartJump = (line) => {
   })
 }
 
+const SupercruiseExit = (line) => {
+  return new Promise(resolve => {
+    let Body = new journal.Body(line.SystemAddress, line.BodyID);
+    var bodyUpdate = {
+      name: line.Body,
+      type: line.BodyType,
+    };
+    Object.assign(Body, bodyUpdate);
+    Body.Save();
+
+    result = { callback: ui.updateBodies };
+    resolve(result)
+  })
+}
+
 const Undocked = (line) => {
   return new Promise((resolve) => {
     Cmdr.location.docked = false;
+    Cmdr.location.dock = null;
     let result = { callback: ui.updateDock };    
     resolve(result)
   });
@@ -153,8 +198,11 @@ const Undocked = (line) => {
 
 module.exports = {
   Docked,
+  DockingRequested,
+  FSDJump,
   FSDTarget, 
   Location,
   StartJump,
+  SupercruiseExit,
   Undocked
 };

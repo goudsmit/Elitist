@@ -14,7 +14,8 @@ const Cargo = (line) => {
     if (line.Count > 0) {
       console.log(line);
     }
-    resolve(true);
+    let result = {callback: ui.updateCargo, data: Object.assign({}, line)}
+    resolve(result);
   });
 };
 

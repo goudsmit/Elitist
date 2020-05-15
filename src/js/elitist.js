@@ -68,8 +68,9 @@ ipc.on('file-update', async (event, args) => {
   if (file.endsWith('.log')) {
     let log = await db.logs.get(file)
     if (log == undefined || !(log.shutdown)) {
+      let preProcessLineSeq = lineSeq
       await readFile(file).then( () => {
-        console.log("Processed all lines", lineSeq)
+        console.log(`Processed all lines (${preProcessLineSeq}->${lineSeq})`)
       })
       // console.log("File not found in Database, processing!")
     }
@@ -237,6 +238,7 @@ const readFolder = (folder) => {
     .then( () => {
         if (elitist.cmdr) {
           ui.updateOverlay("LoadUI");
+          ui.loadUI()
           console.log("Load UI");
         } else {
           ui.updateOverlay("NoCmdr");
@@ -278,7 +280,7 @@ const readFile = (file, index) => {
         }
         //   console.log(`   ${lineSeq+1}: `, line);
         await EventProcessor(line).then(async (result) => {
-          
+
           //   PostProcess Stuff
           await ResultProcessor(result)
             .then(() => {
@@ -353,7 +355,7 @@ const ResultProcessor = async (obj) => {
  * Elitist: RUN
  * -------------------------
  */
-appSetup().then(() => {
+appSetup().then(async () => {
         /**
      * ----------------------------------
      * Elitist: Set Commander
@@ -361,7 +363,7 @@ appSetup().then(() => {
      */
     if (elitist.cmdr != null) {
         Cmdr = new journal.Cmdr(elitist.cmdr)
-        Cmdr.Get()
+        await Cmdr.Get()
     }
     readFolder(elitist.folder.logs)
 })

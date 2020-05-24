@@ -9,6 +9,7 @@ class Cmdr {
   constructor(name) {
     this.name = name;
     this.location = {};
+    this.session = {materials: {}, bounties: {}}
     this.Init();
   }
   Init() {
@@ -22,18 +23,17 @@ class Cmdr {
       .catch(() => {});
   }
   Get() {
-    db.cmdr
+    return new Promise(resolve => {
+      db.cmdr
       .get({ name: this.name })
       .then((cmdr) => {
         Object.assign(this, cmdr);
-      })
-      .then( async () => {
-        // if (this.ship) {
-        //   let Ship = new StarShip(this.ship.id);
-        //   await Ship.Get();
-        //   this.ship = Ship;
-        // }
+      }).then(() => {
+        this.session = {materials: {}, bounties: {}}
+        resolve(true)
       });
+    })
+
   }
   Save() {
     db.cmdr
@@ -399,6 +399,7 @@ const Fileheader = (line) => {
 
 const onload = require('./events.onload');
 const travel = require('./events.travel');
+const combat = require('./events.combat');
 const exploration = require('./events.exploration');
 const services = require('./events.services');
 const other = require('./events.other');
@@ -412,12 +413,14 @@ module.exports = Object.assign(
     Planet,
     Star,
     Material,
+    RAW,
     RANKS,
     FACTIONS,
     Fileheader,
   },
   onload,
   travel,
+  combat,
   exploration,
   services,
   other

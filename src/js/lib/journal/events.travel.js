@@ -8,7 +8,8 @@ const ui = require('../../ui.updates');
 
 const ApproachBody = (line) => {
   return new Promise((resolve) => {
-    
+    let result = {callback: ui.updateLog, data: {event: line.event, body: {name: line.Body, id: line.BodyID}}}
+    resolve(result);
   })
 }
 
@@ -46,13 +47,14 @@ const DockingDenied = (line) => {
 
 const DockingGranted = (line) => {
   return new Promise((resolve) => {
-    
+    result = {callback: ui.updateLog, data: Object.assign({}, line)}
+    resolve(result)
   })
 }
 
 const DockingRequested = (line) => {
   return new Promise((resolve) => {
-    result = {callback: ui.addDockingRequest, data: Object.assign({}, line)}
+    result = {callback: ui.updateLog, data: Object.assign({}, line)}
     resolve(result)
   })
 }
@@ -104,9 +106,16 @@ const FSDTarget = (line) => {
       event: line.event,
       address: line.SystemAddress,
       name: line.Name,
+      remaining: line.RemainingJumpsInRoute
     };
   
     let result = { callback: ui.updateTravelState, data: target };    
+    resolve(result);
+  })
+}
+const LeaveBody = (line) => {
+  return new Promise((resolve) => {
+    let result = {callback: ui.updateLog, data: {event: line.event, body: {name: line.Body, id: line.BodyID}}}
     resolve(result);
   })
 }
@@ -158,7 +167,7 @@ const Location = (line) => {
 const StartJump = (line) => {
   return new Promise((resolve) => {
   // Start of Countdown
-    let destination;
+    let destination = {};
     if (line.JumpType == "Hyperspace") {
       destination = {
         event: line.event,
@@ -167,9 +176,23 @@ const StartJump = (line) => {
         starclass: line.StarClass,
       };
     }
-    let result = { callback: ui.updateTravelState, data: destination };
+    let result = {
+      callback: ui.updateTravelState,
+      data: Object.assign(destination, {
+        event: line.event,
+        jumpType: line.JumpType,
+      }),
+    };
     resolve(result);
   })
+}
+
+const SupercruiseEntry = (line) => {
+  return new Promise(resolve => {
+    let result = {callback: ui.updateLog, data: {event: line.event}}
+    resolve(result);
+  })
+
 }
 
 const SupercruiseExit = (line) => {
@@ -197,12 +220,16 @@ const Undocked = (line) => {
 };
 
 module.exports = {
+  ApproachBody,
   Docked,
+  DockingGranted,
   DockingRequested,
   FSDJump,
-  FSDTarget, 
+  FSDTarget,
+  LeaveBody,
   Location,
   StartJump,
+  SupercruiseEntry,
   SupercruiseExit,
   Undocked
 };

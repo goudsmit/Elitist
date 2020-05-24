@@ -4,6 +4,12 @@
  * Api Chapter 8. Station Services
  * -------------------------
  */
+const ui = require('../../ui.updates');
+const CommunityGoal = (line) => Promise.resolve(true)
+const CommunityGoalDiscard = (line) => Promise.resolve(true)
+const CommunityGoalJoin = (line) => Promise.resolve(true)
+const CommunityGoalReward = (line) => Promise.resolve(true)
+
 const EngineerProgress = (line) => {
   return new Promise(resolve => {
     if (line.Engineers) {
@@ -55,21 +61,37 @@ const EngineerProgress = (line) => {
   })
 }
 
-const Market = (line) => {
+const Market = (line) => Promise.resolve(true);
+const Outfitting = (line) => Promise.resolve(true);
+
+const RefuelAll = (line) => {
+  return new Promise(resolve => {
+    ui.elements.cmdrCredits -= line.Cost
+    let result = {callback: ui.updateFuel, data: Object.assign({}, line)}
+    resolve(result)
+  })
+}
+const Shipyard = (line) => {
   return Promise.resolve(true)
 }
-
-const Outfitting = (line) => {
-  return Promise.resolve(true)
-}
-
 const StoredModules = (line) => {
+  return Promise.resolve(true)
+}
+const StoredShips = (line) => {
+  console.log(line)
   return Promise.resolve(true)
 }
 
 module.exports = {
+  CommunityGoal,
+  CommunityGoalDiscard,
+  CommunityGoalJoin,
+  CommunityGoalReward,
   EngineerProgress,
   Market,
   Outfitting,
-  StoredModules
+  RefuelAll,
+  Shipyard,
+  StoredModules,
+  StoredShips
 }

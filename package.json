@@ -1,6 +1,6 @@
 {
   "name": "elitist",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Elitist - An E:D Companion",
   "main": "main.js",
   "scripts": {

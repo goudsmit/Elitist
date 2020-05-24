@@ -137,7 +137,7 @@ const checkFolder = (type) => {
                 ).replace(/\\/g, "/");
                 // OVERRIDE
                 dir = "C:/Users/vkuip/Desktop/Elite Log Files";
-                dir = "/Users/vkuipers/Downloads/Elite"
+                // dir = "/Users/vkuipers/Downloads/Elite"
                 break;
             // SCREENSHOTS
             // KEYBINDS
@@ -276,9 +276,9 @@ const readFile = (file, index) => {
         try {
           line = JSON.parse(line);
         } catch {
-          console.log(line)
+          console.log(`Failed to parse JSON. file: ${fileName} line: ${line}`)
         }
-        //   console.log(`   ${lineSeq+1}: `, line);
+          // console.log(`   ${lineSeq+1}: `, line);
         await EventProcessor(line).then(async (result) => {
 
           //   PostProcess Stuff
@@ -288,7 +288,7 @@ const readFile = (file, index) => {
               lr.resume();
             })
             .catch((error) => {
-              console.log(`${error}`);
+              console.log(`(${lineSeq+1}) ${error}`);
               lineSeq++;
               lr.resume();
             });
@@ -356,14 +356,17 @@ const ResultProcessor = async (obj) => {
  * -------------------------
  */
 appSetup().then(async () => {
-        /**
-     * ----------------------------------
-     * Elitist: Set Commander
-     * ----------------------------------
-     */
-    if (elitist.cmdr != null) {
-        Cmdr = new journal.Cmdr(elitist.cmdr)
-        await Cmdr.Get()
-    }
-    readFolder(elitist.folder.logs)
-})
+  /**
+   * ----------------------------------
+   * Elitist: Set Commander
+   * ----------------------------------
+   */
+  if (elitist.cmdr != null) {
+    Cmdr = new journal.Cmdr(elitist.cmdr);
+    Cmdr.Get().then(() => {
+      readFolder(elitist.folder.logs);
+    });
+  } else {
+    readFolder(elitist.folder.logs);
+  }
+});

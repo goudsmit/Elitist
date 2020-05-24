@@ -35,6 +35,7 @@
             1. SIZES
             2. COLORS
         11. APPLICATION TITLE BAR
+        12. FARMING OVERLAY
    ======================= */ 
 
 
@@ -342,7 +343,7 @@
    /* =======================
        9.1 SECTIONS: INFO
       ======================= */
-   .info {
+   section > .info {
        width: 25%;
        margin: 0 10px;
        display: flex;
@@ -350,6 +351,8 @@
        border-top: 1px solid var(--orange-darker);
        border-bottom: 1px solid var(--orange-darker);
        text-shadow: 0 0 3px #000000;
+
+       font-variation-settings: 'wdth' 400;
    }
    .info .panel-title {
        padding-top: 15px;
@@ -430,6 +433,37 @@
        flex: 1 1 auto;
        height: 0px;
    }
+   .materials form {
+       width: 100%;
+       display: flex;
+       justify-content: space-around;
+   }
+   .materials .filter {
+       padding-bottom: 4px;
+   }
+   .materials .filter input {
+       display: none;
+        /* position: absolute !important;
+        clip: rect(0, 0, 0, 0);
+        height: 1px;
+        width: 1px;
+        border: 0;
+        overflow: hidden; */
+   }
+   .materials .filter input:checked + label {
+    background-color:var(--orange-darker);
+    color: var(--elite-yellow);
+	/* box-shadow: none; */
+    }
+   .materials .filter label {
+       background: var(--brown-dark);
+       color: var(--orange-dark);
+       font-size: 13px;
+       text-align: center;
+       flex: 1;
+       padding: 4px;
+       margin: 0 1px;
+   }
    .materials .table tbody td.material-type {
        background: var(--brown-dark);
        font-size: 14px;
@@ -452,7 +486,23 @@
        width: 100%;
        margin-bottom: 1px;
        font-size: 14px;
+       line-height: .8;
    }
+   .log .panel-body .info {
+       color: var(--elite-blue-light);
+   }
+   .log .panel-body .highlight {
+       color: var(--elite-yellow);
+   }
+   .log .panel-body .success {
+        color: var(--elite-green);
+    }
+   .log .panel-body .warning {
+        color: var(--elite-orange);
+    }
+   .log .panel-body .danger {
+        color: var(--elite-red);
+    }
    
    /* =======================
        9.2 SECTIONS: TRAVEL
@@ -519,6 +569,7 @@
    }
    .location .title {
        font-size: 28px;
+       text-shadow: 1px 1px 1px #000000;
        border-bottom: 1px solid var(--orange);
        line-height: 1.2;
    }
@@ -569,7 +620,7 @@
        color: var(--orange);
    }
    .location .val {
-       font-size: 20px;
+       font-size: 22px;
    }
    
    /* =======================
@@ -577,9 +628,12 @@
       ======================= */
    .dock {
        margin: 0 20px;
-       background: var(--brown-dark);
+       /* background: var(--brown-dark); */
+       background: #33140285;
        position: relative;
        padding: 10px;
+       text-shadow: 1px 1px 2px var(--brown-darkest);
+       transition: margin-right 4s ease-in-out 2s;
    }
    .dock:before { 
        content: "";
@@ -603,7 +657,7 @@
        line-height: 1.1;
        display: flex;
        flex-direction: row;
-       justify-content: space-between;
+       justify-content: flex-end;
        border-top: 1px solid var(--orange);
    }
    .dock .sub-title .type {
@@ -612,6 +666,7 @@
    .dock .sub-title .docking-request {
        color: var(--orange-darker);
        padding-left: 14px;
+       display: none;
    }
    .dock .panel-body {
        padding: 20px;
@@ -620,7 +675,7 @@
        justify-content: space-between;
    }
    .dock .desc {
-       color: var(--orange-dark);
+       color: var(--orange);
        font-size: 16px;
    }
    
@@ -634,10 +689,10 @@
        flex-wrap: wrap;
    }
    .dock .service {
-       background: var(--orange-darker);
+       background: var(--orange-darkest);
        color: var(--orange);
        border-left: 1px solid var(--orange);
-       text-shadow: 0 0 2px var(--brown-darker);
+       text-shadow: 1px 1px 2px var(--brown-darker);
        padding: 2px 5px;
        margin: 2px;
        font-size: 14px; 
@@ -652,6 +707,7 @@
    .bodies {
        margin: 15px;
        flex-grow: 1;
+       text-shadow: 0 0 2px var(--brown-darker);
    }
    .bodies .panel-title {
        padding-top: 10px;
@@ -680,32 +736,102 @@
        flex-grow: 1;
        display: flex;
        flex-direction: column;
-       background: var(--orange-darker);
+       /* background: var(--orange-darker); */
+       background: #7f370085;
    }
    .bodies .body .details .name {
-       font-size: 20px;
+       font-size: 24px;
+       text-shadow: 1px 1px 1px var(--brown-dark);
        padding: 4px;
        padding-bottom: 1px;
    }
+   .bodies .body .details .small-name {
+       font-size: 16px;
+   }
    .bodies .body .details .type {
        font-size: 16px;
-       padding: 4px;
-       padding-top: 0;
+       text-shadow: 1px 1px 1px var(--brown-dark);
+       padding: 0 6px 4px 4px;
        color: var(--orange);
    }
    .bodies .properties,
    .bodies .materials {
-       background: var(--orange-darkest);
+       /* background: var(--orange-darkest); */
+       background: #401c0085;
        display: flex;
        flex-direction: row;
        justify-content: flex-end;
+       align-items: center;
        font-size: 14px;
    }
    .bodies .properties {
+       line-height: 1.1;
+       text-transform: lowercase;
        padding: 2px 4px;
    }
+   .bodies .properties .property {
+       padding: 0 10px;
+       margin: 0 2px;
+       background: var(--elite-blue-dark);
+   }
+   .bodies .properties .landable {
+       background: var(--elite-green);
+   }
+
+   .bodies .properties .gravity-low {
+       background: var(--elite-green);
+   }
+
+   .bodies .properties .gravity-medium {
+       background: var(--elite-yellow);
+   }
+
+   .bodies .properties .gravity-high {
+       background: var(--elite-red);
+   }
+   .bodies .properties .rings {
+       padding: 0;
+       background: none;
+       display: flex;
+       flex-direction: row;
+   }
+   .bodies .properties .rings .ring {
+       margin: 1px;
+       padding: 2px 5px;
+       background: var(--elite-blue-light);
+   }
+
    .bodies .materials {
+       display: flex;
+       flex-direction: row;
+       flex-wrap: wrap;
        padding: 2px 4px;
+   }
+   .bodies .materials .material {
+       font-size: 12px;
+       display: flex;
+       flex-direction: column;
+       margin: 1px;
+       background: var(--brown-dark);
+       text-shadow: none;
+   }
+   .bodies .materials .material div {
+       padding: 0 6px;
+       text-align: center;
+   }
+   .bodies .materials .material .grade-4 {
+       background: var(--elite-yellow);
+       color: var(--brown-dark);
+   }
+   .bodies .materials .material .grade-3 {
+    background: var(--orange);
+    color: var(--brown-dark);
+   }
+   .bodies .materials .material .grade-2 {
+    background: var(--orange-dark);
+   }
+   .bodies .materials .material .grade-1 {
+    background: var(--orange-darker);
    }
    
    /* =======================
@@ -789,3 +915,20 @@
   nav .app-controls button:focus {
     outline: none;
   }
+
+    /* =======================
+    12.FARMING OVERLAY
+    ======================= */
+    .farming-overlay {
+        position: absolute;
+        display: none;
+        flex-direction: column;
+        right: 40px;
+        bottom: 40px;
+        padding: 6px;
+        background: #000000b4;
+
+    }
+    .farming-overlay .material {
+        display: flex;
+    }

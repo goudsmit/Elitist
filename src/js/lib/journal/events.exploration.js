@@ -5,6 +5,7 @@
  * -------------------------
  */
 const ui = require('../../ui.updates');
+const interface = require('../interface')
 
 const CodexEntry = (line) => {
   return new Promise(resolve => {
@@ -126,7 +127,8 @@ const Scan = (line) => {
       Object.assign(Body, beltUpdate);
     }
     Body.Save()
-    result = {callback: ui.updateBodies, data: Body}
+    // result = {callback: ui.updateBodies, data: Body}
+    result = {callback: interface.updateBodies, data: Body}
     resolve(result)
   })
 }

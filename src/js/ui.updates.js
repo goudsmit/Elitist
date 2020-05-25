@@ -1,5 +1,6 @@
 const db = require("./storage.db");
 const elements = require("./ui.elements");
+const interface = require("./lib/interface");
 exports.elements = elements;
 
 exports.updateOverlay = async (state) => {
@@ -232,7 +233,7 @@ exports.updateLocation = async (system) => {
     : "none";
   elements.systemPopulation.innerText = formatNumber(system.population);
   elements.systemBodies.innerHTML = "";
-  await this.updateBodies();
+  await interface.updateBodies();
   // console.log("update Location", data, economies);
 };
 
@@ -358,7 +359,8 @@ const addBody = (body) => {
   let template = elements.getBodyTemplate();
   template.id = body.id;
   let divBodyId = template.querySelector(".id");
-  divBodyId.innerText = body.id;
+  divBodyId.innerHTML = `<span class="stellar type-${body.class}"></span>`
+  // divBodyId.innerText = body.id;
   let divBodyName = template.querySelector(".name");
   divBodyName.innerText = body.name;
   if (body.type == "Asteroid Belt") {

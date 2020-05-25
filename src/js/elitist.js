@@ -1,6 +1,7 @@
 const db = require('./js/storage.db');
 const journal = require('./js/lib/journal');
-const ui = require('./js/ui.updates')
+const ui = require('./js/ui.updates');
+const interface = require('./js/lib/interface');
 
 const util = require("util");
 const fs = require("fs");

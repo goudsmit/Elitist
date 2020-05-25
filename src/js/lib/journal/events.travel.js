@@ -5,6 +5,7 @@
  * -------------------------
  */
 const ui = require('../../ui.updates');
+const interface = require('../interface');
 
 const ApproachBody = (line) => {
   return new Promise((resolve) => {

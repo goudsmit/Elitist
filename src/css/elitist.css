@@ -115,7 +115,6 @@ body::after {
 .panel-row {
   display: flex;
   flex-direction: row;
-  padding-top: 4px;
 }
 
 /* =======================
@@ -132,13 +131,13 @@ body::after {
   top: 0px;
   background: var(--background-color);
   font-size: 12px;
-  padding: 4px 4px 0 4px;
+  padding: 0 3px;
 }
 .panel .table tbody td {
   background: var(--orange-darkest);
   color: var(--orange);
   font-size: 13px;
-  padding: 4px 1px 0 1px;
+  padding: 2px;
 }
 .panel .table .border-left {
   border-left: 1px solid var(--orange-dark);
@@ -257,7 +256,7 @@ progress {
   appearance: none;
   height: 1px;
   width: 100%;
-  bottom: 3px;
+  bottom: 1px;
 }
 progress::-webkit-progress-bar {
   background-color: #00000028;
@@ -281,11 +280,8 @@ progress.elite::-webkit-progress-value {
   justify-content: center;
   height: 100%;
   width: 100%;
-  /* margin-top: 45%; */
   z-index: 1000;
   position: absolute;
-  /* font-family: Eurocaps;
-       text-transform: lowercase; */
   font-family: Eurostile;
   text-transform: uppercase;
   line-height: 1.2;
@@ -308,7 +304,6 @@ main {
   /* display: flex; */
   flex-direction: column;
   height: 100%;
-  /* font-family: Eurocaps; */
   font-family: Eurostile;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -324,7 +319,6 @@ header {
   align-items: flex-end;
   width: 100%;
   height: 90px;
-  /* text-transform: lowercase; */
 }
 header div {
   padding: 0 10px;
@@ -391,7 +385,7 @@ section > .info {
 .info .panel-title {
   padding-top: 25px;
   text-align: right;
-  line-height: 0.5;
+  line-height: 0.9;
   color: var(--orange-dark);
   font-size: 12px;
   border-bottom: 1px solid var(--orange-darker);
@@ -406,15 +400,15 @@ section > .info {
   padding-left: 3px;
 }
 .info .val {
-  font-size: 14px;
+  font-size: 13px;
   padding-right: 3px;
 }
-.info .progress {
+/* .info .progress {
   position: absolute;
-  bottom: 3px;
+  bottom: 1px;
   margin: 0 auto;
   width: 100%;
-}
+} */
 .info .table .item-name {
   padding-left: 5px;
 }
@@ -448,7 +442,7 @@ section > .info {
        9.1.3 SECTIONS: INFO > RANKS
       ======================= */
 .rank {
-  line-height: 1.2;
+  line-height: 1.4;
 }
 .rank .elite {
   color: var(--elite-yellow);
@@ -472,7 +466,6 @@ section > .info {
   color: var(--orange-dark);
   text-shadow: none;
   /* line-height: 1.4; */
-  padding-top: 5px;
 }
 .cargo .panel-body {
   max-height: 140px;
@@ -501,17 +494,10 @@ section > .info {
 }
 .materials .filter input {
   display: none;
-  /* position: absolute !important;
-        clip: rect(0, 0, 0, 0);
-        height: 1px;
-        width: 1px;
-        border: 0;
-        overflow: hidden; */
 }
 .materials .filter input:checked + label {
   background-color: var(--orange-darker);
   color: var(--elite-yellow);
-  /* box-shadow: none; */
 }
 .materials .filter label {
   background: var(--brown-dark);
@@ -519,12 +505,12 @@ section > .info {
   font-size: 11px;
   text-align: center;
   flex: 1;
-  padding: 4px 4px 0 4px;
+  padding: 2px 4px;
   margin: 0 1px;
 }
 .materials .table tbody td.material-type {
   background: var(--brown-dark);
-  font-size: 14px;
+  font-size: 13px;
   width: 20px;
 }
 .materials .table tbody td.material-count {
@@ -543,7 +529,8 @@ section > .info {
 .log .panel-body div {
   width: 100%;
   margin-bottom: 1px;
-  font-size: 13px;
+  font-size: 12px;
+  text-shadow: 1px 1px 1px black;
 }
 .log .panel-body .info {
   color: var(--elite-blue-light);
@@ -673,11 +660,11 @@ section > .info {
   padding: 4px 0;
 }
 .location .desc {
-  font-size: 18px;
+  font-size: 15px;
   color: var(--orange);
 }
 .location .val {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 /* =======================
@@ -763,7 +750,7 @@ section > .info {
 .bodies {
   margin: 15px;
   flex-grow: 1;
-  text-shadow: 0 0 2px var(--brown-darker);
+  text-shadow: 1px 1px 1px var(--brown-darker);
 }
 .bodies .panel-title {
   padding-top: 10px;
@@ -776,19 +763,17 @@ section > .info {
   flex-grow: 1;
   overflow: scroll;
 }
+.bodies .panel-body > div {
+  border-bottom: 1px solid var(--brown-darker);
+}
 .bodies .body {
   display: flex;
   flex-direction: row;
   align-items: stretch;
   justify-content: space-between;
   margin-bottom: 1px;
-  /* border-bottom: 1px solid var(--brown-darker); */
 }
 .bodies .body .id {
-  /* padding: 2px;
-       width: 40px;
-       background: var(--orange-dark); */
-  /* padding: 4px 10px 0 10px; */
   margin: auto;
   padding: 10px 20px;
 }
@@ -797,40 +782,36 @@ section > .info {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  /* background: var(--orange-darker); */
-  /* background: #7f370085; */
-  padding-top: 4px;
 }
 .bodies .body .details .name {
-  font-size: 24px;
+  font-size: 21px;
   text-shadow: 1px 1px 1px var(--brown-dark);
   padding: 4px;
   padding-bottom: 1px;
 }
 .bodies .body .details .type {
-  font-size: 16px;
+  font-size: 13px;
   text-shadow: 1px 1px 1px var(--brown-dark);
   padding: 0 6px 4px 4px;
   color: var(--orange);
 }
 /* Asteroid Belt */
 .bodies .body.belt .details {
-    font-size: 14px;
-    flex-direction: row;
-    justify-content: flex-end;
+  font-size: 13px;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 .bodies .body.belt .details .name,
 .bodies .body.belt .details .type {
-    font-size: 14px;
-    padding: 0 6px 4px 4px;
+  font-size: 13px;
+  padding: 0 6px 4px 4px;
 }
 .bodies .body.belt .id {
-    display: none;
+  display: none;
 }
+
 .bodies .properties,
 .bodies .materials {
-  /* background: var(--orange-darkest); */
-  /* background: #401c0085; */
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -842,7 +823,7 @@ section > .info {
   padding: 2px 4px;
 }
 .bodies .properties .property {
-  padding: 4px 10px 0 10px;
+  padding: 2px 10px;
   margin: 0 2px;
   background: var(--elite-blue-dark);
 }
@@ -1020,9 +1001,7 @@ nav .app-controls button:focus {
   border-color: rgba(0, 0, 0, 0.3);
   overflow: visible;
 }
-.stellar.type-undefined {
-    display: none;
-}
+
 .stellar.type-O {
   background-color: #f8feff;
   box-shadow: 0 0 5px #000, 0 0 15px #5ebcff, 0 0 45px #5ebcff,
@@ -1135,19 +1114,30 @@ nav .app-controls button:focus {
 }
 .stellar.type-elw {
     background-color: var(--elite-green);
-    background-blend-mode: color-dodge;
+    background-blend-mode: lighten;
 }
-
 .stellar.type-ww {
     background-color: var(--elite-blue-dark);
+    background-blend-mode: lighten;
 }
-
-/* .star .stellar {
-    width: 36px;
-    height: 36px;
+.stellar.type-aw {
+  background-color: var(--arissa-lavigny-duval);
+}
+.stellar.type-hmc {
+  background-color: var(--pranav-antal);
+}
+.stellar.type-mr {
+  background-color: var(--li-yong-rui);
+}
+.stellar.type-other-planet {
+  background-color: var(--orange-darker);
+}
+.stellar.type-Station,
+.stellar.type-undefined {
+  display: none;
 }
 .planet .stellar {
-    width: 32px;
-    height: 32px;
-} */
+    width: 24px;
+    height: 24px;
+}
 

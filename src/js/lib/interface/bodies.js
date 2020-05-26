@@ -1,5 +1,10 @@
 const elements = require('./elements');
 
+/**
+ * --------------------
+ * Body template
+ * --------------------
+ */
 const getBodyTemplate = () => {
 // <div class="body">
   //   <div class="id center">id</div>
@@ -37,7 +42,6 @@ const getBodyTemplate = () => {
   return template;
 }
 
-// Body Helper Functions
 const getShortBodyType = (bodyType) => {
   if (bodyType == 'Asteroid Belt') {
     return 'belt'
@@ -59,19 +63,68 @@ const getShortPlanetClass = (planetClass) => {
     return "other-planet"
   }
 }
+/**
+ * --------------------
+ * Is the body already defined in the document?
+ * --------------------
+ */
 const bodyExists = (id) => {
   let element = document.getElementById(id);
   return elements.systemBodies.contains(element);
 };
+
+/**
+ * --------------------
+ * Properties
+ * --------------------
+ */
+const addProperty = (property) => {
+  let template = document.createElement("div");
+  template.classList.add("property");
+  if (property) {
+    template.classList.add(property);
+  }
+  return template;
+}
+/**
+ * --------------------
+ * Property: Gravity
+ * --------------------
+ */
+const setGravityProperty = (gravity) => {
+  let template = addProperty();
+  if (gravity < 1) {
+    template.classList.add("gravity-low");
+  } else if (gravity > 1 && gravity < 2.5) {
+    template.classList.add("gravity-medium");
+  } else {
+    template.classList.add("gravity-high");
+  }
+  template.innerText = `${Math.round(gravity*10)/10}g`
+  return template;
+};
+
+/**
+ * --------------------
+ * Put together the body to return
+ * --------------------
+ */
 const addBody = (body) => {
-  let template = getBodyTemplate()
-  template.classList.add(getShortBodyType(body.type))
-  template.id = body.id
+  let template = getBodyTemplate();
+  template.classList.add(getShortBodyType(body.type));
+  template.id = body.id;
   let divBodyId = template.querySelector(".id");
-  let shortBodyClass = (body.type == "Planet") ? getShortPlanetClass(body.class) : (body.type == "Star") ? body.class : (body.type == "Asteroid Belt") ? "belt" : body.type
-  divBodyId.innerHTML = `<span class="stellar type-${shortBodyClass}"></span>`
+  let shortBodyClass =
+    body.type == "Planet"
+      ? getShortPlanetClass(body.class)
+      : body.type == "Star"
+      ? body.class
+      : body.type == "Asteroid Belt"
+      ? "belt"
+      : body.type;
+  divBodyId.innerHTML = `<span class="stellar type-${shortBodyClass}"></span>`;
   let divBodyName = template.querySelector(".name");
-  divBodyName.innerText = body.name
+  divBodyName.innerText = body.name;
   let divBodyType = template.querySelector(".type");
   divBodyType.innerText =
     body.class && body.type == "Star"
@@ -79,9 +132,37 @@ const addBody = (body) => {
       : body.class && body.type == "Planet"
       ? body.class
       : body.type;
+  let properties = [];
+  if (body.extended) {
+    if (body.extended.atmosphere) {
+      let atmosphereProperty = addProperty();
+      atmosphereProperty.innerText = body.extended.atmosphere;
+      properties.push(atmosphereProperty);
+    }
+    if (body.extended.volcanism) {
+      let volcanismProperty = addProperty();
+      volcanismProperty.innerText = body.extended.volcanism;
+      properties.push(volcanismProperty);
+    }
+  }
+  if (body.landable) {
+    let landableProperty = addProperty();
+    landableProperty.classList.add("landable");
+    landableProperty.innerText = "landable";
+    properties.push(landableProperty);
+  }
+  if (body.gravity) {
+    let gravityProperty = setGravityProperty(body.gravity);
+    properties.push(gravityProperty);
+  }
+  if (properties.length > 0) {
+    let divBodyProperties = template.querySelector(".properties");
+    divBodyProperties.style.display = "flex";
+    properties.forEach((property) => divBodyProperties.appendChild(property));
+  }
 
-  elements.systemBodies.appendChild(template)
-}
+  elements.systemBodies.appendChild(template);
+};
 
 /**
  * --------------------
@@ -96,6 +177,8 @@ exports.updateBodies = async (body) => {
       }
     })
   } else {
-    addBody(body)
+    if (!bodyExists(body.id)) {
+      addBody(body)
+    }
   }
 }

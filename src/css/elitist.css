@@ -240,15 +240,11 @@ body::after {
   }
 }
 
+@keyframes flash { 0% { opacity: 0; }  50% { opacity: 1; }  100% { opacity: 0; } }
+
 /* =======================
        5. PROGRESS BAR
       ======================= */
-/* progress {
-       
-       height: 1px;
-       width: 100%;
-       bottom: 3px;
-   } */
 progress {
   /* Reset the default appearance */
   position: absolute;
@@ -294,6 +290,13 @@ progress.elite::-webkit-progress-value {
 }
 .overlay-container .msg.no-cmdr {
   color: var(--elite-red);
+}
+.overlay-container.alert {
+  box-shadow: inset 0 0 30px var(--elite-red);
+  opacity: 0;
+}
+.overlay-container.alert.flash {
+  animation: flash 1s linear 3;
 }
 
 /* =======================
@@ -403,12 +406,6 @@ section > .info {
   font-size: 13px;
   padding-right: 3px;
 }
-/* .info .progress {
-  position: absolute;
-  bottom: 1px;
-  margin: 0 auto;
-  width: 100%;
-} */
 .info .table .item-name {
   padding-left: 5px;
 }
@@ -538,6 +535,9 @@ section > .info {
 .log .panel-body .highlight {
   color: var(--elite-yellow);
 }
+.log .panel-body .primary {
+  color: var(--elite-blue-dark);
+}
 .log .panel-body .success {
   color: var(--elite-green);
 }
@@ -546,6 +546,18 @@ section > .info {
 }
 .log .panel-body .danger {
   color: var(--elite-red);
+}
+.log .panel-body .log-exploration {
+  color: var(--archon-delaine);
+}
+.log .panel-body .log-travel {
+  color: var(--arissa-lavigny-duval);
+}
+.log .panel-body .log-trade {
+  color: var(--edmund-mahon);
+}
+.log .panel-body span.credits {
+  color: var(--elite-yellow);
 }
 
 /* =======================
@@ -631,6 +643,25 @@ section > .info {
 .location .sub-title .target {
   color: var(--elite-red);
 }
+.location .sub-title .fsd-target {
+  display: flex;
+  flex-direction: row;
+  opacity: 0;
+  transition: opacity 2.0s ease-in;
+}
+.location .sub-title .fsd-target > div {
+  padding: 2px 8px;
+  /* text-shadow: 1px 1px 0 #000000; */
+  color: var(--elite-blue-light);
+}
+.location .sub-title .fsd-target .system-name {
+  background-color: var(--elite-blue-dark);
+  color: #ffffff;
+}
+.location .sub-title .fsd-target .jumps-remaining {
+  background-color: var(--orange-darkest);
+  color: var(--elite-orange);
+}
 .location .sub-title .docking-status {
   color: var(--orange-darkest);
 }
@@ -648,7 +679,7 @@ section > .info {
   padding: 2px;
 }
 .location .panel-body {
-  padding: 20px;
+  padding: 10px 20px 20px 20px;
   font-size: 18px;
   flex-direction: row;
   flex-wrap: wrap;
@@ -794,6 +825,10 @@ section > .info {
   text-shadow: 1px 1px 1px var(--brown-dark);
   padding: 0 6px 4px 4px;
   color: var(--orange);
+}
+/* Null */
+.bodies .body.null {
+  display: none;
 }
 /* Asteroid Belt */
 .bodies .body.belt .details {
@@ -1133,6 +1168,7 @@ nav .app-controls button:focus {
   background-color: var(--orange-darker);
 }
 .stellar.type-Station,
+.stellar.type-PlanetaryRing,
 .stellar.type-undefined {
   display: none;
 }

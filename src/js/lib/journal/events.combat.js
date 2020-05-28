@@ -4,10 +4,12 @@
  * Api Chapter 5. Combat
  * -------------------------
  */
-const ui = require('../../ui.updates');
+const interface =require('../interface');
+
 const Bounty = (line) => {
   return new Promise(resolve => {
-    let result = {callback: ui.updateLog, data: Object.assign({}, line)}
+    Cmdr.session.bounties += parseInt(line.TotalReward)
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result)
   })
 }
@@ -21,12 +23,14 @@ const Died = (line) => {
   return new Promise(resolve => {
     Cmdr.ship.wasDestroyed()
     Cmdr.ship.Save()
-    resolve(true)
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
   })
 }
 const EscapeInterdiction = (line) => {
   return new Promise(resolve => {
-    resolve(true)
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result);
   })
 }
 const FactionKillBond = (line) => {
@@ -42,12 +46,23 @@ const FighterDestroyed = (line) => {
 
 const HeatDamage = (line) => {
   return new Promise(resolve => {
-    resolve(true)
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
   })
 }
 const HeatWarning = (line) => {
   return new Promise(resolve => {
-    resolve(true)
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
+  })
+}
+const HullDamage = (line) => {
+  return new Promise(resolve => {
+    if (line.PlayerPilot) {
+      Cmdr.ship.hull.health = line.Health
+    }
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
   })
 }
 const Interdicted = (line) => {
@@ -81,13 +96,18 @@ const SRVDestroyed = (line) => {
 
 const UnderAttack = (line) => {
   return new Promise(resolve => {
-    let result = {callback: ui.updateLog, data: Object.assign({}, line)}
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result)
   })
 }
 
 module.exports = {
   Bounty,
+  Died,
+  EscapeInterdiction,
+  HeatDamage,
+  HeatWarning,
+  HullDamage,
   ShipTargeted,
   ShipTargetted,
   UnderAttack

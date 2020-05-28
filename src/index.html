@@ -17,14 +17,14 @@
   <body>
 <!-- APPLICATION MENU BAR-->
     <nav class="app-menu">
-      <div class="app-title">elitist <span>version 0.5.1</span></div>
+      <div class="app-title">elitist <span>version 0.6.0</span></div>
       <div class="app-controls">
           <button class="app-minimize" id="minimizeButton"><i class="far fa-window-minimize"></i></button>
           <button class="app-min-max" id="minMaxButton"><i class="far fa-window-maximize"></i></button>
           <button class="app-close" id="closeButton"><i class="fa fa-times"></i></button>            
       </div>
   </nav>
-<!-- Overlay: Used for loading and start-up progress -->
+<!-- OVERLAY: Used for loading and start-up progress -->
 <div class="overlay-container" id="overlay">
   <div class="loader" id="loader">
     <div class="inner one"></div>
@@ -33,6 +33,8 @@
   </div>
   <div class="msg" id="overlayMsg">checking for new files</div>
 </div>
+<!-- OVERLAY: Full Screen alert flash -->
+<div class="overlay-container alert" id="fullScreenAlert" style="display: none;"></div>
 <!-- MAIN -->
 <main class="app-container" id="appContainer" style="display: none;">
   <!-- HEADER -->
@@ -53,7 +55,7 @@
       <div class="panel cmdr">
         <div class="name">Cmdr <span id="cmdrName">name</span></div>
         <div class="vessel" id="cmdrShip">shipname.</div>
-        <div class="credits"><span id="cmdrCredits">132,678,459</span> cr</div>
+        <div class="credits"><span id="cmdrCredits" data-cmdr-credits="0">132,678,459</span> cr</div>
       </div>
       <!-- SHIP PANEL -->
       <div class="panel ship">
@@ -85,7 +87,7 @@
           </div>
           <div class="panel-row fuel" id="shipFuel">
             <div class="desc">fuel</div>
-            <div class="val" id="shipFuelNumbers">50%</div>
+            <div class="val" id="shipFuelNumbers" data-fuel-level="0" data-fuel-capacity="0"></div>
             <progress class="progress-bar" id="shipFuelLevelBar" max="32" value="20"></progress>            
           </div>          
         </div>
@@ -155,6 +157,14 @@
             <input type="radio" name="materialFilterRadio" value="Manufactured" id="materialsManufactured"><label for="materialsManufactured">manufactured</label>
             </form>
           </div>
+          <!-- MaterialRow Template -->
+          <template id="materialRow">
+            <tr class="m-filter filter-All">
+              <td class="material-type center" id=""></td>
+              <td class="left border-left item-name">reactive armor</td>
+              <td class="material-count center border-left">12</td>
+            </tr>
+            </template>
           <table class="table table-sm">
             <thead>
             <tr>
@@ -164,15 +174,6 @@
             </tr>
             </thead>
             <tbody id="materialTable">
-              <!-- Row Template -->
-              <template id="materialRow">
-              <tr class="m-filter filter-All">
-                <td class="material-type center" id=""></td>
-                <td class="left border-left item-name">reactive armor</td>
-                <td class="material-count center border-left">12</td>
-              </tr>
-              </template>
-                              
             </tbody>
         </table>
         </div>
@@ -207,7 +208,12 @@
             <div class="title" id="systemName">location</div>
             <div class="sub-title">
               <div class="name">star system</div>
-              <div class="target" id="fsdTarget"></div>
+              <!-- <div class="target">target<span id="fsdTarget">Systemname</span></div> -->
+              <div class="fsd-target" id="hasTarget" style="display: none;">
+                <div>fsd target</div>
+                <div class="system-name" id="fsdTarget">systemname</div>
+                <div class="jumps-remaining" id="jumpsRemain" style="display: none;">12 jumps remaining</div>
+              </div>
               <div class="docking-status" id="dockingStatus">docked</div>
             </div>
           </div>

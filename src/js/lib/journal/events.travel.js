@@ -9,7 +9,7 @@ const interface = require('../interface');
 
 const ApproachBody = (line) => {
   return new Promise((resolve) => {
-    let result = {callback: ui.updateLog, data: {event: line.event, body: {name: line.Body, id: line.BodyID}}}
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result);
   })
 }
@@ -42,20 +42,21 @@ const DockingCancelled = (line) => {
 
 const DockingDenied = (line) => {
   return new Promise((resolve) => {
-    
+    result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)    
   })
 }
 
 const DockingGranted = (line) => {
   return new Promise((resolve) => {
-    result = {callback: ui.updateLog, data: Object.assign({}, line)}
+    result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result)
   })
 }
 
 const DockingRequested = (line) => {
   return new Promise((resolve) => {
-    result = {callback: ui.updateLog, data: Object.assign({}, line)}
+    result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result)
   })
 }
@@ -70,7 +71,7 @@ const FSDJump = (line) => {
   return new Promise((resolve) => {
     Cmdr.location.address = line.SystemAddress;
     // console.log("FSDJump: ", line.timestamp, Cmdr.location.address, line.StarSystem);
-    ui.updateTravelState({event: line.event, name: line.StarSystem})
+    interface.updateTravelState(line)
     // TODO: Drop in favour of Status.json updates.
     if (Cmdr.ship.fuel != undefined) {
       Cmdr.ship.fuel.level = line.FuelLevel
@@ -95,7 +96,8 @@ const FSDJump = (line) => {
     Object.assign(System, systemUpdate);
     System.Save();
   
-    let result = { callback: ui.updateLocation, data: System };
+    // TODO: "FuelLevel":30.684292 and more Fuel stuff?
+    let result = { callback: interface.updateLocation, data: System };
     resolve(result)   
   })
 }
@@ -110,13 +112,13 @@ const FSDTarget = (line) => {
       remaining: line.RemainingJumpsInRoute
     };
   
-    let result = { callback: ui.updateTravelState, data: target };    
+    let result = { callback: interface.updateTravelState, data: Object.assign({}, line)};    
     resolve(result);
   })
 }
 const LeaveBody = (line) => {
   return new Promise((resolve) => {
-    let result = {callback: ui.updateLog, data: {event: line.event, body: {name: line.Body, id: line.BodyID}}}
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result);
   })
 }
@@ -160,7 +162,7 @@ const Location = (line) => {
     Object.assign(Body, bodyUpdate);
     Body.Save();
 
-    let result = { callback: ui.updateLocation, data: System };
+    let result = { callback: interface.updateLocation, data: System };
     resolve(result);
   });
 };
@@ -168,21 +170,9 @@ const Location = (line) => {
 const StartJump = (line) => {
   return new Promise((resolve) => {
   // Start of Countdown
-    let destination = {};
-    if (line.JumpType == "Hyperspace") {
-      destination = {
-        event: line.event,
-        address: line.SystemAddress,
-        name: line.StarSystem,
-        starclass: line.StarClass,
-      };
-    }
     let result = {
-      callback: ui.updateTravelState,
-      data: Object.assign(destination, {
-        event: line.event,
-        jumpType: line.JumpType,
-      }),
+      callback: interface.updateTravelState,
+      data: Object.assign({}, line)
     };
     resolve(result);
   })
@@ -190,7 +180,7 @@ const StartJump = (line) => {
 
 const SupercruiseEntry = (line) => {
   return new Promise(resolve => {
-    let result = {callback: ui.updateLog, data: {event: line.event}}
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result);
   })
 
@@ -206,7 +196,9 @@ const SupercruiseExit = (line) => {
     Object.assign(Body, bodyUpdate);
     Body.Save();
 
-    result = { callback: ui.updateBodies };
+    // TODO: Move to interface.updateBodies(body) & log
+    interface.updateLog(line)
+    result = { callback: interface.updateBodies };
     resolve(result)
   })
 }
@@ -223,6 +215,7 @@ const Undocked = (line) => {
 module.exports = {
   ApproachBody,
   Docked,
+  DockingDenied,
   DockingGranted,
   DockingRequested,
   FSDJump,

@@ -9,7 +9,8 @@ const interface = require('../interface')
 
 const CodexEntry = (line) => {
   return new Promise(resolve => {
-    resolve(true)
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)   
   })
 }
 const DiscoveryScan = (line) => {
@@ -18,12 +19,13 @@ const DiscoveryScan = (line) => {
   })
 }
 
-const FSSAllBodiesFound = (line) => {
+const FSSAllBodiesFound = (line) => Promise.resolve(true);
+const FSSDiscoveryScan = (line) => {
   return new Promise(resolve => {
-    resolve(true)
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)    
   })
 }
-
 const FSSSignalDiscovered = (line) => {
   return new Promise((resolve) => {
     let signal = {
@@ -45,7 +47,7 @@ const MaterialCollected = (line) => {
   return new Promise(resolve => {
     let materialName = (line.Name_Localised == undefined) ? line.Name : line.Name_Localised
     let Material = new journal.Material(materialName)
-    Material.Check().then( () => {
+    Material.Check().then( async () => {
       if (Material.quantity) {
         Material.quantity += line.Count;
       } else {
@@ -54,18 +56,34 @@ const MaterialCollected = (line) => {
       Material.type = line.Category;
       Material.cssname = line.Name;
       Material.Save();
-      if (Material.cssname in Cmdr.session.materials) { Cmdr.session.materials.cssname.quantity += line.Count }
-      else {
-        Cmdr.session.materials[Material.cssname] = {name: materialName, category: line.Category, quantity: line.Count}
-      }
+       await interface.addMaterialToSession(Material).then( () => {
+        Cmdr.session.materials[Material.cssname].quantity += line.Count
+      })
     }).then(() => {
-      let result = {callback: ui.updateMaterials, data: Material}
+      let result = {callback: interface.updateMaterials, data: Material}
       resolve(result)
     })
   })
 }
+const MaterialDiscovered = (line) => {
+  return new Promise(resolve => {
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
+  })
+}
+const MultiSellExplorationData = (line) => {
+  return new Promise(resolve => {
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
+  })
+}
 const NavBeaconScan = (line) => Promise.resolve(true);
-
+const SAAScanComplete = (line) => {
+  return new Promise(resolve => {
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)    
+  })
+}
 const Scan = (line) => {
   return new Promise(resolve => {
     let Body
@@ -127,15 +145,29 @@ const Scan = (line) => {
       Object.assign(Body, beltUpdate);
     }
     Body.Save()
-    // result = {callback: ui.updateBodies, data: Body}
+
     result = {callback: interface.updateBodies, data: Body}
     resolve(result)
   })
 }
+const SellExplorationData = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits += line.TotalEarnings
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)        
+  })
+}
 
 module.exports = {
+  CodexEntry,
+  FSSAllBodiesFound,
+  FSSDiscoveryScan,
   FSSSignalDiscovered,
   MaterialCollected,
+  MaterialDiscovered,
+  MultiSellExplorationData,
   NavBeaconScan,
-  Scan
+  SAAScanComplete,
+  Scan,
+  SellExplorationData
 }

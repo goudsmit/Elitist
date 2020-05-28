@@ -1,4 +1,5 @@
 const ui = require("../../ui.updates");
+const interface = require('../interface')
 
 /**
  * ----------------------------------
@@ -9,7 +10,7 @@ class Cmdr {
   constructor(name) {
     this.name = name;
     this.location = {};
-    this.session = {materials: {}, bounties: {}}
+    this.session = {materials: {}, bounties: 0}
     this.Init();
   }
   Init() {
@@ -29,7 +30,6 @@ class Cmdr {
       .then((cmdr) => {
         Object.assign(this, cmdr);
       }).then(() => {
-        this.session = {materials: {}, bounties: {}}
         resolve(true)
       });
     })
@@ -49,6 +49,8 @@ exports.Cmdr = Cmdr;
 class StarShip {
   constructor(id) {
     this.id = id;
+    this.hull = {}
+    this.modules = {}
     this.Init();
   }
   Init() {
@@ -62,9 +64,13 @@ class StarShip {
       .catch(() => {});
   }
   Get() {
-    db.ships.get(this.id).then((ship) => {
-      Object.assign(this, ship);
-    });
+    return new Promise(resolve => {
+      db.ships.get(this.id).then((ship) => {
+        Object.assign(this, ship);
+      }).then(() => {
+        resolve(true)
+      });
+    })
   }
   Save() {
     db.ships
@@ -372,13 +378,13 @@ const VEHICLEMAP = {
   viper: "Viper Mk III",
   viper_mkiv: "Viper Mk IV",
 };
-const getShipType = function getShipType(type) {
+const getShipType = (type) => {
   let shipType =
     VEHICLEMAP[type.toLowerCase()] == undefined
       ? type
       : VEHICLEMAP[type.toLowerCase()];
   return shipType;
-};
+}
 exports.getShipType = getShipType;
 
 /**
@@ -392,7 +398,7 @@ const Fileheader = (line) => {
     db.logs.add({file: { name: fileName}, part: line.part, gameversion: line.gameversion, build: line.build}).catch(
       (error) => {}
     )
-    result = { callback: ui.updateGameState, data: { event: line.event } };
+    result = { callback: interface.setGameState, data: Object.assign({}, line)};
     resolve(result);
   });
 };
@@ -402,6 +408,7 @@ const travel = require('./events.travel');
 const combat = require('./events.combat');
 const exploration = require('./events.exploration');
 const services = require('./events.services');
+const trade = require('./events.trade');
 const other = require('./events.other');
 
 module.exports = Object.assign(
@@ -416,6 +423,7 @@ module.exports = Object.assign(
     RAW,
     RANKS,
     FACTIONS,
+    getShipType,
     Fileheader,
   },
   onload,
@@ -423,5 +431,6 @@ module.exports = Object.assign(
   combat,
   exploration,
   services,
+  trade,
   other
 );

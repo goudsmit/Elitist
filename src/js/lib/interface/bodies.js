@@ -78,7 +78,7 @@ const bodyExists = (id) => {
  * Properties
  * --------------------
  */
-const addProperty = (property) => {
+const blankPropertyTemplate = (property) => {
   let template = document.createElement("div");
   template.classList.add("property");
   if (property) {
@@ -92,7 +92,7 @@ const addProperty = (property) => {
  * --------------------
  */
 const setGravityProperty = (gravity) => {
-  let template = addProperty();
+  let template = blankPropertyTemplate();
   if (gravity < 1) {
     template.classList.add("gravity-low");
   } else if (gravity > 1 && gravity < 2.5) {
@@ -103,6 +103,40 @@ const setGravityProperty = (gravity) => {
   template.innerText = `${Math.round(gravity*10)/10}g`
   return template;
 };
+
+/**
+ * --------------------
+ * Materials
+ * --------------------
+ */
+const blankMaterialTemplate = () => {
+  let template = document.createElement("div");
+  template.classList.add("material");
+  let nameDiv = document.createElement("div")
+  template.append(nameDiv);
+  let percentageDiv = document.createElement("div")
+  template.append(percentageDiv);
+  return template
+}
+const addMaterialToBody = (material) => {
+  let template = blankMaterialTemplate()
+  const RAW = require('../journal').RAW
+  template.children[0].innerText = material.Name
+  template.children[0].classList.add(`grade-${RAW[material.Name].grade}`)
+  template.children[1].innerText = `${Math.round(material.Percent*10)/10}%`
+  return template
+}
+const getStyledMaterials = (materials) => {
+  return new Promise(resolve => {
+    let materialDivs = []
+    for (let material of materials) {
+      let template = addMaterialToBody(material);
+      materialDivs.push(template)
+    };
+    resolve(materialDivs)
+  })
+}
+
 
 /**
  * --------------------
@@ -135,18 +169,18 @@ const addBody = (body) => {
   let properties = [];
   if (body.extended) {
     if (body.extended.atmosphere) {
-      let atmosphereProperty = addProperty();
+      let atmosphereProperty = blankPropertyTemplate();
       atmosphereProperty.innerText = body.extended.atmosphere;
       properties.push(atmosphereProperty);
     }
     if (body.extended.volcanism) {
-      let volcanismProperty = addProperty();
+      let volcanismProperty = blankPropertyTemplate();
       volcanismProperty.innerText = body.extended.volcanism;
       properties.push(volcanismProperty);
     }
   }
   if (body.landable) {
-    let landableProperty = addProperty();
+    let landableProperty = blankPropertyTemplate();
     landableProperty.classList.add("landable");
     landableProperty.innerText = "landable";
     properties.push(landableProperty);
@@ -159,6 +193,13 @@ const addBody = (body) => {
     let divBodyProperties = template.querySelector(".properties");
     divBodyProperties.style.display = "flex";
     properties.forEach((property) => divBodyProperties.appendChild(property));
+  }
+  if (body.materials) {
+    getStyledMaterials(body.materials).then((materialDivs) => {
+      let divBodyMaterials = template.querySelector(".materials");
+      divBodyMaterials.style.display = "flex"
+      materialDivs.forEach(div => divBodyMaterials.append(div))
+    })        
   }
 
   elements.systemBodies.appendChild(template);
@@ -173,12 +214,19 @@ exports.updateBodies = async (body) => {
   if (!body) {
     await db.bodies.where({ address: Cmdr.location.address }).each((body) => {
       if (!bodyExists(body.id)) {
-        addBody(body)
+        addBody(body);
+        [...elements.systemBodies.children]
+          .sort((a, b) => a.id - b.id)
+          .map((node) => elements.systemBodies.appendChild(node));
       }
     })
   } else {
     if (!bodyExists(body.id)) {
-      addBody(body)
+      addBody(body);
+      [...elements.systemBodies.children]
+          .sort((a, b) => a.id - b.id)
+          .map((node) => elements.systemBodies.appendChild(node));
     }
   }
+  
 }

@@ -8,6 +8,7 @@
 const journal = require("../journal");
 const getShipType = journal.getShipType;
 const ui = require('../../ui.updates');
+const interface = require('../interface')
 
 const Cargo = (line) => {
   return new Promise((resolve) => {
@@ -39,65 +40,104 @@ const Commander = (line) => {
 };
 
 const LoadGame = (line) => {
-  return new Promise((resolve) => {
+  /** 
+   * TODO: Very rare bug found 
+   * if you log out in the middle of a jump, the travel screen doesnt disappear
+   * Accomodate for that in here if you can...
+   */
+  return new Promise(async(resolve) => {
     if (line.Ship_Localised != "SRV Scarab") {
       let shipData = {
-        type: getShipType(line.Ship),
-        id: line.ShipID,
         name: line.ShipName,
         ident: line.ShipIdent,
+        type: getShipType(line.Ship),
+        rebuy:
+          line.Rebuy != undefined
+            ? line.Rebuy
+            : Cmdr.ship.rebuy != undefined
+            ? Cmdr.ship.rebuy
+            : 0,
+        hull: {
+          value:
+            line.HullValue != undefined
+              ? line.HullValue
+              : Cmdr.ship.hull.value != undefined
+              ? Cmdr.ship.hull.value
+              : 0,
+          health:
+            line.HullHealth != undefined
+              ? line.HullHealth
+              : Cmdr.ship.hull.health != undefined
+              ? Cmdr.ship.hull.health
+              : "-",
+        },
+        modules: {
+          installed: line.Modules,
+          value:
+            line.ModulesValue != undefined
+              ? line.ModulesValue
+              : Cmdr.ship.modules.value != undefined
+              ? Cmdr.ship.modules.value
+              : 0,
+        },
         fuel: {
           level: line.FuelLevel,
-          capacity: line.FuelCapacity,
-        },
+          capacity: line.FuelCapacity
+        }
       };
       let Ship = new journal.StarShip(line.ShipID);
-      Ship.Get();
-      Object.assign(Ship, shipData);
-      Ship.Save();
-      Cmdr.ship = Ship;
+      await Ship.Get().then(() => {
+        Object.assign(Ship, shipData);
+        Ship.Save();
+        Cmdr.ship = Ship;
+      })
     } else {
       // TODO: Capture this illustrious event
       console.log("Not in a ship event!!!: ", line)
     }
     Cmdr.credits = line.Credits;
-    let result = { callback: ui.updateGameState, data: Object.assign({}, line) };
+    let result = { callback: interface.setGameState, data: Object.assign({}, line) };
     resolve(result);
   });
 };
 
 const Loadout = (line) => {
-  return new Promise((resolve) => {
-    var shipData = {
+  return new Promise(async(resolve) => {
+    let loadOut = {
       name: line.ShipName,
       ident: line.ShipIdent,
       type: getShipType(line.Ship),
       rebuy: line.Rebuy,
       hull: {
-        health: line.HullHealth
+        value:
+          line.HullValue != undefined  ? line.HullValue
+            : Cmdr.ship.hull.value != undefined
+            ? Cmdr.ship.hull.value
+            : 0,
+        health: line.HullHealth,
       },
       modules: {
         installed: line.Modules,
+        value:
+          line.ModulesValue != undefined
+            ? line.ModulesValue
+            : Cmdr.ship.modules.value != undefined
+            ? Cmdr.ship.modules.value
+            : 0,
       },
     };
-    if (line.HullValue) {
-      shipData.hull["value"] = line.HullValue;
-    }
-    if (line.ModulesValue) {
-      shipData.modules.value = line.ModulesValue;
-    }
     let Ship = new journal.StarShip(line.ShipID);
-    Ship.Get();
-    // console.log(shipData)
-    Object.assign(Ship, shipData);
-    if (Cmdr.ship.id != Ship.id) {
-      Cmdr.ship = Ship;
-    } else {
-      Object.assign(Cmdr.ship, Ship);
-    }
-    Cmdr.ship.Save();
+    await Ship.Get().then( () => {
+      Object.assign(Ship, loadOut);
+      if (Cmdr.ship.id != Ship.id) {
+        Cmdr.ship = Ship;
+      } else {
+        Object.assign(Cmdr.ship, Ship);
+      }
+      Cmdr.ship.Save();
+    })
 
-    let result = { callback: ui.updateShip, data: Cmdr.ship };
+    let result = { callback: interface.updateShip, data: Cmdr.ship };
     resolve(result);
   });
 };
@@ -122,7 +162,7 @@ const Materials = (line) => {
       }
     });
 
-    let result = { callback: ui.updateMaterials };
+    let result = { callback: interface.updateMaterials };
     resolve(result);
   });
 };
@@ -151,7 +191,7 @@ const Progress = (line) => {
       db.ranks.update({ type: rank }, { progress: line[rank] });
     }
 
-    let result = { callback: ui.updateRank };
+    let result = { callback: interface.updateRanks };
     resolve(result);
   });
 };
@@ -163,7 +203,7 @@ const Rank = (line) => {
       db.ranks.update({ type: rank }, { level: line[rank] });
     }
 
-    let result = { callback: ui.updateRank };
+    let result = { callback: interface.updateRanks };
     resolve(result);
   });
 };

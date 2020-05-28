@@ -111,8 +111,8 @@ exports.updateMaterials = async (material) => {
     td[2].textContent = material.quantity;
     return clone;
   }
+  let table = document.getElementById("materialTable");    
   if (!material) {
-    let table = document.getElementById("materialTable");    
     let materials = await db.materials.toCollection();
     materials.each((material) => {
       let row = document.getElementById(material.cssname + "-row");
@@ -322,7 +322,7 @@ exports.loadUI = async () => {
   if (Cmdr) {
     elements.cmdrName.innerText = Cmdr.name;
     // TODO: CmdrVessel
-    elements.cmdrCredits.innerText = formatNumber(Cmdr.credits);
+    // elements.cmdrCredits.innerText = formatNumber(Cmdr.credits);
     await this.updateShip();
     await this.updateRank();
     await this.updateMaterials();

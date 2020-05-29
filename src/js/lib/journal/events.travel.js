@@ -29,7 +29,7 @@ const Docked = (line) => {
       economies: line.StationEconomies,
     };
     Cmdr.location.dock = station
-    let result = { callback: ui.updateDock, data: station };
+    let result = { callback: interface.updateDock, data: station };
     resolve(result);
   });
 };
@@ -207,7 +207,7 @@ const Undocked = (line) => {
   return new Promise((resolve) => {
     Cmdr.location.docked = false;
     Cmdr.location.dock = null;
-    let result = { callback: ui.updateDock };    
+    let result = { callback: interface.updateDock };    
     resolve(result)
   });
 };

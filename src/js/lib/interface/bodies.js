@@ -212,6 +212,7 @@ const addBody = (body) => {
  */
 exports.updateBodies = async (body) => {
   if (!body) {
+    elements.systemBodies.innerHTML = ""
     await db.bodies.where({ address: Cmdr.location.address }).each((body) => {
       if (!bodyExists(body.id)) {
         addBody(body);

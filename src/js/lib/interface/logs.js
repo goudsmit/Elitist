@@ -38,7 +38,7 @@ exports.updateLog = async (data) => {
       divEvent.innerText = `Approaching Settlement: ${data.settlement}`;
       break;
     case "Bounty":
-      divEvent.innerText = `Bounty rewarded: ${formatNumber(
+      divEvent.innerText = `Bounty rewarded: ${interface.formatNumber(
         data.TotalReward
       )}cr`;
       divEvent.classList.add("highlight");
@@ -47,6 +47,11 @@ exports.updateLog = async (data) => {
       interface.setCredits(data.Cost, "SUBSTRACT")
       divEvent.innerText = `Ammo restocked`
       divEvent.classList.add('info')
+      break;
+    case "BuyDrones":
+      interface.setCredits(data.TotalCost, "SUBSTRACT");
+      divEvent.innerHTML = `Purchased ${data.Count} limpets for <span class="credits">${interface.formatNumber(data.TotalCost)}CR</span>`
+      divEvent.classList.add("highlight")
       break;
     case "CodexEntry":
       if (data.IsNewEntry) {
@@ -177,6 +182,11 @@ exports.updateLog = async (data) => {
       data.Discovered.forEach(body => bodiesDiscovered += body.NumBodies)
       divEvent.innerHTML = `exploration data sold for <span class="credits">${interface.formatNumber(data.TotalEarnings)}cr</span><br>(${systemsDiscovered} systems, ${bodiesDiscovered} bodies)`
       divEvent.classList.add("success");
+      break;
+    case "PayFines":
+      interface.setCredits(data.Amount, "SUBTRACT")
+      divEvent.innerHTML = `Paid outstanding fines. <span class="credits">-${interface.formatNumber(data.Amount)}CR</span>`
+      divEvent.classList.add("success")
       break;
     case "Promotion":
       let promoteMsg = ""

@@ -218,7 +218,7 @@ const readFolder = (folder) => {
         let stats = await stat(folder + path.sep + file);
         if (stats.isFile()) {
           let index = parseInt(i)+1
-          ui.elements.overlayMsg.innerText = `Processing ${file} (${index}/${cleanfiles.length})`
+          interface.elements.overlayMsg.innerText = `Processing ${file} (${index}/${cleanfiles.length})`
           console.log(`(${index}/${cleanfiles.length}) Reading File ${file} from line ${lineSeq+1}`);
           await readFile(file, index).then(() => {
               // console.log(`FINISH`)
@@ -227,7 +227,7 @@ const readFolder = (folder) => {
       }
     })
     .then( async () => {
-      ui.elements.overlayMsg.innerText = `Welcome back, Cmdr`
+      interface.elements.overlayMsg.innerText = `Welcome back, Cmdr`
       console.log(`Folder contents checked and read`);
         // function timeout(ms) {
         //     return new Promise(resolve => setTimeout(resolve, ms));
@@ -239,10 +239,10 @@ const readFolder = (folder) => {
     .then( () => {
         if (elitist.cmdr) {
           ui.updateOverlay("LoadUI");
-          ui.loadUI()
+          interface.loadUI()
           console.log("Load UI");
         } else {
-          ui.updateOverlay("NoCmdr");
+          interface.updateOverlay("NoCmdr");
           // console.log("no Cmdr")
         }
     });

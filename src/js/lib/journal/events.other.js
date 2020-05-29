@@ -10,10 +10,8 @@ const journal = require('../journal')
 
 const ApproachSettlement = (line) => {
   return new Promise((resolve) => {
-    let result = {
-      callback: ui.updateLog,
-      data: { event: line.event, settlement: line.Name },
-    };
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    return Promise.resolve(result);  
     resolve(result);
   });
 };
@@ -24,7 +22,7 @@ const CommitCrime = (line) => {
 const DataScanned = (line) => Promise.resolve(true);
 const Friends = (line) => {
   return new Promise((resolve) => {
-    let result = { callback: ui.updateLog, data: Object.assign({}, line) };
+    let result = { callback: interface.updateLog, data: Object.assign({}, line) };
     resolve(result);
   });
 };
@@ -34,9 +32,14 @@ const FuelScoop = (line) => {
 };
 const LaunchDrone = (line) => Promise.resolve(true)
 const ModuleInfo = (line) => Promise.resolve(true)
-const Music = (line) => {
-  return Promise.resolve(true);
-};
+const Music = (line) => Promise.resolve(true) 
+const PayFines = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits -= line.Amount
+    let result = { callback: interface.updateLog, data: Object.assign({}, line) };
+    resolve(result);
+  })
+}
 const Promotion = (line) => {
   return new Promise(resolve => {
     for (rank in journal.RANKS) {
@@ -98,6 +101,7 @@ module.exports = {
   LaunchDrone,
   ModuleInfo,
   Music,
+  PayFines,
   Promotion,
   ReceiveText,
   Resurrect,

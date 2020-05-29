@@ -518,7 +518,7 @@ section > .info {
        9.1.6 SECTIONS: INFO > LOG
       ======================= */
 .log {
-  max-height: 120px;
+  max-height: 160px;
 }
 .log .panel-body {
   overflow: auto;
@@ -612,6 +612,7 @@ section > .info {
       ======================= */
 .location {
   margin: 0 15px;
+  padding-top: 10px;
 }
 .location .panel-header {
   flex-direction: row;
@@ -679,7 +680,7 @@ section > .info {
   padding: 2px;
 }
 .location .panel-body {
-  padding: 10px 20px 20px 20px;
+  padding: 20px;
   font-size: 18px;
   flex-direction: row;
   flex-wrap: wrap;

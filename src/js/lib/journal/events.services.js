@@ -14,6 +14,13 @@ const BuyAmmo = (line) => {
     resolve(result)
   })
 }
+const BuyDrones = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits -= line.TotalCost
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
+  })
+}
 const CargoDepot = (line) => Promise.resolve(true)
 const CommunityGoal = (line) => Promise.resolve(true)
 const CommunityGoalDiscard = (line) => Promise.resolve(true)
@@ -181,6 +188,7 @@ const WingLeave = (line) => Promise.resolve(true)
 
 module.exports = {
   BuyAmmo,
+  BuyDrones,
   CargoDepot,
   CommunityGoal,
   CommunityGoalDiscard,

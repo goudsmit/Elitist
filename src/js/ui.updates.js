@@ -318,22 +318,7 @@ exports.updateBodies = async (body) => {
   }
 };
 
-exports.loadUI = async () => {
-  if (Cmdr) {
-    elements.cmdrName.innerText = Cmdr.name;
-    // TODO: CmdrVessel
-    // elements.cmdrCredits.innerText = formatNumber(Cmdr.credits);
-    await this.updateShip();
-    await this.updateRank();
-    await this.updateMaterials();
-    await db.systems
-      .get(Cmdr.location.address, async (system) => {
-        await this.updateLocation(system);
-      })
-      .catch(() => {});
-    await this.updateDock(Cmdr.location.dock);
-  }
-};
+
 
 // exports.addDockingRequest = async (data) =>{
 //   // console.log(data)

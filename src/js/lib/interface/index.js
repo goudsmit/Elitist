@@ -103,6 +103,7 @@ exports.updateLocation = updateLocation
  * --------------------
  */
 const updateDock = async (dock) => {
+    // TODO: Log message
   if (dock) {
     elements.dockPanel.style.display = "flex";
     elements.dockPanelBody.style.display = "flex";
@@ -174,7 +175,8 @@ const updateTravelState = async (data) => {
       elements.fsdTarget.innerText = data.Name
       break;
     case "FSDJump":
-      setFuelLevel(data.FuelLevel)
+      setFuelLevel(data.FuelLevel);
+      elements.systemBodies.innerHTML = ""
       elements.travelOverlay.style.display = "none";
       panels = elements.travelPanels.querySelectorAll(".panel");
       panels.forEach((panel) => (panel.style.display = "flex"));
@@ -199,6 +201,25 @@ const updateTravelState = async (data) => {
   }
 }
 exports.updateTravelState = updateTravelState
+
+const loadUI = async () => {
+  if (Cmdr) {
+    elements.cmdrName.innerText = Cmdr.name;
+    // TODO: CmdrVessel
+    // elements.cmdrCredits.innerText = formatNumber(Cmdr.credits);
+    await ship.updateShip();
+    await ranks.updateRanks();
+    await materials.updateMaterials();
+    await db.systems
+      .get(Cmdr.location.address, async (system) => {
+        await updateLocation(system);
+      })
+      .catch(() => {});
+    await updateDock(Cmdr.location.dock);
+  }
+};
+exports.loadUI = loadUI
+
 /**
  * ----------------------------------
  * Elitist: Format Number
@@ -238,6 +259,7 @@ module.exports = Object.assign(
     updateLocation,
     updateDock,
     updateTravelState,
+    loadUI,
     formatNumber,
     distanceInLY,
   },

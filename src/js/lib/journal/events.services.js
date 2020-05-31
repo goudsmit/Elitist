@@ -4,7 +4,6 @@
  * Api Chapter 8. Station Services
  * -------------------------
  */
-const ui = require('../../ui.updates');
 const interface = require('../interface');
 
 const BuyAmmo = (line) => {
@@ -26,7 +25,18 @@ const CommunityGoal = (line) => Promise.resolve(true)
 const CommunityGoalDiscard = (line) => Promise.resolve(true)
 const CommunityGoalJoin = (line) => Promise.resolve(true)
 const CommunityGoalReward = (line) => Promise.resolve(true)
-
+const EngineerContribution = (line) => {
+  return new Promise(resolve => {
+    console.info(line)
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result); 
+  })
+}
+const EngineerCraft = (line) => {
+  // TODO: Add blueprints.
+  console.info(line)
+  return Promise.resolve(true)
+}
 const EngineerProgress = (line) => {
   return new Promise(resolve => {
     if (line.Engineers) {
@@ -77,7 +87,13 @@ const EngineerProgress = (line) => {
     resolve(true)
   })
 }
-
+const FetchRemoteModule = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits -= line.TransferCost
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)  
+  })
+}
 const Market = (line) => Promise.resolve(true);
 const MassModuleStore = (line) => Promise.resolve(true);
 // TODO: Sure I could do something with this..
@@ -101,10 +117,33 @@ const ModuleRetrieve = (line) => {
     resolve(result);
   })  
 }
+const ModuleSell = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits += line.SellPrice
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result);
+  })  
+}
+const ModuleSellRemote = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits += line.SellPrice
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result);
+  })  
+}
+const ModuleStore = (line) => Promise.resolve(true);
+const ModuleSwap = (line) => Promise.resolve(true);
 const Outfitting = (line) => Promise.resolve(true);
 const RedeemVoucher = (line) => {
   return new Promise(resolve => {
     Cmdr.credits =+ line.Amount
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
+  })
+}
+const PayBounties = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits -= line.Amount
     let result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result)
   })
@@ -130,6 +169,13 @@ const RepairAll = (line) => {
     Cmdr.credits -= line.Cost
     let result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result);
+  })
+}
+const SellDrones = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits += line.TotalSale
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result);    
   })
 }
 const SetUserShipName = (line) => {
@@ -174,9 +220,46 @@ const ShipyardNew = (line) => {
     resolve(result);
   });
 };
+const ShipyardSell = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits =+ line.ShipPrice
+    // TODO: Perhaps port to use StarShip Class, but his works fine
+    db.ships.get({id: line.SellShipID}).then( ship => {
+      if (ship) {
+        ship.id += 1000
+        ship.sold = true
+        db.ships.put(ship)
+        db.ships.delete(line.SellShipID)
+      }
+    }).then( () => {
+      let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+      resolve(result)
+    })
+  })
+}
+const ShipyardSwap = (line) => {
+  return new Promise(resolve => {
+    let Ship = new journal.StarShip(line.ShipID)
+    Ship.Get().then( () => {
+      Cmdr.ship = Ship
+      interface.updateLog(line);
+    }).then(() => {
+      let result = {callback: interface.updateShip, data: Ship}
+      resolve(result);
+    })
+  })
+}
+const ShipyardTransfer = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits -= line.TransferPrice
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
+  })
+}
 const StoredModules = (line) => Promise.resolve(true);
 const StoredShips = (line) => {
-  console.log(line)
+  // TODO: Maybe a way to get ships people have, but no log files.
+  // console.log(line)
   return Promise.resolve(true)
 }
 // MAYBE IN THE FUTURE
@@ -194,7 +277,10 @@ module.exports = {
   CommunityGoalDiscard,
   CommunityGoalJoin,
   CommunityGoalReward,
+  EngineerContribution,
+  EngineerCraft,
   EngineerProgress,
+  FetchRemoteModule,
   Market,
   MassModuleStore,
   MissionAbandoned,
@@ -204,15 +290,24 @@ module.exports = {
   MissionRedirected,
   ModuleBuy,
   ModuleRetrieve,
+  ModuleSell,
+  ModuleSellRemote,
+  ModuleStore,
+  ModuleSwap,
   Outfitting,
+  PayBounties,
   RedeemVoucher,
   RefuelAll,
   Repair,
   RepairAll,
+  SellDrones,
   SetUserShipName,
   Shipyard,
   ShipyardBuy,
   ShipyardNew,
+  ShipyardSell,
+  ShipyardSwap,
+  ShipyardTransfer,
   StoredModules,
   StoredShips,
   WingAdd,

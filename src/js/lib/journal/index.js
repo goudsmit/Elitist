@@ -1,4 +1,3 @@
-const ui = require("../../ui.updates");
 const interface = require('../interface')
 
 /**
@@ -10,6 +9,7 @@ class Cmdr {
   constructor(name) {
     this.name = name;
     this.location = {};
+    this.ship = {}
     this.session = {materials: {}, bounties: 0}
     this.Init();
   }

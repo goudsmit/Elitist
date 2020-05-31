@@ -6,6 +6,7 @@
  */
 const interface = require('../interface');
 
+const AsteroidCracked = (line) => Promise.resolve(true)
 // TODO: Cargo I will sort 'last', some day
 const CollectCargo = (line) => Promise.resolve(true)
 const EjectCargo = (line) => Promise.resolve(true)
@@ -32,6 +33,7 @@ const MiningRefined = (line) => {
 }
 
 module.exports = {
+  AsteroidCracked,
   CollectCargo,
   EjectCargo,
   MarketBuy,

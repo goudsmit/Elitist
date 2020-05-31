@@ -4,7 +4,6 @@
  * Api Chapter 4. Travel
  * -------------------------
  */
-const ui = require('../../ui.updates');
 const interface = require('../interface');
 
 const ApproachBody = (line) => {
@@ -63,7 +62,8 @@ const DockingRequested = (line) => {
 
 const DockingTimeout = (line) => {
   return new Promise((resolve) => {
-    
+    result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)    
   })
 }
 
@@ -122,7 +122,12 @@ const LeaveBody = (line) => {
     resolve(result);
   })
 }
-
+const Liftoff = (line) => {
+  return new Promise((resolve) => {
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result);    
+  })
+}
 const Location = (line) => {
   return new Promise((resolve) => {
     // Update Cmdr Location
@@ -202,6 +207,12 @@ const SupercruiseExit = (line) => {
     resolve(result)
   })
 }
+const Touchdown = (line) => {
+  return new Promise((resolve) => {
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result);    
+  })
+}
 
 const Undocked = (line) => {
   return new Promise((resolve) => {
@@ -218,12 +229,15 @@ module.exports = {
   DockingDenied,
   DockingGranted,
   DockingRequested,
+  DockingTimeout,
   FSDJump,
   FSDTarget,
   LeaveBody,
+  Liftoff,
   Location,
   StartJump,
   SupercruiseEntry,
   SupercruiseExit,
+  Touchdown,
   Undocked
 };

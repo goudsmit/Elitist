@@ -4,7 +4,6 @@
  * Api Chapter 6. Exploration
  * -------------------------
  */
-const ui = require('../../ui.updates');
 const interface = require('../interface')
 
 const CodexEntry = (line) => {
@@ -39,7 +38,7 @@ const FSSSignalDiscovered = (line) => {
       station: line.IsStation,
     };
 
-    let result = { callback: ui.updateSignals, data: signal };
+    let result = { callback: interface.updateSignals, data: signal };
     resolve(result);
   });
 };
@@ -73,6 +72,7 @@ const MaterialDiscovered = (line) => {
 }
 const MultiSellExplorationData = (line) => {
   return new Promise(resolve => {
+    Cmdr.credits += line.TotalEarnings
     let result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result)
   })
@@ -150,6 +150,7 @@ const Scan = (line) => {
     resolve(result)
   })
 }
+const Screenshot = (line) => Promise.resolve(true)
 const SellExplorationData = (line) => {
   return new Promise(resolve => {
     Cmdr.credits += line.TotalEarnings
@@ -169,5 +170,6 @@ module.exports = {
   NavBeaconScan,
   SAAScanComplete,
   Scan,
+  Screenshot,
   SellExplorationData
 }

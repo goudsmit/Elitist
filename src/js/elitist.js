@@ -1,6 +1,5 @@
 const db = require('./js/storage.db');
 const journal = require('./js/lib/journal');
-const ui = require('./js/ui.updates');
 const interface = require('./js/lib/interface');
 
 const util = require("util");
@@ -238,7 +237,7 @@ const readFolder = (folder) => {
     })
     .then( () => {
         if (elitist.cmdr) {
-          ui.updateOverlay("LoadUI");
+          interface.updateOverlay("LoadUI");
           interface.loadUI()
           console.log("Load UI");
         } else {
@@ -285,11 +284,15 @@ const readFile = (file, index) => {
           //   PostProcess Stuff
           await ResultProcessor(result)
             .then(() => {
-              lineSeq++;
+              if (lineSeq == -1) {
+                lineSeq = 0
+              } else {
+                lineSeq++;
+              }
               lr.resume();
             })
             .catch((error) => {
-              console.log(`(${lineSeq+1}) ${error}`);
+              console.error(`(${lineSeq+1}) ${error}`);
               lineSeq++;
               lr.resume();
             });

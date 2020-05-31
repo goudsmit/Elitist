@@ -19,9 +19,6 @@ exports.updateShip = async (ship = Cmdr.ship) => {
   } else {
     elements.shipFuel.style.display = "flex";
     let fuelCurrent = Math.round(ship.fuel.level * 10) / 10;
-    // elements.shipFuelNumbers.innerText = `${fuelCurrent}/${ship.fuel.capacity}t`;
-    // elements.shipFuelLevelBar.value = ship.fuel.level;
-    // elements.shipFuelLevelBar.max = ship.fuel.capacity;
     interface.setFuelLevel(fuelCurrent, ship.fuel.capacity)
   }
 }

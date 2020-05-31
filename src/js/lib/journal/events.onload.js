@@ -7,15 +7,14 @@
  */
 const journal = require("../journal");
 const getShipType = journal.getShipType;
-const ui = require('../../ui.updates');
 const interface = require('../interface')
 
 const Cargo = (line) => {
   return new Promise((resolve) => {
     if (line.Count > 0) {
-      console.log(line);
+      // console.log(line);
     }
-    let result = {callback: ui.updateCargo, data: Object.assign({}, line)}
+    let result = {callback: interface.updateCargo, data: Object.assign({}, line)}
     resolve(result);
   });
 };
@@ -61,13 +60,13 @@ const LoadGame = (line) => {
           value:
             line.HullValue != undefined
               ? line.HullValue
-              : Cmdr.ship.hull.value != undefined
+              : Cmdr.ship.hull && Cmdr.ship.hull.value != undefined
               ? Cmdr.ship.hull.value
               : 0,
           health:
             line.HullHealth != undefined
               ? line.HullHealth
-              : Cmdr.ship.hull.health != undefined
+              : Cmdr.ship.hull && Cmdr.ship.hull.health != undefined
               ? Cmdr.ship.hull.health
               : "-",
         },
@@ -76,14 +75,14 @@ const LoadGame = (line) => {
           value:
             line.ModulesValue != undefined
               ? line.ModulesValue
-              : Cmdr.ship.modules.value != undefined
+              : Cmdr.ship.hull && Cmdr.ship.modules.value != undefined
               ? Cmdr.ship.modules.value
               : 0,
         },
         fuel: {
           level: line.FuelLevel,
-          capacity: line.FuelCapacity
-        }
+          capacity: line.FuelCapacity,
+        },
       };
       let Ship = new journal.StarShip(line.ShipID);
       await Ship.Get().then(() => {

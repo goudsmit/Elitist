@@ -8,12 +8,14 @@ const ranks = require('./ranks')
 
 const fullScreenFlash = () => {
   let element = elements.fullScreenAlert
-  element.style.display = "flex"
-  element.classList.add("flash");
-  element.addEventListener("animationend", (ev) => {
-    element.classList.remove("flash");
-    element.style.display = "none"
-  })
+  if (elements.appContainer.style.display != "none") {
+    element.style.display = "flex"
+    element.classList.add("flash");
+    element.addEventListener("animationend", (ev) => {
+      element.classList.remove("flash");
+      element.style.display = "none"
+    })
+  }
 }
 exports.fullScreenFlash = fullScreenFlash
 
@@ -46,9 +48,12 @@ const setCredits = (value, action = "ADD") => {
     credits += value
   } else if (action === "SUBSTRACT") {
     credits -= value
+  } else if (action == "SET") {
+    credits = value
   }
   elements.cmdrCredits.dataset.cmdrCredits = credits
   elements.cmdrCredits.innerText = formatNumber(credits)
+  // Cmdr.credits = credits
 }
 exports.setCredits = setCredits
 
@@ -68,6 +73,31 @@ const setFuelLevel = (level, max) => {
 }
 exports.setFuelLevel = setFuelLevel
 
+const updateOverlay = async (state) => {
+  switch (state) {
+    case "LoadUI":
+      // elements.overlay.style.display = "none"
+      elements.overlay.classList.add("fade-out");
+      elements.overlay.addEventListener("animationend", (ev) => {
+        elements.overlay.style.display = "none";
+        elements.appContainer.style.display = "flex";
+      });
+      elements.appContainer.classList.add("fade-in");
+      elements.appContainer.addEventListener("animationend", (ev) => {
+        elements.appContainer.style.display = "flex";
+      });
+      break;
+    case "NoCmdr":
+      elements.overlayMsg.innerText = "No Commander Data Found. Start Game";
+      elements.overlayMsg.classList.add("no-cmdr");
+      break;
+    default:
+      elements.overlayMsg.classList.remove("no-cmdr");
+      elements.overlay.style.display = "flex";
+      break;
+  }
+};
+exports.updateOverlay = updateOverlay
 
 const updateLocation = async (system) => {
   elements.systemName.innerText = system.name;
@@ -81,7 +111,7 @@ const updateLocation = async (system) => {
   if (system.economy.first) {
     economies.push(system.economy.first);
   }
-  if (system.economy.second) {
+  if (system.economy.second && system.economy.second != "None") {
     economies.push(system.economy.second);
   }
   elements.systemEconomies.innerHTML = economies.join(
@@ -93,7 +123,6 @@ const updateLocation = async (system) => {
   elements.systemPopulation.innerText = formatNumber(system.population);
   elements.systemBodies.innerHTML = "";
   await bodies.updateBodies();
-  // console.log("update Location", data, economies);
 };
 exports.updateLocation = updateLocation
 
@@ -202,9 +231,23 @@ const updateTravelState = async (data) => {
 }
 exports.updateTravelState = updateTravelState
 
+const updateCargo = async (cargo) => {
+  // console.log(`updateCargo: `, cargo);
+};
+exports.updateCargo = updateCargo
+const updateSignals = async (data) => {
+  /**
+   * Callbacks from:
+   * event: FSSSignalDiscovered, data: signals
+   */
+  // console.log(data)
+};
+exports.updateSignals = updateSignals
+
 const loadUI = async () => {
   if (Cmdr) {
     elements.cmdrName.innerText = Cmdr.name;
+    interface.setCredits(Cmdr.credits, "SET");
     // TODO: CmdrVessel
     // elements.cmdrCredits.innerText = formatNumber(Cmdr.credits);
     await ship.updateShip();
@@ -256,9 +299,12 @@ module.exports = Object.assign(
     setGameState,
     setCredits,
     setFuelLevel,
+    updateOverlay,
     updateLocation,
     updateDock,
     updateTravelState,
+    updateCargo,
+    updateSignals,
     loadUI,
     formatNumber,
     distanceInLY,

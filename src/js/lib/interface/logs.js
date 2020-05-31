@@ -1,6 +1,6 @@
 const interface = require('../interface');
 const elements = require("./elements");
-const journal = require('../journal')
+const journal = require('../journal');
 
 const getLogEntryTemplate = () => {
   // <div class="log-entry">
@@ -18,6 +18,16 @@ const getLogEntryTemplate = () => {
   return template;
 };
 
+const transferTime = (d) => {
+  d = Number(d);
+  var h = Math.floor(d / 3600);
+  var m = Math.floor(d % 3600 / 60);
+  var s = Math.floor(d % 3600 % 60);
+  var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+  var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+  var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+  return hDisplay + mDisplay + sDisplay;        
+}
 /**
  * --------------------
  * updateLog function
@@ -35,7 +45,8 @@ exports.updateLog = async (data) => {
       divEvent.classList.add("log-travel");
       break;
     case "ApproachSettlement":
-      divEvent.innerText = `Approaching Settlement: ${data.settlement}`;
+      divEvent.innerText = `Approaching ${data.Name} Settlement`;
+      divEvent.classList.add("log-travel")
       break;
     case "Bounty":
       divEvent.innerText = `Bounty rewarded: ${interface.formatNumber(
@@ -85,12 +96,28 @@ exports.updateLog = async (data) => {
       divEvent.innerText = `Docking requested at ${data.StationName}`;
       divEvent.classList.add("log-travel");      
       break;
+    case "DockingTimeout":
+      divEvent.innerText = `Docking Request at ${data.StationName} timed out`
+      divEvent.classList.add("warning")
+      break;
+    case "DockSRV":
+      divEvent.innerText = `SRV docked`
+      divEvent.classList.add("log-travel")
+      elements.cmdrVessel.innerText = Cmdr.ship.name
+      break;
+    case "EngineerContribution":
+      let engineerCommodity = data.Commodity_Localised ? data.Commodity_Localised : data.Commodity
+      divEvent.innerText = `Donated ${data.Quantity} ${engineerCommodity}(s) to ${data.Engineer} (${data.TotalQuantity} needed)`
+      divEvent.classList.add("info");
+      break;
     case "EscapeInterdiction":
       divEvent.innerText = `Escaped Interdiction`
       divEvent.classList.add("success");
       break;
-    case "DockingRequested":
-      divEvent.innerText = `Requested docking at ${data.StationName}`;
+    case "FetchRemoteModule":
+      interface.setCredits(data.TransferCost, "SUBSTRACT")
+      divEvent.innerText = `Transfering ${data.StoredItem_Localised} (ETA: ${transferTime(data.TransferTime)})`
+      divEvent.classList.add("info");
       break;
     case "Fileheader":
       divEvent.innerText = `----- New gaming session started -----`
@@ -133,11 +160,27 @@ exports.updateLog = async (data) => {
       divEvent.innerText = msg;
       divEvent.classList.add("danger")
       break;
+    case "LaunchSRV":
+      divEvent.innerText = `Launched SRV`
+      divEvent.classList.add("log-travel")
+      elements.cmdrVessel.innerText = `SRV Scarab`
+      break;
     case "LeaveBody":
       divEvent.innerText = `Leaving  ${data.Body}`;
       divEvent.classList.add("log-travel");
       break;
+    case "Liftoff":
+      let liftoffMsg
+      if (data.PlayerControlled) {
+        liftoffMsg = `liftoff from planetary surface`
+      } else {
+        liftoffMsg = `ship dismissed and waiting in orbit`
+      }
+      divEvent.innerText = liftoffMsg;
+      divEvent.classList.add("log-travel");
+      break;
     case "LoadGame":
+      interface.setCredits(Cmdr.credits, "SET")
       divEvent.innerText = `----- Game loaded -----`;
       break;
     case "MarketBuy":
@@ -172,8 +215,22 @@ exports.updateLog = async (data) => {
     case "ModuleRetrieve":
       let retrievedModule = data.RetrievedItem_Localised ? data.RetrievedItem_Localised : data.RetrievedItem
       let swapOutModule = data.SwapOutItem_Localised ? data.SwapOutItem_Localised : data.SwapOutItem
-      divEvent.innerText = `swapped ${swapOutModule} for ${retrievedModule}`
+      if (swapOutModule) {
+        divEvent.innerText = `swapped ${swapOutModule} for ${retrievedModule}`
+      } else {
+        `Retrieved ${retrievedModule}`
+      }
       divEvent.classList.add("highlight");
+      break;
+    case "ModuleSell":
+      interface.setCredits(data.SellPrice)
+      divEvent.innerText = `Sold remote module for ${interface.formatNumber(data.SellPrice)}CR`
+      divEvent.classList.add("highlight")
+      break;
+    case "ModuleSellRemote":
+      interface.setCredits(data.SellPrice)
+      divEvent.innerText = `Sold remote module for ${interface.formatNumber(data.SellPrice)}CR`
+      divEvent.classList.add("highlight")
       break;
     case "MultiSellExplorationData":
       interface.setCredits(data.TotalEarnings)
@@ -182,6 +239,11 @@ exports.updateLog = async (data) => {
       data.Discovered.forEach(body => bodiesDiscovered += body.NumBodies)
       divEvent.innerHTML = `exploration data sold for <span class="credits">${interface.formatNumber(data.TotalEarnings)}cr</span><br>(${systemsDiscovered} systems, ${bodiesDiscovered} bodies)`
       divEvent.classList.add("success");
+      break;
+    case "PayBounties":
+      interface.setCredits(data.Amount, "SUBSTRACT")
+      divEvent.innerHTML = `<span class="credits">${interface.formatNumber(data.Amount)}cr</span> Paid in outstanding bounties`
+      divEvent.classList.add("info")
       break;
     case "PayFines":
       interface.setCredits(data.Amount, "SUBTRACT")
@@ -197,6 +259,8 @@ exports.updateLog = async (data) => {
       }
       divEvent.innerText = promoteMsg
       divEvent.classList.add("info")
+      break;
+    case "ProspectedAsteroid":
       break;
     case "RedeemVoucher":
       interface.setCredits(data.Amount)
@@ -234,6 +298,11 @@ exports.updateLog = async (data) => {
       divEvent.innerText = `${data.ScanType} scan detected!`;
       divEvent.classList.add("warning");      
       break;
+    case "SellDrones":
+      interface.setCredits(data.TotalSale)
+      divEvent.innerHTML = `Sold ${data.Count} limpets for <span class="credits">${interface.formatNumber(data.TotalSale)}cr</span>`
+      divEvent.classList.add("highlight");
+      break;
     case "SellExplorationData":
       interface.setCredits(data.TotalEarnings);
       divEvent.innerText = `Exploration data sold for <span class="credits">${interface.formatNumber(data.TotalEarnings)}cr</span>`
@@ -246,10 +315,22 @@ exports.updateLog = async (data) => {
       divEvent.classList.add("primary");
       break;
     case "ShipyardBuy":
-      interface.setCredits(data.ShipPrice, "SUBSTRACT")
-      const getShipType = require('../journal').getShipType
-      divEvent.innerText = `New Ship purchased: ${getShipType(data.ShipType)}`
+      interface.setCredits(data.ShipPrice, "SUBSTRACT")      
+      divEvent.innerText = `New Ship purchased: ${journal.getShipType(data.ShipType)}`
       divEvent.classList.add("highlight")
+      break;
+    case "ShipyardSell":
+      interface.setCredits(data.ShipPrice)
+      divEvent.innerHTML = `Sold ${data.ShipType_Localised} for <span class="credits">${interface.formatNumber(data.ShipPrice)}cr</span>` 
+      break;
+    case "ShipyardSwap":
+      divEvent.innerText = `Swapped ships: ${journal.getShipType(data.StoreOldShip)} > ${journal.getShipType(data.ShipType)}`
+      divEvent.classList.add("info")
+      break;
+    case "ShipyardTransfer":
+      interface.setCredits(data.TransferPrice, "SUBSTRACT");
+      divEvent.innerText = `transfering ${data.ShipType}. (ETA: ${transferTime(data.TransferTime)})`
+      divEvent.classList.add("info");
       break;
     case "Shutdown":
       divEvent.innerText = `\n ----- Exiting game -----`
@@ -271,6 +352,21 @@ exports.updateLog = async (data) => {
     case "Scanned":
       divEvent.innerText = `${data.ScanType} scan detected!`;
       divEvent.classList.add("warning");
+      break;
+    case "SystemsShutdown":
+      interface.fullScreenFlash()
+      divEvent.innerText = `Systems down - Likely Thargoid interdiction from witchspace`
+      divEvent.classList.add("danger")
+      break;
+    case "Touchdown":
+      let touchdownMsg
+      if (data.PlayerControlled) {
+        touchdownMsg = `succesfully landed on planetary surface`
+      } else {
+        touchdownMsg = `ship recalled and touched down`
+      }
+      divEvent.innerText = touchdownMsg
+      divEvent.classList.add("log-travel");      
       break;
     case "UnderAttack":
       divEvent.innerText = "Under attack!";

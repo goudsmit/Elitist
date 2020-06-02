@@ -175,7 +175,7 @@ const NewCommander = (line) => {
 };
 
 const Passengers = (line) => {
-  console.log(line);
+  // console.log(line);
   return Promise.resolve(true);
 };
 

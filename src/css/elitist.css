@@ -866,7 +866,13 @@ section > .info {
 .bodies .properties .landable {
   background: var(--elite-green);
 }
-
+.bodies .properties .terraformable {
+  background: var(--elite-green);
+}
+.bodies .properties .terraforming,
+.bodies .properties .terraformed {
+  background: var(--green-dark);
+}
 .bodies .properties .gravity-low {
   background: var(--elite-green);
 }

@@ -200,7 +200,8 @@ class Material {
   async Check() {
     await db.materials.get({ name: this.name }).then((material) => {
       if (material != undefined) {
-        this.quantity = material.quantity;
+        // this.quantity = material.quantity;
+        Object.assign(this, material)
       }
     });
   }
@@ -387,21 +388,7 @@ const getShipType = (type) => {
 }
 exports.getShipType = getShipType;
 
-/**
- * -------------------------
- * Journal: New File event
- * Game is started
- * -------------------------
- */
-const Fileheader = (line) => {
-  return new Promise((resolve) => {
-    db.logs.add({file: { name: fileName}, part: line.part, gameversion: line.gameversion, build: line.build}).catch(
-      (error) => {}
-    )
-    result = { callback: interface.setGameState, data: Object.assign({}, line)};
-    resolve(result);
-  });
-};
+
 
 const onload = require('./events.onload');
 const travel = require('./events.travel');
@@ -410,6 +397,22 @@ const exploration = require('./events.exploration');
 const services = require('./events.services');
 const trade = require('./events.trade');
 const other = require('./events.other');
+/**
+ * -------------------------
+ * Journal: New File event
+ * Game is started
+ * -------------------------
+ */
+const Fileheader = (line) => {
+  return new Promise(async (resolve) => {
+    db.logs.add({file: { name: fileName}, part: line.part, gameversion: line.gameversion, build: line.build}).catch(
+      (error) => {}
+    )
+    result = { callback: interface.setGameState, data: Object.assign({}, line)};
+    resolve(result);
+  });
+};
+
 
 module.exports = Object.assign(
   {

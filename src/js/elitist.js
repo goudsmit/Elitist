@@ -61,6 +61,25 @@ const ipc = require("electron").ipcRenderer;
 ipc.on("start-watcher-reply", (event, args) => {
   console.log(args);
 });
+ipc.on('new-file', async (event, args) => {
+  var parts = args.split(path.sep)
+  var file = parts.pop()
+  var folder = parts.join(path.sep)
+  if (file.endsWith('.log')) {
+    let logFiles = db.logs.toCollection()
+    logFiles.last(lastLog => {
+      if (!lastLog.shutdown) {
+        db.logs.update(lastLog.file.name, {shutdown: true})
+        lineSeq = 0
+      }
+    }).then( async () => {
+      let preProcessLineSeq = lineSeq
+      await readFile(file).then( () => {
+        console.log(`Processed all lines (${preProcessLineSeq}->${lineSeq})`)
+      })
+    })
+  }
+})
 ipc.on('file-update', async (event, args) => {
   var parts = args.split(path.sep)
   var file = parts.pop()
@@ -190,15 +209,6 @@ const readFolder = (folder) => {
        *          that are NOT processed in db.logs (shutdown-event)
        */
       let cleanfiles = [];
-      // files.forEach( async (file) => {
-      //   if (file.endsWith(".log")) {
-      //     let log = await db.logs.get(file)
-      //     if (log == undefined || !(log.shutdown)) {
-      //       console.log(file)
-      //       cleanfiles.push(file);
-      //     }
-      //   }
-      // });
       for (let i in files) {
         let file = files[i]
         if (file.endsWith(".log")) {
@@ -217,6 +227,7 @@ const readFolder = (folder) => {
         let stats = await stat(folder + path.sep + file);
         if (stats.isFile()) {
           let index = parseInt(i)+1
+          lineSeq = 0
           interface.elements.overlayMsg.innerText = `Processing ${file} (${index}/${cleanfiles.length})`
           console.log(`(${index}/${cleanfiles.length}) Reading File ${file} from line ${lineSeq+1}`);
           await readFile(file, index).then(() => {
@@ -228,12 +239,6 @@ const readFolder = (folder) => {
     .then( async () => {
       interface.elements.overlayMsg.innerText = `Welcome back, Cmdr`
       console.log(`Folder contents checked and read`);
-        // function timeout(ms) {
-        //     return new Promise(resolve => setTimeout(resolve, ms));
-        // }
-        // await timeout(1000);
-        // console.log("1 second later")
-        // Set up APP constants: CMDR etc
     })
     .then( () => {
         if (elitist.cmdr) {

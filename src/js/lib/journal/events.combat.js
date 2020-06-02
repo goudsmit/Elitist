@@ -67,7 +67,8 @@ const HullDamage = (line) => {
 }
 const Interdicted = (line) => {
   return new Promise(resolve => {
-    resolve(true)
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
   })
 }
 const Interdiction = (line) => {
@@ -108,6 +109,7 @@ module.exports = {
   HeatDamage,
   HeatWarning,
   HullDamage,
+  Interdicted,
   ShipTargeted,
   ShipTargetted,
   UnderAttack

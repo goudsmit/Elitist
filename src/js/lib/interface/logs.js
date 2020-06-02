@@ -78,6 +78,9 @@ exports.updateLog = async (data) => {
       divEvent.innerHTML = crimeMsg
       divEvent.classList.add("danger")
       break
+    case "DatalinkVoucher":
+      divEvent.innerHTML  = `Scanned datalink (Reward: <span class="credits">${interface.formatNumber(data.Reward)}cr</span>)`
+      break;
     case "Died":
       interface.fullScreenFlash()
       interface.setShipHealth(0)
@@ -130,6 +133,10 @@ exports.updateLog = async (data) => {
       divEvent.innerText = `Arrival in ${data.StarSystem}`
       divEvent.classList.add("log-travel")
       break;
+    case "FSSAllBodiesFound":
+      divEvent.innerText = `System scan complete (bodies: ${data.Count})`
+      divEvent.classList.add("success")
+      break;
     case "FSSDiscoveryScan":
       divEvent.innerText = `honk: ${data.BodyCount} bodies & ${data.NonBodyCount} non bodies (${Math.round(data.Progress*100)}%)`
       divEvent.classList.add("info")
@@ -158,6 +165,10 @@ exports.updateLog = async (data) => {
         msg = `Fighter taking damage`
       }
       divEvent.innerText = msg;
+      divEvent.classList.add("danger")
+      break;
+    case "Interdicted":
+      divEvent.innerText = `Interdicted`
       divEvent.classList.add("danger")
       break;
     case "LaunchSRV":
@@ -352,6 +363,17 @@ exports.updateLog = async (data) => {
     case "Scanned":
       divEvent.innerText = `${data.ScanType} scan detected!`;
       divEvent.classList.add("warning");
+      break;
+    case "Synthesis":
+      data.Materials.forEach(material => {
+        let M = new journal.Material(material.Name)
+        M.Check().then(() => {
+          const updateMaterials = require('./materials').updateMaterials
+          updateMaterials(M)
+        })
+      });
+      divEvent.innerText = `Synthesized ${data.Name}`
+      divEvent.classList.add("success")
       break;
     case "SystemsShutdown":
       interface.fullScreenFlash()

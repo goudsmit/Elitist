@@ -18,7 +18,12 @@ const DiscoveryScan = (line) => {
   })
 }
 
-const FSSAllBodiesFound = (line) => Promise.resolve(true);
+const FSSAllBodiesFound = (line) => {
+  return new Promise(resolve => {
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)    
+  })
+}
 const FSSDiscoveryScan = (line) => {
   return new Promise(resolve => {
     let result = {callback: interface.updateLog, data: Object.assign({}, line)}

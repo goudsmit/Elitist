@@ -178,6 +178,12 @@ const addBody = (body) => {
       volcanismProperty.innerText = body.extended.volcanism;
       properties.push(volcanismProperty);
     }
+    if (body.extended.terraformstate != undefined && body.extended.terraformstate != "") {
+      let terraformProperty = blankPropertyTemplate()
+      terraformProperty.classList.add(body.extended.terraformstate.toLowerCase())
+      terraformProperty.innerText = body.extended.terraformstate.toLowerCase()
+      properties.push(terraformProperty)
+    }
   }
   if (body.landable) {
     let landableProperty = blankPropertyTemplate();

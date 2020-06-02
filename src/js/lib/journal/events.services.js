@@ -96,6 +96,24 @@ const FetchRemoteModule = (line) => {
 }
 const Market = (line) => Promise.resolve(true);
 const MassModuleStore = (line) => Promise.resolve(true);
+const MaterialTrade = (line) => {
+  for (let transaction of ["Paid", "Received"]) {
+    let materialName = line.Material_Localised ? line.Material_Localised : line.Material
+    let Material = new journal.Material(materialName)
+    Material.Check().then( () => {
+      if (transaction == "Paid") {
+        Material.quantity -= line["Paid"].Quantity
+      } else {
+        Material.quantity += line["Received"].Quantity
+        Material.cssname = line.Material
+        Material.type = line.Category
+      }
+      Material.Save()
+    })
+  }
+  // let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+  resolve(true)  
+}
 // TODO: Sure I could do something with this..
 const MissionAbandoned = (line) => Promise.resolve(true);
 const MissionAccepted = (line) => Promise.resolve(true);
@@ -283,6 +301,7 @@ module.exports = {
   FetchRemoteModule,
   Market,
   MassModuleStore,
+  MaterialTrade,
   MissionAbandoned,
   MissionAccepted,
   MissionCompleted,

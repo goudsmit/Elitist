@@ -20,6 +20,13 @@ const CommitCrime = (line) => {
 }
 const CrewMemberJoins = (line) => Promise.resolve(true)
 const CrewMemberQuits = (line) => Promise.resolve(true);
+const DatalinkScan = (line) => Promise.resolve(true);
+const DatalinkVoucher = (line) => {
+  return new Promise((resolve) => {
+    let result = { callback: interface.updateLog, data: Object.assign({}, line) };
+    resolve(result);
+  });  
+}
 const DataScanned = (line) => Promise.resolve(true);
 const Friends = (line) => {
   return new Promise((resolve) => {
@@ -112,6 +119,19 @@ const Shutdown = (line) => {
     resolve(result);
   });
 };
+const Synthesis = (line) => {
+  return new Promise(resolve => {
+    line.Materials.forEach(material => {
+      let Material = new journal.Material(material.Name)
+      Material.Check().then(() => {
+          Material.quantity -= material.Count
+          Material.Save()
+      })      
+    });
+    let result = { callback: interface.updateLog, data: Object.assign({}, line) };
+    resolve(result);
+  })
+}
 const SystemsShutdown = (line) => {
   return new Promise((resolve) => {
     let result = { callback: interface.updateLog, data: Object.assign({}, line) };
@@ -126,6 +146,8 @@ module.exports = {
   CommitCrime,
   CrewMemberJoins,
   CrewMemberQuits,
+  DatalinkScan,
+  DatalinkVoucher,
   DataScanned,
   DockSRV,
   EndCrewSession,
@@ -147,6 +169,7 @@ module.exports = {
   Scanned,
   SendText,
   Shutdown,
+  Synthesis,
   SystemsShutdown,
   USSDrop
 };

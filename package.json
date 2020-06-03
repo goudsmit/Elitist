@@ -1,11 +1,11 @@
 {
   "name": "elitist",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "build": {
     "appId": "com.electron.elitist",
     "productName": "Elitist",
-    "mac": {
-      "category": "public.app-category.games"
+    "win": {
+      "publish": ["github"]
     }
   },
   "description": "Elitist - An E:D Companion",

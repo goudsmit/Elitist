@@ -39,13 +39,13 @@
    ======================= */
 
 /* =======================
-    1. IMPORT
-   ======================= */
+  1. IMPORT
+  ======================= */
 @import url("./_variables.css");
 
 /* =======================
-       2. NON-STANDARD FONTS
-      ======================= */
+  2. NON-STANDARD FONTS
+  ======================= */
 @import url("https://fonts.googleapis.com/css?family=Sintony");
 @font-face {
   font-family: EuroCaps;
@@ -66,8 +66,8 @@
 }
 
 /* =======================
-       3. GENERAL STYLES
-      ======================= */
+  3. GENERAL STYLES
+  ======================= */
 
 html,
 body {
@@ -144,8 +144,8 @@ body::after {
 }
 
 /* =======================
-       3.2 GENERAL STYLES: TEXT-ALIGN
-      ======================= */
+  3.2 GENERAL STYLES: TEXT-ALIGN
+  ======================= */
 .left {
   text-align: left;
 }
@@ -157,8 +157,8 @@ body::after {
 }
 
 /* =======================
-       4.ANIMATIONS
-      ======================= */
+  4.ANIMATIONS
+  ======================= */
 .loader {
   position: relative;
   width: 64px;
@@ -321,7 +321,7 @@ header {
   justify-content: space-between;
   align-items: flex-end;
   width: 100%;
-  height: 90px;
+  height: 110px;
 }
 header div {
   padding: 0 10px;
@@ -332,11 +332,9 @@ header div.title-panel {
 }
 header div.title-panel .title {
   font-size: 1.8em;
-  /* line-height: 1; */
 }
 header div.title-panel .sub-title {
   font-size: 1.2em;
-  /* line-height: 0.8; */
   padding-left: 14px;
 }
 header div.title-panel .sub-title span {
@@ -366,7 +364,7 @@ section {
   flex-direction: row;
 }
 section section {
-  height: calc(100vh - 125px);
+  height: calc(100vh - 150px);
   display: flex;
   flex-direction: column;
   padding: 5px;

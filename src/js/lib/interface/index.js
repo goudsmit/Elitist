@@ -52,7 +52,8 @@ const setCredits = (value, action = "ADD") => {
     credits = value
   }
   elements.cmdrCredits.dataset.cmdrCredits = credits
-  elements.cmdrCredits.innerText = formatNumber(credits)
+  // elements.cmdrCredits.innerText = formatNumber(credits)
+  elements.cmdrCredits.innerHTML = `<ed-credits>${credits}</ed-credits>`
   // Cmdr.credits = credits
 }
 exports.setCredits = setCredits

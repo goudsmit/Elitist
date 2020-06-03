@@ -13,11 +13,12 @@
       http-equiv="Content-Security-Policy"
       content="script-src 'self' 'unsafe-inline';"
     />
+    <script type="module" src="js/components/index.js"></script>
   </head>
   <body>
 <!-- APPLICATION MENU BAR-->
     <nav class="app-menu">
-      <div class="app-title">elitist <span>version 0.6.0</span></div>
+      <div class="app-title">elitist <span>version <script>document.write(require('electron').remote.app.getVersion())</script></span></div>
       <div class="app-controls">
           <button class="app-minimize" id="minimizeButton"><i class="far fa-window-minimize"></i></button>
           <button class="app-min-max" id="minMaxButton"><i class="far fa-window-maximize"></i></button>
@@ -55,7 +56,7 @@
       <div class="panel cmdr">
         <div class="name">Cmdr <span id="cmdrName">name</span></div>
         <div class="vessel" id="cmdrVessel">shipname.</div>
-        <div class="credits"><span id="cmdrCredits" data-cmdr-credits="0">132,678,459</span> cr</div>
+        <div class="credits" id="cmdrCredits" data-cmdr-credits="0"></div>
       </div>
       <!-- SHIP PANEL -->
       <div class="panel ship">

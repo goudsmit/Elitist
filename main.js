@@ -4,13 +4,13 @@ const { app, BrowserWindow, Menu } = require("electron");
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
 
-// app.allowRendererProcessReuse = true
+app.allowRendererProcessReuse = true
 
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 800,
     webPreferences: {
       nodeIntegration: true,
     },
@@ -22,7 +22,7 @@ function createWindow() {
   win.loadFile("src/index.html");
 
   // Open the DevTools.
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on("closed", () => {

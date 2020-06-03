@@ -362,6 +362,7 @@ header div.time-panel .time {
 section {
   display: flex;
   flex-direction: row;
+  overflow: auto;
 }
 section section {
   height: calc(100vh - 150px);

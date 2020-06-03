@@ -28,12 +28,12 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "chokidar": "^3.3.1",
     "dexie": "^3.0.1",
-    "electron-rebuild": "^1.10.1",
     "line-by-line": "^0.1.6"
   },
   "devDependencies": {
     "electron": "^8.2.3",
-    "electron-builder": "^22.5.1"
+    "electron-builder": "^22.5.1",
+    "electron-rebuild": "^1.10.1"
   },
   "repository": "https://github.com/odylle/Elitist.git"
 }

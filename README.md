@@ -1,9 +1,10 @@
 # Elitist - an E:D Companion
 
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/odylle/Elitist)](https://github.com/odylle/Elitist/issues)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+[![Status](https://img.shields.io/badge/status-active-success.svg?style=flat-square)]()
+![GitHub issues](https://img.shields.io/github/issues/odylle/Elitist?style=flat-square)
+![GitHub Releases](https://img.shields.io/github/downloads/odylle/Elitist/latest/total?style=flat-square)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](/LICENSE)
 
 
 ## About <a name = "about"></a>
@@ -18,7 +19,25 @@ _{install information goes here}_
 
 ## Usage
 
-_{usage information here}_
+The application is very straight forward and doesn't require configuration.
+Install it and use it. On first use it reads all found log-files to get your information.
+
+## Release features
+### What works
+- Ship information. *Health, Rebuy, etc.*
+- Ranks (not CQC right now, not sure anyone uses that ;))
+- Materials (a readable and filterable list.)
+- Readable Event log, supporting most events
+- System Bodies. *This will show useful information regarding materials found on a body*
+### What is on the roadmap
+- Cargo: *Works slightly different, so takes a little bit more time.*
+- Session Log: *Would display materials farmed in a session, bounties gathered, etc..*
+- Engineering Blueprints: *Lots of assumptions here..*
+- *More is on the TODO.MD*
+### What else could be?
+- Keybinds: *Search through keybinds*
+- Screenshot: *Display, share, remove?*
+- Streamdeck things?
 
 ## Support
 If you find a bug or need help, please don't hesitate to open an issue here on Github. 

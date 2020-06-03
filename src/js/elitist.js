@@ -155,8 +155,8 @@ const checkFolder = (type) => {
                     os.homedir() + "\\Saved Games\\Frontier Developments\\Elite Dangerous"
                 ).replace(/\\/g, "/");
                 // OVERRIDE
-                dir = "C:/Users/vkuip/Desktop/Elite Log Files";
-                // dir = "/Users/vkuipers/Downloads/Elite"
+                // dir = "C:/Users/vkuip/Desktop/Elite Log Files";
+                // // dir = "/Users/vkuipers/Downloads/Elite"
                 break;
             // SCREENSHOTS
             // KEYBINDS

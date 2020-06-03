@@ -21,6 +21,19 @@ const BuyDrones = (line) => {
   })
 }
 const CargoDepot = (line) => Promise.resolve(true)
+const CrewAssign = (line) => {
+  return new Promise(resolve => {
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
+  })  
+}
+const CrewHire = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits -= line.Cost
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)
+  })
+}
 const CommunityGoal = (line) => Promise.resolve(true)
 const CommunityGoalDiscard = (line) => Promise.resolve(true)
 const CommunityGoalJoin = (line) => Promise.resolve(true)
@@ -34,7 +47,7 @@ const EngineerContribution = (line) => {
 }
 const EngineerCraft = (line) => {
   // TODO: Add blueprints.
-  console.info(line)
+  // console.info(line)
   return Promise.resolve(true)
 }
 const EngineerProgress = (line) => {
@@ -112,7 +125,7 @@ const MaterialTrade = (line) => {
     })
   }
   // let result = {callback: interface.updateLog, data: Object.assign({}, line)}
-  resolve(true)  
+  return Promise.resolve(true)  
 }
 // TODO: Sure I could do something with this..
 const MissionAbandoned = (line) => Promise.resolve(true);
@@ -154,7 +167,7 @@ const ModuleSwap = (line) => Promise.resolve(true);
 const Outfitting = (line) => Promise.resolve(true);
 const RedeemVoucher = (line) => {
   return new Promise(resolve => {
-    Cmdr.credits =+ line.Amount
+    Cmdr.credits += line.Amount
     let result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result)
   })
@@ -188,6 +201,13 @@ const RepairAll = (line) => {
     let result = {callback: interface.updateLog, data: Object.assign({}, line)}
     resolve(result);
   })
+}
+const RestockVehicle = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits -= line.Cost
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result);
+  })  
 }
 const SellDrones = (line) => {
   return new Promise(resolve => {
@@ -291,6 +311,8 @@ module.exports = {
   BuyAmmo,
   BuyDrones,
   CargoDepot,
+  CrewAssign,
+  CrewHire,
   CommunityGoal,
   CommunityGoalDiscard,
   CommunityGoalJoin,
@@ -319,6 +341,7 @@ module.exports = {
   RefuelAll,
   Repair,
   RepairAll,
+  RestockVehicle,
   SellDrones,
   SetUserShipName,
   Shipyard,

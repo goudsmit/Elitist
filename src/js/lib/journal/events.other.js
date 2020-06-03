@@ -1,7 +1,7 @@
 // ./js/lib/journal/events.other.js
 /**
  * -------------------------
- * Api Chapter 11. Other Events
+ * Api Chapter 12. Other Events
  * -------------------------
  */
 const interface = require('../interface');
@@ -34,11 +34,19 @@ const Friends = (line) => {
     resolve(result);
   });
 };
+const DockFighter = (line) => {
+  let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+  return Promise.resolve(result); 
+}
 const DockSRV = (line) => {
   let result = {callback: interface.updateLog, data: Object.assign({}, line)}
   return Promise.resolve(result); 
 }
 const EndCrewSession = (line) => Promise.resolve(true); 
+const FighterRebuilt = (line) => {
+  let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+  return Promise.resolve(result);   
+}
 const FuelScoop = (line) => {
   let result = {callback: interface.updateLog, data: Object.assign({}, line)}
   return Promise.resolve(result);
@@ -46,6 +54,12 @@ const FuelScoop = (line) => {
 const JoinACrew = (line) => Promise.resolve(true)
 const KickCrewMember = (line) => Promise.resolve(true)
 const LaunchDrone = (line) => Promise.resolve(true)
+const LaunchFighter = (line) => {
+  return new Promise(resolve => {
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result);    
+  })
+}
 const LaunchSRV = (line) => {
   return new Promise(resolve => {
     let result = {callback: interface.updateLog, data: Object.assign({}, line)}
@@ -53,7 +67,20 @@ const LaunchSRV = (line) => {
   })
 }
 const ModuleInfo = (line) => Promise.resolve(true)
-const Music = (line) => Promise.resolve(true) 
+const Music = (line) => Promise.resolve(true)
+const NpcCrewPaidWage = (line) => {
+  return new Promise(resolve => {
+    Cmdr.credits -= line.Amount
+    let result = { callback: interface.updateLog, data: Object.assign({}, line) };
+    resolve(result);
+  })
+}
+const NpcCrewRank = (line) => {
+  return new Promise(resolve => {
+    let result = { callback: interface.updateLog, data: Object.assign({}, line) };
+    resolve(result);
+  })  
+}
 const PayFines = (line) => {
   return new Promise(resolve => {
     Cmdr.credits -= line.Amount
@@ -110,8 +137,8 @@ const Shutdown = (line) => {
     let session
     if (elitist.cmdr) {
       session = Cmdr.session
-      Cmdr.session = {materials: {}, bounties: 0}
-      Cmdr.Save();
+      Cmdr.session = {materials: {}, bounties: 0, bonds: 0}
+      // Cmdr.Save();
     }
     db.logs.update(fileName, { shutdown: true });
     lineSeq = -1;
@@ -139,6 +166,12 @@ const SystemsShutdown = (line) => {
   })
 }
 const USSDrop = (line) => Promise.resolve(true);
+const VehicleSwitch = (line) => {
+  return new Promise((resolve) => {
+    let result = { callback: interface.updateLog, data: Object.assign({}, line) };
+    resolve(result);
+  })  
+}
 
 module.exports = {
   ApproachSettlement,
@@ -149,16 +182,21 @@ module.exports = {
   DatalinkScan,
   DatalinkVoucher,
   DataScanned,
+  DockFighter,
   DockSRV,
   EndCrewSession,
+  FighterRebuilt,
   Friends,
   FuelScoop,
   JoinACrew,
   KickCrewMember,
   LaunchDrone,
+  LaunchFighter,
   LaunchSRV,
   ModuleInfo,
   Music,
+  NpcCrewPaidWage,
+  NpcCrewRank,
   PayFines,
   Promotion,
   ProspectedAsteroid,
@@ -171,5 +209,6 @@ module.exports = {
   Shutdown,
   Synthesis,
   SystemsShutdown,
-  USSDrop
+  USSDrop,
+  VehicleSwitch
 };

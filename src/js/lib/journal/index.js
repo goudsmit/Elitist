@@ -10,7 +10,7 @@ class Cmdr {
     this.name = name;
     this.location = {};
     this.ship = {}
-    this.session = {materials: {}, bounties: 0}
+    this.session = {materials: {}, bounties: 0, bonds: 0}
     this.Init();
   }
   Init() {
@@ -36,12 +36,15 @@ class Cmdr {
 
   }
   Save() {
-    db.cmdr
-      .update({ name: this.name }, this)
+    return new Promise(resolve => {
+      db.cmdr.update({ name: this.name }, this)
       .then((updated) => {
         // console.log("Cmdr.Save(): ", this)
+        resolve(true)
       })
       .catch(() => {});
+    })
+
   }
 }
 exports.Cmdr = Cmdr;

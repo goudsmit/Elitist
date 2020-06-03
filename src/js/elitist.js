@@ -147,33 +147,30 @@ function Time() {
  * ----------------------------------
  */
 const checkFolder = (type) => {
-   return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (elitist.folder[type] == null) {
-        switch (type) {
-            case 'logs':
-                var dir = (
-                    os.homedir() + "\\Saved Games\\Frontier Developments\\Elite Dangerous"
-                ).replace(/\\/g, "/");
-                // OVERRIDE
-                // dir = "C:/Users/vkuip/Desktop/Elite Log Files";
-                // // dir = "/Users/vkuipers/Downloads/Elite"
-                break;
-            // SCREENSHOTS
-            // KEYBINDS
-        }
-        if (fs.existsSync(dir)) {
-            elitist.folder[type] = dir;
-            localStorage.setItem("elitist", JSON.stringify(elitist));
-            elitist = JSON.parse(localStorage.elitist);
-            location.reload();
-            resolve()
-        } else {
-        // TODO: Set Folder Form
-        }        
-    } else {
+      switch (type) {
+        case 'logs':
+          var dir = (
+            os.homedir() + "\\Saved Games\\Frontier Developments\\Elite Dangerous"
+          )
+          break;
+        // SCREENSHOTS
+        // KEYBINDS
+      }
+      if (fs.existsSync(dir)) {
+        elitist.folder[type] = dir;
+        localStorage.setItem("elitist", JSON.stringify(elitist));
+        elitist = JSON.parse(localStorage.elitist);
+        location.reload();
         resolve()
+      } else {
+        // TODO: Set Folder Form
+      }
+    } else {
+      resolve()
     }
-   });
+  });
 }
 /**
  * -------------------------
@@ -218,7 +215,6 @@ const readFolder = (folder) => {
           }
         }
       }
-  
       /**
        * Process the files
        */
@@ -231,8 +227,13 @@ const readFolder = (folder) => {
           interface.elements.overlayMsg.innerText = `Processing ${file} (${index}/${cleanfiles.length})`
           console.log(`(${index}/${cleanfiles.length}) Reading File ${file} from line ${lineSeq+1}`);
           await readFile(file, index).then(() => {
-              // console.log(`FINISH`)
-          })  
+              db.logs.get(file, log => {
+                if (!log.shutdown && i < cleanfiles.length) {
+                  console.log("unclosed file found, closing...")
+                  db.logs.update(log, {shutdown: true})
+                }
+              })
+          })
         }
       }
     })
@@ -283,7 +284,7 @@ const readFile = (file, index) => {
         } catch {
           console.log(`Failed to parse JSON. file: ${fileName} line: ${line}`)
         }
-          // console.log(`   ${lineSeq+1}: `, line);
+        // console.log(`   ${lineSeq+1}: `, line);
         await EventProcessor(line).then(async (result) => {
 
           //   PostProcess Stuff

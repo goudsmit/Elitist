@@ -4,7 +4,7 @@ const { app, BrowserWindow, Menu } = require("electron");
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
 
-app.allowRendererProcessReuse = true
+app.allowRendererProcessReuse = false
 
 function createWindow() {
   // Create the browser window.

@@ -5,7 +5,9 @@
     "appId": "com.electron.elitist",
     "productName": "Elitist",
     "win": {
-      "publish": ["github"]
+      "publish": [
+        "github"
+      ]
     }
   },
   "description": "Elitist - An E:D Companion",

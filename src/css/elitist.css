@@ -274,9 +274,10 @@ progress.elite::-webkit-progress-value {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: calc(100% - 30px);
+  margin-top: 30px;
   width: 100%;
-  z-index: 1000;
+  z-index: 999;
   position: absolute;
   font-family: Eurostile;
   text-transform: uppercase;
@@ -303,8 +304,6 @@ progress.elite::-webkit-progress-value {
        7. MAIN
       ======================= */
 main {
-  /* display: none; */
-  /* display: flex; */
   flex-direction: column;
   height: 100%;
   font-family: Eurostile;

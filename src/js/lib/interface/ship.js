@@ -2,6 +2,7 @@ const elements = require('./elements');
 const interface = require('../interface');
 
 exports.updateShip = async (ship = Cmdr.ship) => {
+  elements.cmdrVessel.innerText = ship.name;
   elements.shipName.innerText = ship.name;
   elements.shipId.innerText = ship.ident;
   elements.shipType.innerText = ship.type;

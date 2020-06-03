@@ -23,8 +23,10 @@ const setGameState = async (data) => {
   if (data.event == "LoadGame") {
     elements.gameStatus.innerText = "online";
     elements.gameStatus.className = "online";
-    logs.updateLog(data)
-    await ship.updateShip()
+    Cmdr.Save().then( async () => {
+      logs.updateLog(data)
+      await ship.updateShip()
+    })
   } else if (data.event == "Fileheader") {
     elements.gameStatus.innerText = "initializing";
     logs.updateLog(data)
@@ -42,7 +44,7 @@ const setShipHealth = (val) => {
 }
 exports.setShipHealth = setShipHealth
 
-const setCredits = (value, action = "ADD") => {
+const setCredits = (value, action) => {
   let credits = parseInt(elements.cmdrCredits.dataset.cmdrCredits)
   if (action === "ADD") {
     credits += value
@@ -52,7 +54,6 @@ const setCredits = (value, action = "ADD") => {
     credits = value
   }
   elements.cmdrCredits.dataset.cmdrCredits = credits
-  // elements.cmdrCredits.innerText = formatNumber(credits)
   elements.cmdrCredits.innerHTML = `<ed-credits>${credits}</ed-credits>`
   // Cmdr.credits = credits
 }

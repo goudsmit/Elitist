@@ -35,12 +35,15 @@ const EscapeInterdiction = (line) => {
 }
 const FactionKillBond = (line) => {
   return new Promise(resolve => {
-    resolve(true)
+    Cmdr.session.bonds += line.Reward
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result);
   })
 }
 const FighterDestroyed = (line) => {
   return new Promise(resolve => {
-    resolve(true)
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result);
   })
 }
 
@@ -106,6 +109,8 @@ module.exports = {
   Bounty,
   Died,
   EscapeInterdiction,
+  FactionKillBond,
+  FighterDestroyed,
   HeatDamage,
   HeatWarning,
   HullDamage,

@@ -89,6 +89,12 @@ const SAAScanComplete = (line) => {
     resolve(result)    
   })
 }
+const SAASignalsFound = (line) => {
+  return new Promise(resolve => {
+    let result = {callback: interface.updateLog, data: Object.assign({}, line)}
+    resolve(result)    
+  })
+}
 const Scan = (line) => {
   return new Promise(resolve => {
     let Body
@@ -174,6 +180,7 @@ module.exports = {
   MultiSellExplorationData,
   NavBeaconScan,
   SAAScanComplete,
+  SAASignalsFound,
   Scan,
   Screenshot,
   SellExplorationData

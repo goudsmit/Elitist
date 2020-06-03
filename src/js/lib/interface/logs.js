@@ -78,6 +78,15 @@ exports.updateLog = async (data) => {
       divEvent.innerHTML = crimeMsg
       divEvent.classList.add("danger")
       break
+    case "CrewAssign":
+      divEvent.innerText = `${data.Name} set to ${data.Role}`
+      divEvent.classList.add("info")
+      break;
+    case "Crewhire":
+      interface.setCredits(line.Cost, "SUBSTRACT")
+      divEvent.innerText = `${data.Name} Hired as crewmember!`
+      divEvent.classList.add("info")
+      break;
     case "DatalinkVoucher":
       divEvent.innerHTML  = `Scanned datalink (Reward: <span class="credits">${interface.formatNumber(data.Reward)}cr</span>)`
       break;
@@ -103,6 +112,9 @@ exports.updateLog = async (data) => {
       divEvent.innerText = `Docking Request at ${data.StationName} timed out`
       divEvent.classList.add("warning")
       break;
+    case "DockFighter":
+      divEvent.innerText = `Fighter docked`
+      divEvent.classList.add("log-travel")      
     case "DockSRV":
       divEvent.innerText = `SRV docked`
       divEvent.classList.add("log-travel")
@@ -117,10 +129,22 @@ exports.updateLog = async (data) => {
       divEvent.innerText = `Escaped Interdiction`
       divEvent.classList.add("success");
       break;
+    case "FactionKillBond":
+      divEvent.innerHTML = `Bond earned: <ed-credits>${data.Reward}</ed-credits>`
+      divEvent.classList.add("highlight")
+      break;
     case "FetchRemoteModule":
       interface.setCredits(data.TransferCost, "SUBSTRACT")
       divEvent.innerText = `Transfering ${data.StoredItem_Localised} (ETA: ${transferTime(data.TransferTime)})`
       divEvent.classList.add("info");
+      break;
+    case "FighterDestroyed":
+      divEvent.innerText = `Fighter destroyed!`
+      divEvent.classList.add("danger")
+      break;
+    case "FighterRebuilt":
+      divEvent.innerText = `Fighter rebuild in hangar`
+      divEvent.classList.add("success")      
       break;
     case "Fileheader":
       divEvent.innerText = `----- New gaming session started -----`
@@ -171,6 +195,10 @@ exports.updateLog = async (data) => {
       divEvent.innerText = `Interdicted`
       divEvent.classList.add("danger")
       break;
+    case "LaunchFighter":
+      divEvent.innerText = `Fighter launched`
+      divEvent.classList.add("log-travel")
+      break;
     case "LaunchSRV":
       divEvent.innerText = `Launched SRV`
       divEvent.classList.add("log-travel")
@@ -201,7 +229,7 @@ exports.updateLog = async (data) => {
       divEvent.classList.add("success")
       break;
     case "MarketSell":
-      interface.setCredits(data.TotalSale);
+      interface.setCredits(data.TotalSale, "ADD");
       let marketSellItem = data.Type_Localised ? data.Type_Localised : data.Type
       divEvent.innerHTML = `Sold ${marketSellItem} for <span class="credits">${interface.formatNumber(data.TotalSale)}cr</span>`
       divEvent.classList.add("success")      
@@ -234,22 +262,32 @@ exports.updateLog = async (data) => {
       divEvent.classList.add("highlight");
       break;
     case "ModuleSell":
-      interface.setCredits(data.SellPrice)
+      interface.setCredits(data.SellPrice, "ADD")
       divEvent.innerText = `Sold remote module for ${interface.formatNumber(data.SellPrice)}CR`
       divEvent.classList.add("highlight")
       break;
     case "ModuleSellRemote":
-      interface.setCredits(data.SellPrice)
+      interface.setCredits(data.SellPrice, "ADD")
       divEvent.innerText = `Sold remote module for ${interface.formatNumber(data.SellPrice)}CR`
       divEvent.classList.add("highlight")
       break;
     case "MultiSellExplorationData":
-      interface.setCredits(data.TotalEarnings)
+      interface.setCredits(data.TotalEarnings, "ADD")
       let systemsDiscovered = data.Discovered.length
       let bodiesDiscovered = 0
       data.Discovered.forEach(body => bodiesDiscovered += body.NumBodies)
       divEvent.innerHTML = `exploration data sold for <span class="credits">${interface.formatNumber(data.TotalEarnings)}cr</span><br>(${systemsDiscovered} systems, ${bodiesDiscovered} bodies)`
       divEvent.classList.add("success");
+      break;
+    case "NpcCrewPaidWage":
+      if (data.Amount != 0) {
+        divEvent.innerHTML = `Crew member ${data.NpcCrewName} paid <ed-credits>${data.Amount}</ed-credits> in wages`
+        divEvent.classList.add("info")
+      }
+      break;
+    case "NpcCrewRank":
+      divEvent.innerText = `Crew member ${data.NpcCrewName} gained a new combat rank!`
+      divEvent.classList.add("info")      
       break;
     case "PayBounties":
       interface.setCredits(data.Amount, "SUBSTRACT")
@@ -274,7 +312,7 @@ exports.updateLog = async (data) => {
     case "ProspectedAsteroid":
       break;
     case "RedeemVoucher":
-      interface.setCredits(data.Amount)
+      interface.setCredits(data.Amount, "ADD")
       divEvent.innerText = `Redeemed bounties: ${interface.formatNumber(data.Amount)}cr`
       divEvent.classList.add("highlight");
       break;
@@ -295,6 +333,10 @@ exports.updateLog = async (data) => {
       divEvent.innerHTML = `All ship modules repaired for <span class="credits">${interface.formatNumber(data.Cost)}cr</span>`
       divEvent.classList.add("success")
       break;
+    case "RestockVehicle":
+      divEvent.innerText = `Restocked Vehicles`
+      divEvent.classList.add("info");
+      break;
     case "Resurrect":
       interface.setShipHealth(1)
       interface.setCredits(data.Cost, "SUBSTRACT")
@@ -303,6 +345,11 @@ exports.updateLog = async (data) => {
       break;
     case "SAAScanComplete":
       divEvent.innerText = `surface scan ${data.BodyName} complete`
+      divEvent.classList.add("log-exploration")
+      break;
+    case "SAASignalsFound":
+      // TODO: Clearer message
+      divEvent.innerText = `Surface Scanner found signals!`
       divEvent.classList.add("log-exploration")
       break;
     case "Scanned":
@@ -315,7 +362,7 @@ exports.updateLog = async (data) => {
       divEvent.classList.add("highlight");
       break;
     case "SellExplorationData":
-      interface.setCredits(data.TotalEarnings);
+      interface.setCredits(data.TotalEarnings, "ADD");
       divEvent.innerText = `Exploration data sold for <span class="credits">${interface.formatNumber(data.TotalEarnings)}cr</span>`
       divEvent.classList.add("success");
       break;
@@ -331,7 +378,7 @@ exports.updateLog = async (data) => {
       divEvent.classList.add("highlight")
       break;
     case "ShipyardSell":
-      interface.setCredits(data.ShipPrice)
+      interface.setCredits(data.ShipPrice, "ADD")
       divEvent.innerHTML = `Sold ${data.ShipType_Localised} for <span class="credits">${interface.formatNumber(data.ShipPrice)}cr</span>` 
       break;
     case "ShipyardSwap":
@@ -393,6 +440,15 @@ exports.updateLog = async (data) => {
     case "UnderAttack":
       divEvent.innerText = "Under attack!";
       divEvent.classList.add("danger");
+      break;
+    case "VehicleSwitch":
+      if (data.To == "Mothership") {
+        elements.cmdrVessel.innerText = Cmdr.ship.name
+      } else {
+        elements.cmdrVessel.innerText = `Fighter`
+      }
+      divEvent.innerText = `Cmdr switched to ${data.To}`
+      divEvent.classList.add("info")
       break;
     default:
       console.log("logEntry: ", data);
